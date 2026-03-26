@@ -13,12 +13,8 @@ export default function RootLayout({
 }) {
   return (
     <html lang="nl">
-      <body className="antialiased relative">
-        <div className="ambient-glow" />
-        <div className="noise-overlay" />
-        <div className="relative z-10">
-          {children}
-        </div>
+      <body className="antialiased">
+        {children}
       </body>
     </html>
   )

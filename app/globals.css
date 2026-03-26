@@ -2,19 +2,18 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Greed Condensed */
+/* Font faces — same as Brandprompt, local files */
 @font-face {
-  font-family: 'Greed Condensed';
-  src: url('https://fonts.cdnfonts.com/s/93187/GreedCondensed-Bold.woff') format('woff');
+  font-family: 'GreedCondensed';
+  src: url('/fonts/GreedCondensed-TRIAL-Bold.otf') format('opentype');
   font-weight: 700;
   font-style: normal;
   font-display: swap;
 }
 
-/* Satoshi */
 @font-face {
   font-family: 'Satoshi';
-  src: url('https://fonts.cdnfonts.com/s/85546/Satoshi-Regular.woff') format('woff');
+  src: url('/fonts/Satoshi-Regular.otf') format('opentype');
   font-weight: 400;
   font-style: normal;
   font-display: swap;
@@ -22,124 +21,90 @@
 
 @font-face {
   font-family: 'Satoshi';
-  src: url('https://fonts.cdnfonts.com/s/85546/Satoshi-Medium.woff') format('woff');
-  font-weight: 500;
+  src: url('/fonts/Satoshi-Light.otf') format('opentype');
+  font-weight: 300;
   font-style: normal;
   font-display: swap;
 }
 
-@font-face {
-  font-family: 'Satoshi';
-  src: url('https://fonts.cdnfonts.com/s/85546/Satoshi-Bold.woff') format('woff');
-  font-weight: 700;
-  font-style: normal;
-  font-display: swap;
-}
-
-:root {
-  --color-bg: #0f0f10;
-  --color-surface: #161618;
-  --color-surface-raised: #1c1c1f;
-  --color-border: rgba(255, 255, 255, 0.06);
-  --color-border-hover: rgba(255, 255, 255, 0.12);
-  --color-text: #e4e2de;
-  --color-text-dim: #7a7874;
-  --color-text-muted: #4a4844;
-  --color-primary: #6c5ce7;
-  --color-primary-bright: #8463ff;
-  --color-gradient-start: #4f8cff;
-  --color-gradient-end: #8463ff;
-}
-
-* {
-  box-sizing: border-box;
-  padding: 0;
-  margin: 0;
-}
-
-html, body {
-  max-width: 100vw;
-  overflow-x: hidden;
-  background: var(--color-bg);
-  color: var(--color-text);
-}
-
+/* Base — identical to Brandprompt */
 body {
-  font-family: 'Satoshi', system-ui, -apple-system, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  color: #ffffff;
+  background: #202020;
+  font-family: 'Satoshi', sans-serif;
+  font-weight: 300;
+  font-size: 16px;
+  line-height: 1.6;
 }
 
-/* Scrollbar */
-::-webkit-scrollbar { width: 6px; }
-::-webkit-scrollbar-track { background: var(--color-bg); }
-::-webkit-scrollbar-thumb { background: var(--color-border); border-radius: 3px; }
-::-webkit-scrollbar-thumb:hover { background: var(--color-text-dim); }
-
-/* Selection */
-::selection {
-  background: rgba(132, 99, 255, 0.3);
-  color: #fff;
-}
-
-/* Focus */
-*:focus-visible {
-  outline: 2px solid var(--color-primary-bright);
-  outline-offset: 2px;
-}
-
-/* --- Typography --- */
-.font-greed {
-  font-family: 'Greed Condensed', Impact, sans-serif;
+h1 {
+  font-family: 'GreedCondensed', sans-serif;
+  font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.03em;
+  font-size: clamp(32px, 4.5vw, 56px);
+  line-height: 1;
 }
 
-.font-satoshi {
-  font-family: 'Satoshi', system-ui, sans-serif;
+h2 {
+  font-family: 'Satoshi', sans-serif;
+  font-weight: 400;
+  font-size: clamp(18px, 2.5vw, 24px);
+  line-height: 1.4;
 }
 
-/* --- Gradient utilities --- */
-.gradient-text {
-  background: linear-gradient(135deg, var(--color-gradient-start), var(--color-gradient-end));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+h3, h4, h5, h6 {
+  font-family: 'Satoshi', sans-serif;
+  font-weight: 400;
 }
 
-.gradient-border {
-  position: relative;
-}
-.gradient-border::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  padding: 1px;
-  background: linear-gradient(135deg, var(--color-gradient-start), var(--color-gradient-end));
-  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-  -webkit-mask-composite: xor;
-  mask-composite: exclude;
-  pointer-events: none;
-  opacity: 0.4;
-  transition: opacity 0.3s ease;
-}
-.gradient-border:hover::before {
-  opacity: 0.7;
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
 }
 
-.gradient-bg {
-  background: linear-gradient(135deg, var(--color-gradient-start), var(--color-gradient-end));
+@layer components {
+  /* Gradient navbar — identical to Brandprompt */
+  .gradient-navbar {
+    background: linear-gradient(90deg, #0E6EFF 0%, #7B61FF 35%, #DDB3FF 65%, #E8A0BF 100%);
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    display: flex;
+    align-items: center;
+  }
+
+  /* Gradient line divider */
+  .gradient-line {
+    height: 2px;
+    background: linear-gradient(90deg, #0E6EFF 0%, #DDB3FF 50%, #E8A0BF 100%);
+    width: 100%;
+  }
+
+  .gradient-text {
+    background: linear-gradient(90deg, #0E6EFF, #DDB3FF, #E8A0BF);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
 }
 
-.gradient-bg-subtle {
-  background: linear-gradient(135deg, rgba(79, 140, 255, 0.08), rgba(132, 99, 255, 0.08));
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
 }
 
-/* --- Animations --- */
+/* Animations — identical to Brandprompt */
 @keyframes fadeInUp {
-  from { opacity: 0; transform: translateY(16px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 @keyframes fadeIn {
@@ -147,83 +112,39 @@ body {
   to { opacity: 1; }
 }
 
-@keyframes slideUp {
-  from { opacity: 0; transform: translateY(24px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-@keyframes shimmer {
-  0% { background-position: -200% center; }
-  100% { background-position: 200% center; }
-}
-
-@keyframes pulseGlow {
-  0%, 100% { box-shadow: 0 0 20px rgba(132, 99, 255, 0.15); }
-  50% { box-shadow: 0 0 40px rgba(132, 99, 255, 0.3); }
-}
-
 @keyframes progressPulse {
-  0%, 100% { opacity: 0.6; }
+  0%, 100% { opacity: 0.4; }
   50% { opacity: 1; }
 }
 
-@keyframes spin {
-  to { transform: rotate(360deg); }
+.animate-hero-title {
+  animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
-@keyframes scaleIn {
-  from { opacity: 0; transform: scale(0.95); }
-  to { opacity: 1; transform: scale(1); }
+.animate-hero-subtitle {
+  animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.15s both;
 }
 
-@keyframes gradientShift {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
+.animate-hero-body {
+  animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.3s both;
 }
 
-.animate-fade-in { animation: fadeIn 0.5s ease-out forwards; }
-.animate-fade-in-up { animation: fadeInUp 0.6s ease-out forwards; }
-.animate-slide-up { animation: slideUp 0.6s ease-out forwards; }
-.animate-scale-in { animation: scaleIn 0.4s ease-out forwards; }
-.animate-pulse-glow { animation: pulseGlow 2.5s ease-in-out infinite; }
-.animate-shimmer {
-  background-size: 200% 100%;
-  animation: shimmer 2s linear infinite;
-}
-.animate-gradient-shift {
-  background-size: 200% 200%;
-  animation: gradientShift 3s ease infinite;
+.animate-hero-cta {
+  animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.45s both;
 }
 
-/* Stagger delays */
-.stagger-1 { animation-delay: 0.05s; opacity: 0; }
-.stagger-2 { animation-delay: 0.1s; opacity: 0; }
-.stagger-3 { animation-delay: 0.15s; opacity: 0; }
-.stagger-4 { animation-delay: 0.2s; opacity: 0; }
-.stagger-5 { animation-delay: 0.25s; opacity: 0; }
-.stagger-6 { animation-delay: 0.3s; opacity: 0; }
-
-/* --- Ambient background --- */
-.ambient-glow {
-  position: fixed;
-  top: -50%;
-  left: -50%;
-  width: 200%;
-  height: 200%;
-  background: radial-gradient(ellipse at 30% 20%, rgba(79, 140, 255, 0.04) 0%, transparent 50%),
-              radial-gradient(ellipse at 70% 60%, rgba(132, 99, 255, 0.03) 0%, transparent 50%);
-  pointer-events: none;
-  z-index: 0;
+.animate-hero-footer {
+  animation: fadeIn 1s ease-out 0.8s both;
 }
 
-/* --- Noise texture overlay --- */
-.noise-overlay {
-  position: fixed;
-  inset: 0;
-  opacity: 0.015;
-  pointer-events: none;
-  z-index: 1;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E");
-  background-repeat: repeat;
+.progress-dot {
+  animation: progressPulse 1.5s ease-in-out infinite;
+}
+
+.animate-slide-up {
+  animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.5s ease-out both;
 }

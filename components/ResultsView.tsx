@@ -23,60 +23,48 @@ export function ResultsView({ result, userUrl }: ResultsViewProps) {
   }
 
   return (
-    <div className="space-y-14 animate-fade-in">
-      {/* Summary section */}
-      <section className="animate-fade-in-up">
-        <h2 className="font-greed text-3xl md:text-4xl mb-6 gradient-text">
+    <div className="w-full mx-auto px-4 py-16" style={{ maxWidth: '780px' }}>
+      {/* Summary */}
+      <section className="mb-14 animate-slide-up">
+        <h1 className="font-heading text-white mb-6" style={{ fontSize: 'clamp(24px, 3.5vw, 40px)' }}>
           WAT WE ZAGEN
-        </h2>
-        <div className="bg-surface rounded-2xl p-7 md:p-9 border border-border">
-          <p className="font-satoshi text-lg leading-relaxed text-text/90">
+        </h1>
+        <div className="bg-dark-light border border-white/10 rounded-btn p-6 md:p-8">
+          <p className="font-body text-white/80 text-lg leading-relaxed" style={{ fontWeight: 300 }}>
             {result.samenvatting}
           </p>
         </div>
       </section>
 
+      {/* Gradient divider */}
+      <div className="gradient-line mb-14" />
+
       {/* Competitor cards */}
-      <section>
-        <h3 className="font-greed text-xl mb-6 text-text-dim">
+      <section className="mb-14">
+        <h1 className="font-heading text-white mb-6" style={{ fontSize: 'clamp(20px, 3vw, 32px)' }}>
           DRIE CONCURRENTEN
-        </h3>
+        </h1>
         <div className="grid gap-4 md:grid-cols-3">
           {result.concurrenten.map((comp, index) => (
             <div
               key={index}
-              className={`
-                group gradient-border bg-surface rounded-2xl p-6
-                hover:bg-surface-raised transition-all duration-300
-                animate-fade-in-up stagger-${index + 1}
-              `}
+              className="bg-dark-light border border-white/10 rounded-btn p-5 hover:border-white/20 transition-all duration-300 animate-slide-up"
+              style={{ animationDelay: `${index * 0.1}s` }}
             >
-              {/* Header */}
-              <div className="mb-4">
-                <div className="flex items-center gap-2 mb-3">
-                  <div className="w-6 h-6 rounded-full gradient-bg-subtle flex items-center justify-center">
-                    <span className="font-satoshi font-bold text-[10px] text-primary-bright">
-                      {index + 1}
-                    </span>
-                  </div>
-                  <span className="font-satoshi text-[11px] uppercase tracking-wider text-text-muted">
-                    Concurrent
-                  </span>
-                </div>
-                <h4 className="font-satoshi font-bold text-text truncate group-hover:text-primary-bright transition-colors">
-                  {comp.url.replace(/^https?:\/\//, '').replace(/\/$/, '')}
-                </h4>
-              </div>
-
-              {/* Description */}
-              <p className="font-satoshi text-sm text-text-dim leading-relaxed mb-5">
+              <p className="font-body text-white/40 text-xs uppercase tracking-wider mb-2" style={{ fontWeight: 400 }}>
+                Concurrent {index + 1}
+              </p>
+              <h4 className="font-body text-white mb-3 truncate" style={{ fontWeight: 400 }}>
+                {comp.url.replace(/^https?:\/\//, '').replace(/\/$/, '')}
+              </h4>
+              <p className="font-body text-white/60 text-sm leading-relaxed mb-4" style={{ fontWeight: 300 }}>
                 {comp.omschrijving}
               </p>
-
-              {/* Overlap */}
-              <div className="pt-4 border-t border-border">
-                <p className="font-satoshi text-xs text-text-muted uppercase tracking-wider mb-1.5">Overlap</p>
-                <p className="font-satoshi text-sm text-text-dim italic leading-relaxed">
+              <div className="pt-3 border-t border-white/10">
+                <p className="font-body text-white/40 text-xs uppercase tracking-wider mb-1" style={{ fontWeight: 400 }}>
+                  Overlap
+                </p>
+                <p className="font-body text-white/50 text-sm italic leading-relaxed" style={{ fontWeight: 300 }}>
                   {comp.overlap}
                 </p>
               </div>
@@ -85,34 +73,27 @@ export function ResultsView({ result, userUrl }: ResultsViewProps) {
         </div>
       </section>
 
-      {/* CTA to unlock */}
-      <section className="text-center py-4">
-        <div className="relative bg-surface rounded-2xl p-10 md:p-14 border border-border overflow-hidden animate-scale-in">
-          {/* Ambient gradient in background */}
-          <div className="absolute inset-0 bg-gradient-to-br from-primary-blue/5 via-transparent to-primary-bright/5 pointer-events-none" />
+      {/* Gradient divider */}
+      <div className="gradient-line mb-14" />
 
-          <div className="relative">
-            <h3 className="font-greed text-3xl md:text-4xl mb-4 gradient-text">
-              WAT JOU ÉCHT ANDERS MAAKT
-            </h3>
-            <p className="font-satoshi text-text-dim mb-10 max-w-md mx-auto leading-relaxed">
-              Ontdek je onderscheidende punten en wat het je kost als je niet verandert.
-            </p>
-            <button
-              onClick={() => setShowEmailGate(true)}
-              className="gradient-bg font-satoshi font-bold text-white text-base
-                         py-4 px-10 rounded-full
-                         hover:opacity-90 transition-all duration-300
-                         transform hover:scale-[1.02] active:scale-[0.98]
-                         shadow-[0_4px_30px_rgba(132,99,255,0.3)]
-                         hover:shadow-[0_6px_40px_rgba(132,99,255,0.4)]"
-            >
-              Toon mijn analyse
-            </button>
-            <p className="font-satoshi text-xs text-text-muted mt-5">
-              Ontvang je volledige rapport per email
-            </p>
-          </div>
+      {/* CTA to unlock deeper insights */}
+      <section className="text-center animate-slide-up">
+        <div className="bg-dark-light border border-white/10 rounded-btn p-8 md:p-12">
+          <h1 className="font-heading text-white mb-4" style={{ fontSize: 'clamp(22px, 3vw, 36px)' }}>
+            WAT JOU ÉCHT ANDERS MAAKT
+          </h1>
+          <p className="font-body text-white/60 mb-8 max-w-md mx-auto" style={{ fontWeight: 300 }}>
+            Ontdek je onderscheidende punten en wat het je kost als je niet verandert.
+          </p>
+          <button
+            onClick={() => setShowEmailGate(true)}
+            className="py-3.5 px-8 bg-accent-blue text-white font-body font-medium rounded-btn hover:brightness-110 transition-all duration-200"
+          >
+            Toon mijn analyse
+          </button>
+          <p className="font-body text-white/40 text-sm mt-4" style={{ fontWeight: 300 }}>
+            We sturen je een bevestiging per email. Geen spam, beloofd.
+          </p>
         </div>
       </section>
     </div>

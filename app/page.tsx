@@ -39,87 +39,89 @@ export default function Home() {
     }
   }
 
-  const showLoading = pending || (state.step !== 'idle' && state.step !== 'complete' && state.step !== 'error')
+  const isLoading = pending || (state.step !== 'idle' && state.step !== 'complete' && state.step !== 'error')
 
   return (
-    <main className="min-h-screen bg-bg">
-      <div className="max-w-4xl mx-auto px-6 py-20 md:py-32">
+    <main className="min-h-screen bg-dark">
+      {/* Gradient navbar — identical to Brandprompt */}
+      <nav className="gradient-navbar" style={{ height: '72px', paddingLeft: '24px', paddingRight: '24px' }}>
+        <a href="https://newfound.agency" target="_blank" rel="noopener noreferrer">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="https://newfound.agency/wp-content/uploads/2025/06/Logo_newfound.svg" height={18} alt="Newfound" style={{ height: '18px' }} />
+        </a>
+      </nav>
 
-        {/* Header — always visible */}
-        <header className="mb-20 text-center">
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-surface border border-border mb-8 animate-fade-in">
-            <div className="w-1.5 h-1.5 rounded-full gradient-bg" />
-            <span className="font-satoshi text-xs text-text-dim tracking-wide uppercase">
+      {/* Hero — idle state */}
+      {state.step === 'idle' && !pending && (
+        <div className="flex flex-col items-center min-h-[calc(100vh-72px)]">
+          <div className="flex-1 flex flex-col justify-center w-full mx-auto text-center px-4" style={{ maxWidth: '680px' }}>
+            <p className="font-body text-accent mb-6 animate-hero-title" style={{ fontSize: '15px', fontWeight: 400 }}>
+              Concurrent Analyse
+            </p>
+
+            <h1 className="font-heading text-white mb-5 animate-hero-title">
+              Zie hoe jij je<br />onderscheidt.
+            </h1>
+
+            <h2 className="text-white mb-3 animate-hero-subtitle">
+              Ontdek waar jij en je concurrenten hetzelfde zeggen.
+            </h2>
+
+            <p className="text-white/60 mb-16 font-body animate-hero-body" style={{ fontWeight: 300 }}>
+              Vul je website in en krijg een analyse in 60 seconden.
+            </p>
+
+            <div className="animate-hero-cta">
+              <InputForm action={formAction} pending={pending} />
+            </div>
+          </div>
+
+          <div className="pb-8 text-sm text-white/50 animate-hero-footer font-body" style={{ fontWeight: 300 }}>
+            Een tool van{' '}
+            <a href="https://newfound.agency" target="_blank" rel="noopener noreferrer" className="text-white underline hover:text-accent transition-colors">
               Newfound Agency
-            </span>
+            </a>
           </div>
+        </div>
+      )}
 
-          <h1 className="font-greed text-5xl md:text-7xl lg:text-8xl mb-6 tracking-tight leading-[0.9] animate-fade-in-up">
-            <span className="gradient-text">CONCURRENT</span>
-            <br />
-            <span className="text-text">ANALYSE</span>
-          </h1>
-
-          <p className="font-satoshi text-lg md:text-xl text-text-dim max-w-xl mx-auto leading-relaxed animate-fade-in-up stagger-2">
-            Zie hoe jij je onderscheidt van je concurrenten.
-            <br className="hidden md:block" />
-            Vul je website in en ontdek waar jullie hetzelfde zeggen.
-          </p>
-        </header>
-
-        {/* Main content */}
-        {state.step === 'idle' && !pending && (
-          <div className="animate-fade-in-up stagger-3">
-            <InputForm action={formAction} pending={pending} />
-          </div>
-        )}
-
-        {showLoading && (
+      {/* Loading */}
+      {isLoading && (
+        <div className="min-h-[calc(100vh-72px)] flex items-center justify-center px-4">
           <LoadingScreen
             step={pending ? 'scraping' : state.step}
             progress={state.progress}
           />
-        )}
+        </div>
+      )}
 
-        {state.step === 'complete' && state.result && (
-          <ResultsView
-            result={state.result}
-            userUrl={state.result.concurrenten[0]?.url || ''}
-          />
-        )}
+      {/* Results */}
+      {state.step === 'complete' && state.result && (
+        <ResultsView
+          result={state.result}
+          userUrl={state.result.concurrenten[0]?.url || ''}
+        />
+      )}
 
-        {state.step === 'error' && (
-          <div className="text-center py-16 animate-fade-in">
-            <div className="w-14 h-14 rounded-full bg-red-500/10 border border-red-500/20 flex items-center justify-center mx-auto mb-6">
-              <svg className="w-6 h-6 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-              </svg>
+      {/* Error */}
+      {state.step === 'error' && (
+        <div className="min-h-[calc(100vh-72px)] flex items-center justify-center px-4">
+          <div className="text-center max-w-md animate-fade-in">
+            <div className="w-16 h-16 border-2 border-white/20 rounded-full flex items-center justify-center mx-auto mb-6">
+              <span className="text-2xl text-accent">!</span>
             </div>
-            <p className="text-red-400 font-satoshi mb-6">{state.error}</p>
+            <h3 className="font-body text-xl text-white mb-3" style={{ fontWeight: 400 }}>
+              {state.error}
+            </h3>
             <button
               onClick={() => window.location.reload()}
-              className="font-satoshi text-sm text-primary-bright hover:text-white transition-colors underline underline-offset-4"
+              className="inline-flex items-center gap-2 px-6 py-3 bg-accent-blue text-white rounded-btn font-body font-medium hover:brightness-110 transition-all"
             >
               Probeer opnieuw
             </button>
           </div>
-        )}
-
-        {/* Footer */}
-        <footer className="mt-32 pt-8 border-t border-border text-center">
-          <p className="text-text-muted text-sm font-satoshi">
-            Een tool van{' '}
-            <a
-              href="https://newfound.agency"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-text-dim hover:text-primary-bright transition-colors"
-            >
-              Newfound Agency
-            </a>
-          </p>
-        </footer>
-      </div>
+        </div>
+      )}
     </main>
   )
 }
