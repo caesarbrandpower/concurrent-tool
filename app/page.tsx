@@ -55,9 +55,7 @@ export default function Home() {
       {state.step === 'idle' && !pending && (
         <div className="flex flex-col items-center min-h-[calc(100vh-72px)]">
           <div className="flex-1 flex flex-col justify-center w-full mx-auto text-center px-4" style={{ maxWidth: '680px' }}>
-            <p className="font-body text-accent mb-6 animate-hero-title" style={{ fontSize: '15px', fontWeight: 400 }}>
-              Concurrent Analyse
-            </p>
+            <p className="label-style text-accent mb-6 animate-hero-title">Concurrent Analyse</p>
 
             <h1 className="font-heading text-white mb-5 animate-hero-title">
               Zie hoe jij je<br />onderscheidt.

@@ -19,6 +19,7 @@ const config: Config = {
       fontFamily: {
         heading: ['GreedCondensed', 'sans-serif'],
         body: ['Satoshi', 'sans-serif'],
+        label: ['KansasNew', 'sans-serif'],
       },
       borderRadius: {
         btn: '6px',

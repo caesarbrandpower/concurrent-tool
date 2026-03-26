@@ -2,7 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Font faces — same as Brandprompt, local files */
+/* @font-face declarations — identical to Brandprompt */
 @font-face {
   font-family: 'GreedCondensed';
   src: url('/fonts/GreedCondensed-TRIAL-Bold.otf') format('opentype');
@@ -27,7 +27,15 @@
   font-display: swap;
 }
 
-/* Base — identical to Brandprompt */
+@font-face {
+  font-family: 'KansasNew';
+  src: url('/fonts/kansasnew-medium.otf') format('opentype');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Base typography — dark theme */
 body {
   color: #ffffff;
   background: #202020;
@@ -46,10 +54,11 @@ h1 {
 }
 
 h2 {
-  font-family: 'Satoshi', sans-serif;
-  font-weight: 400;
+  font-family: 'KansasNew', sans-serif;
+  font-weight: 500;
   font-size: clamp(18px, 2.5vw, 24px);
   line-height: 1.4;
+  text-transform: none;
 }
 
 h3, h4, h5, h6 {
@@ -64,7 +73,13 @@ h3, h4, h5, h6 {
 }
 
 @layer components {
-  /* Gradient navbar — identical to Brandprompt */
+  .label-style {
+    font-family: 'KansasNew', sans-serif;
+    font-weight: 500;
+    font-size: 15px;
+  }
+
+  /* Newfound gradient navbar — full bleed, no gaps */
   .gradient-navbar {
     background: linear-gradient(90deg, #0E6EFF 0%, #7B61FF 35%, #DDB3FF 65%, #E8A0BF 100%);
     margin: 0;
@@ -74,7 +89,7 @@ h3, h4, h5, h6 {
     align-items: center;
   }
 
-  /* Gradient line divider */
+  /* Thin gradient line for section dividers */
   .gradient-line {
     height: 2px;
     background: linear-gradient(90deg, #0E6EFF 0%, #DDB3FF 50%, #E8A0BF 100%);
@@ -95,7 +110,7 @@ h3, h4, h5, h6 {
   }
 }
 
-/* Animations — identical to Brandprompt */
+/* Animations */
 @keyframes fadeInUp {
   from {
     opacity: 0;
@@ -115,6 +130,12 @@ h3, h4, h5, h6 {
 @keyframes progressPulse {
   0%, 100% { opacity: 0.4; }
   50% { opacity: 1; }
+}
+
+@keyframes gradientShift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
 }
 
 .animate-hero-title {
@@ -139,6 +160,11 @@ h3, h4, h5, h6 {
 
 .progress-dot {
   animation: progressPulse 1.5s ease-in-out infinite;
+}
+
+.animate-gradient {
+  background-size: 200% 200%;
+  animation: gradientShift 4s ease infinite;
 }
 
 .animate-slide-up {
