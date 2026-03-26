@@ -14,8 +14,8 @@ export function ResultsView({ result, userUrl }: ResultsViewProps) {
 
   if (showEmailGate) {
     return (
-      <EmailGate 
-        userUrl={userUrl} 
+      <EmailGate
+        userUrl={userUrl}
         analysis={result}
         onBack={() => setShowEmailGate(false)}
       />
@@ -23,14 +23,14 @@ export function ResultsView({ result, userUrl }: ResultsViewProps) {
   }
 
   return (
-    <div className="space-y-12 animate-fade-in">
-      {/* Layer 1: Free visible content */}
-      <section>
-        <h2 className="font-greed text-3xl md:text-4xl mb-6 text-accent">
+    <div className="space-y-14 animate-fade-in">
+      {/* Summary section */}
+      <section className="animate-fade-in-up">
+        <h2 className="font-greed text-3xl md:text-4xl mb-6 gradient-text">
           WAT WE ZAGEN
         </h2>
-        <div className="bg-dark-800 rounded-xl p-6 md:p-8 border border-dark-600">
-          <p className="font-satoshi text-lg leading-relaxed text-accent">
+        <div className="bg-surface rounded-2xl p-7 md:p-9 border border-border">
+          <p className="font-satoshi text-lg leading-relaxed text-text/90">
             {result.samenvatting}
           </p>
         </div>
@@ -38,29 +38,45 @@ export function ResultsView({ result, userUrl }: ResultsViewProps) {
 
       {/* Competitor cards */}
       <section>
-        <h3 className="font-greed text-xl mb-6 text-accent-dim">
+        <h3 className="font-greed text-xl mb-6 text-text-dim">
           DRIE CONCURRENTEN
         </h3>
         <div className="grid gap-4 md:grid-cols-3">
           {result.concurrenten.map((comp, index) => (
-            <div 
+            <div
               key={index}
-              className="bg-dark-800 rounded-xl p-6 border border-dark-600 hover:border-accent/30 transition-all duration-300"
-              style={{ animationDelay: `${index * 0.1}s` }}
+              className={`
+                group gradient-border bg-surface rounded-2xl p-6
+                hover:bg-surface-raised transition-all duration-300
+                animate-fade-in-up stagger-${index + 1}
+              `}
             >
+              {/* Header */}
               <div className="mb-4">
-                <span className="inline-block px-3 py-1 bg-dark-700 rounded-full text-xs font-satoshi text-accent-dim mb-3">
-                  Concurrent {index + 1}
-                </span>
-                <h4 className="font-satoshi font-bold text-accent truncate">
+                <div className="flex items-center gap-2 mb-3">
+                  <div className="w-6 h-6 rounded-full gradient-bg-subtle flex items-center justify-center">
+                    <span className="font-satoshi font-bold text-[10px] text-primary-bright">
+                      {index + 1}
+                    </span>
+                  </div>
+                  <span className="font-satoshi text-[11px] uppercase tracking-wider text-text-muted">
+                    Concurrent
+                  </span>
+                </div>
+                <h4 className="font-satoshi font-bold text-text truncate group-hover:text-primary-bright transition-colors">
                   {comp.url.replace(/^https?:\/\//, '').replace(/\/$/, '')}
                 </h4>
               </div>
-              <p className="font-satoshi text-sm text-accent/80 leading-relaxed mb-4">
+
+              {/* Description */}
+              <p className="font-satoshi text-sm text-text-dim leading-relaxed mb-5">
                 {comp.omschrijving}
               </p>
-              <div className="pt-4 border-t border-dark-600">
-                <p className="font-satoshi text-sm text-accent-dim italic">
+
+              {/* Overlap */}
+              <div className="pt-4 border-t border-border">
+                <p className="font-satoshi text-xs text-text-muted uppercase tracking-wider mb-1.5">Overlap</p>
+                <p className="font-satoshi text-sm text-text-dim italic leading-relaxed">
                   {comp.overlap}
                 </p>
               </div>
@@ -69,26 +85,34 @@ export function ResultsView({ result, userUrl }: ResultsViewProps) {
         </div>
       </section>
 
-      {/* CTA to unlock layer 2 */}
-      <section className="text-center py-8">
-        <div className="bg-gradient-to-b from-dark-800 to-dark-900 rounded-2xl p-8 md:p-12 border border-dark-600">
-          <h3 className="font-greed text-2xl md:text-3xl mb-4 text-accent">
-            WAT JOU ÉCHT ANDERS MAAKT
-          </h3>
-          <p className="font-satoshi text-accent-dim mb-8 max-w-lg mx-auto">
-            Ontdek je onderscheidende punten en wat het je kost als je niet verandert.
-          </p>
-          <button
-            onClick={() => setShowEmailGate(true)}
-            className="bg-accent text-dark-900 font-satoshi font-bold text-lg 
-                       py-4 px-10 rounded-lg hover:bg-white transition-all duration-300
-                       transform hover:scale-[1.02] active:scale-[0.98]"
-          >
-            Toon mijn analyse
-          </button>
-          <p className="font-satoshi text-sm text-accent-dim mt-4">
-            We sturen je een bevestiging per email. Geen spam, beloofd.
-          </p>
+      {/* CTA to unlock */}
+      <section className="text-center py-4">
+        <div className="relative bg-surface rounded-2xl p-10 md:p-14 border border-border overflow-hidden animate-scale-in">
+          {/* Ambient gradient in background */}
+          <div className="absolute inset-0 bg-gradient-to-br from-primary-blue/5 via-transparent to-primary-bright/5 pointer-events-none" />
+
+          <div className="relative">
+            <h3 className="font-greed text-3xl md:text-4xl mb-4 gradient-text">
+              WAT JOU ÉCHT ANDERS MAAKT
+            </h3>
+            <p className="font-satoshi text-text-dim mb-10 max-w-md mx-auto leading-relaxed">
+              Ontdek je onderscheidende punten en wat het je kost als je niet verandert.
+            </p>
+            <button
+              onClick={() => setShowEmailGate(true)}
+              className="gradient-bg font-satoshi font-bold text-white text-base
+                         py-4 px-10 rounded-full
+                         hover:opacity-90 transition-all duration-300
+                         transform hover:scale-[1.02] active:scale-[0.98]
+                         shadow-[0_4px_30px_rgba(132,99,255,0.3)]
+                         hover:shadow-[0_6px_40px_rgba(132,99,255,0.4)]"
+            >
+              Toon mijn analyse
+            </button>
+            <p className="font-satoshi text-xs text-text-muted mt-5">
+              Ontvang je volledige rapport per email
+            </p>
+          </div>
         </div>
       </section>
     </div>
