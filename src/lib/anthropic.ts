@@ -60,7 +60,7 @@ export async function findCompetitors(industry: string): Promise<string[]> {
     tools: [{ type: 'web_search_20250305', name: 'web_search' } as any],
     messages: [{
       role: 'user',
-      content: `Zoek 3 concrete concurrenten in de ${industry} markt in Nederland. Geef alleen de website URLs terug, één per regel, geen uitleg. Focus op directe concurrenten die vergelijkbare diensten/producten aanbieden.`
+      content: `Zoek altijd exact drie concurrenten in de ${industry} markt in Nederland. Nooit meer, nooit minder. Als je er maar twee vindt, zoek dan nogmaals. Geef alleen de drie website URLs terug, één per regel, geen uitleg, geen nummering. Focus op directe concurrenten die vergelijkbare diensten/producten aanbieden.`
     }],
   });
 
@@ -70,12 +70,19 @@ export async function findCompetitors(industry: string): Promise<string[]> {
   console.log('findCompetitors: raw text:', text);
   const urls = text.split('\n')
     .map(line => line.trim())
-    .filter(line => line.includes('.'))
+    .filter(line => line.length > 0 && line.includes('.'))
     .map(line => {
       const match = line.match(/https?:\/\/[^\s]+/);
       return match ? match[0] : line;
     })
+    .filter(url => url.startsWith('http') || url.includes('.'))
     .slice(0, 3);
+
+  console.log('findCompetitors: parsed urls:', urls);
+
+  if (urls.length < 3) {
+    throw new Error(`Kon geen drie concurrenten vinden (gevonden: ${urls.length}). Probeer het opnieuw.`);
+  }
 
   return urls;
 }
