@@ -1,7 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { scrapeWebsite, isValidScrape } from '@/lib/scraper';
+import { scrapeWebsite, scrapeMultipleUrls, isValidScrape } from '@/lib/scraper';
 import { identifyIndustry, findCompetitors, analyzeWebsites } from '@/lib/anthropic';
 import { ScrapedData, AnalysisResult } from '@/types';
+
+export const maxDuration = 60;
 
 export async function POST(request: NextRequest) {
   try {
@@ -60,23 +62,14 @@ export async function POST(request: NextRequest) {
     // Step 3: Find competitors
     const competitorUrls = await findCompetitors(industry);
 
-    // Step 4: Scrape competitors — stop at 3 valid ones
-    const competitorData: ScrapedData[] = [];
-    for (const compUrl of competitorUrls) {
-      if (competitorData.length >= 3) break;
-      try {
-        console.log(`Scraping competitor: ${compUrl}`);
-        const scraped = await scrapeWebsite(compUrl);
-        if (isValidScrape(scraped)) {
-          competitorData.push(scraped);
-          console.log(`Competitor OK: ${compUrl} (${scraped.wordCount} woorden)`);
-        } else {
-          console.log(`Competitor overgeslagen (te weinig content): ${compUrl} (${scraped.wordCount} woorden)`);
-        }
-      } catch (e) {
-        console.error(`Failed to scrape competitor: ${compUrl}`, e);
-      }
-    }
+    // Step 4: Scrape all competitor URLs in parallel, take first 3 valid
+    console.log(`Scraping ${competitorUrls.length} competitor URLs in parallel...`);
+    const allScraped = await scrapeMultipleUrls(competitorUrls);
+    const competitorData = allScraped.filter(s => {
+      const valid = isValidScrape(s);
+      console.log(`Competitor ${s.url}: ${valid ? 'OK' : 'overgeslagen'} (${s.wordCount} woorden)`);
+      return valid;
+    }).slice(0, 3);
     console.log(`Totaal geldige concurrenten: ${competitorData.length}`);
 
     if (competitorData.length === 0) {
