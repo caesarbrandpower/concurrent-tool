@@ -8,6 +8,10 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
     const { url, manualContent } = body;
 
+    console.log('API key aanwezig:', !!process.env.ANTHROPIC_API_KEY);
+    console.log('URL ontvangen:', url);
+    console.log('Manual content aanwezig:', !!manualContent);
+
     if (!url) {
       return NextResponse.json(
         { error: 'URL is required' },

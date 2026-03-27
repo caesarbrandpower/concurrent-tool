@@ -37,6 +37,7 @@ Regels:
 - Taal: Nederlands, tenzij de website volledig in het Engels is.`;
 
 export async function identifyIndustry(content: string): Promise<string> {
+  console.log('identifyIndustry: start, content length:', content.length);
   const response = await anthropic.messages.create({
     model: 'claude-sonnet-4-5',
     max_tokens: 100,
@@ -51,6 +52,7 @@ export async function identifyIndustry(content: string): Promise<string> {
 }
 
 export async function findCompetitors(industry: string): Promise<string[]> {
+  console.log('findCompetitors: industry:', industry);
   const response = await anthropic.messages.create({
     model: 'claude-sonnet-4-5',
     max_tokens: 500,
@@ -62,7 +64,10 @@ export async function findCompetitors(industry: string): Promise<string[]> {
     }],
   });
 
-  const text = response.content[0].type === 'text' ? response.content[0].text : '';
+  console.log('findCompetitors: response stop_reason:', response.stop_reason);
+  console.log('findCompetitors: content blocks:', JSON.stringify(response.content.map(b => b.type)));
+  const text = response.content.find(b => b.type === 'text')?.text ?? '';
+  console.log('findCompetitors: raw text:', text);
   const urls = text.split('\n')
     .map(line => line.trim())
     .filter(line => line.includes('.'))
