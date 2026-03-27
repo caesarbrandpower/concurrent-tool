@@ -60,18 +60,24 @@ export async function POST(request: NextRequest) {
     // Step 3: Find competitors
     const competitorUrls = await findCompetitors(industry);
 
-    // Step 4: Scrape competitors
+    // Step 4: Scrape competitors — stop at 3 valid ones
     const competitorData: ScrapedData[] = [];
     for (const compUrl of competitorUrls) {
+      if (competitorData.length >= 3) break;
       try {
+        console.log(`Scraping competitor: ${compUrl}`);
         const scraped = await scrapeWebsite(compUrl);
         if (isValidScrape(scraped)) {
           competitorData.push(scraped);
+          console.log(`Competitor OK: ${compUrl} (${scraped.wordCount} woorden)`);
+        } else {
+          console.log(`Competitor overgeslagen (te weinig content): ${compUrl} (${scraped.wordCount} woorden)`);
         }
       } catch (e) {
         console.error(`Failed to scrape competitor: ${compUrl}`, e);
       }
     }
+    console.log(`Totaal geldige concurrenten: ${competitorData.length}`);
 
     if (competitorData.length === 0) {
       return NextResponse.json(

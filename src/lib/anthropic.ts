@@ -72,7 +72,7 @@ export async function findCompetitors(industry: string): Promise<string[]> {
   const allUrls = new Set<string>();
 
   for (let attempt = 0; attempt < queries.length; attempt++) {
-    if (allUrls.size >= 3) break;
+    if (allUrls.size >= 6) break;
 
     console.log(`findCompetitors: poging ${attempt + 1}/${queries.length}, query:`, queries[attempt]);
 
@@ -108,7 +108,7 @@ export async function findCompetitors(industry: string): Promise<string[]> {
     }
   }
 
-  const result = Array.from(allUrls).slice(0, 3);
+  const result = Array.from(allUrls).slice(0, 6);
   console.log('findCompetitors: final urls:', result);
 
   if (result.length < 2) {
