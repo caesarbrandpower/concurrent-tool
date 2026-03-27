@@ -8,26 +8,26 @@ interface LoadingScreenProps {
 
 const steps = [
   'We lezen jouw website...',
-  'We zoeken drie concurrenten in jouw markt...',
+  'We zoeken vijf concurrenten in jouw markt...',
   'We vergelijken hoe jullie overkomen...',
 ];
 
 export default function LoadingScreen({ step }: LoadingScreenProps) {
-  const [displayText, setDisplayText] = useState(steps[0]);
+  const [showExtra, setShowExtra] = useState(false);
 
   useEffect(() => {
-    if (step >= 3) {
+    if (step >= 2) {
       const timer = setTimeout(() => {
-        setDisplayText('Nog even, bijna klaar…');
+        setShowExtra(true);
       }, 8000);
       return () => clearTimeout(timer);
     } else {
-      setDisplayText(steps[step] || steps[0]);
+      setShowExtra(false);
     }
   }, [step]);
 
   return (
-    <div className="page-container">
+    <div className="page-container" style={{ background: 'var(--background)' }}>
       <div className="loading-container">
         <div className="loading-steps">
           {steps.map((text, index) => (
@@ -38,7 +38,7 @@ export default function LoadingScreen({ step }: LoadingScreenProps) {
               }`}
             >
               <span>
-                {index < step ? '✓' : index === step ? '○' : '○'}
+                {index < step ? '\u2713' : '\u25CB'}
               </span>
               <span>{text}</span>
             </div>
@@ -53,9 +53,9 @@ export default function LoadingScreen({ step }: LoadingScreenProps) {
           </div>
         )}
 
-        {step >= 3 && (
-          <p style={{ color: 'var(--muted)', fontSize: '0.875rem' }}>
-            {displayText}
+        {showExtra && step >= 2 && (
+          <p className="animate-fade-in" style={{ color: 'var(--muted)', fontSize: '0.875rem' }}>
+            Nog even, bijna klaar...
           </p>
         )}
       </div>

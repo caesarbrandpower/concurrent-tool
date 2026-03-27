@@ -35,10 +35,13 @@ export default function ResultsView({ url, result }: ResultsViewProps) {
   };
 
   return (
-    <div className="page-container" style={{ paddingBottom: '6rem' }}>
-      <div className="content-wrapper">
+    <div style={{ minHeight: '100vh', background: 'var(--background)' }}>
+      {/* Gradient top line */}
+      <div className="gradient-line" />
+
+      <div style={{ padding: '3rem 2rem 6rem', maxWidth: '720px', margin: '0 auto' }}>
         {/* Layer 1: Free visible content */}
-        <div>
+        <div className="animate-slide-up">
           <p className="section-title">WAT WE ZAGEN</p>
 
           <div className="summary-box">
@@ -52,7 +55,12 @@ export default function ResultsView({ url, result }: ResultsViewProps) {
                 <p className="competitor-description">{competitor.omschrijving}</p>
                 <p className="competitor-overlap">{competitor.overlap}</p>
                 {competitor.reden && (
-                  <p style={{ fontStyle: 'italic', fontSize: '0.8rem', color: 'var(--text-secondary)', marginTop: '0.5rem' }}>
+                  <p style={{
+                    fontStyle: 'italic',
+                    fontSize: '0.8rem',
+                    color: 'var(--muted)',
+                    marginTop: '0.5rem',
+                  }}>
                     Waarom deze concurrent? {competitor.reden}
                   </p>
                 )}
@@ -62,8 +70,17 @@ export default function ResultsView({ url, result }: ResultsViewProps) {
 
           {/* Kans teaser boven email-gate */}
           {result.kans && (
-            <div style={{ borderLeft: '3px solid var(--text-secondary)', paddingLeft: '1rem', margin: '2rem 0' }}>
-              <p style={{ fontStyle: 'italic', fontSize: '0.95rem', color: 'var(--text-secondary)', margin: 0 }}>
+            <div style={{
+              borderLeft: '3px solid var(--accent)',
+              paddingLeft: '1rem',
+              margin: '2rem 0',
+            }}>
+              <p style={{
+                fontStyle: 'italic',
+                fontSize: '0.95rem',
+                color: 'var(--muted)',
+                margin: 0,
+              }}>
                 {result.kans}
               </p>
             </div>
@@ -74,14 +91,14 @@ export default function ResultsView({ url, result }: ResultsViewProps) {
         {!showLayer2 ? (
           <div className="email-gate">
             <p className="section-title" style={{ marginTop: 0 }}>
-              WAT JOU ÉCHT ANDERS MAAKT
+              WAT JOU ECHT ANDERS MAAKT
             </p>
             <p className="sub-heading" style={{ textAlign: 'left', marginBottom: '1.5rem' }}>
               Ontvang jouw volledige analyse
             </p>
 
             <ul className="benefits-list">
-              <li>Waar jij écht verschilt</li>
+              <li>Waar jij echt verschilt</li>
               <li>Concrete aanbevelingen</li>
               <li>Gratis, direct in je inbox</li>
             </ul>
@@ -109,12 +126,12 @@ export default function ResultsView({ url, result }: ResultsViewProps) {
         ) : (
           <div className="email-gate">
             <p className="section-title" style={{ marginTop: 0 }}>
-              WAT JOU ÉCHT ANDERS MAAKT
+              WAT JOU ECHT ANDERS MAAKT
             </p>
 
             {emailSent && (
               <p style={{ color: 'var(--success)', marginBottom: '1rem', fontSize: '0.875rem' }}>
-                ✓ Analyse verstuurd naar {email}
+                Analyse verstuurd naar {email}
               </p>
             )}
 
