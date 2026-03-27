@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useRef, useEffect } from 'react'
+import UrlInput from '@/components/UrlInput'
 import LoadingState from '@/components/LoadingState'
 import ResultsView from '@/components/ResultsView'
 import { AnalysisResult } from '@/types'
@@ -30,15 +31,8 @@ export default function Home() {
     }
   }, [isLoading, loadingStep])
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    if (!url.trim()) return
-
-    let submittedUrl = url.trim()
-    if (!submittedUrl.startsWith('http')) {
-      submittedUrl = 'https://' + submittedUrl
-    }
-
+  const handleUrlSubmit = async (submittedUrl: string) => {
+    setUrl(submittedUrl)
     setIsLoading(true)
     setLoadingStep(0)
     setError(null)
@@ -149,31 +143,7 @@ export default function Home() {
             </p>
 
             <div className="animate-hero-cta">
-              <form className="w-full" onSubmit={handleSubmit}>
-                <div className="relative flex flex-col sm:flex-row sm:items-center overflow-hidden bg-dark-light rounded-btn border transition-all duration-300 border-white/30 shadow-[0_2px_12px_rgba(0,0,0,0.2)]">
-                  <div className="flex items-center flex-1">
-                    <div className="pl-5">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-white/40">
-                        <circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/>
-                      </svg>
-                    </div>
-                    <input
-                      type="text"
-                      placeholder="jouwwebsite.nl"
-                      className="flex-1 py-5 px-4 text-lg bg-transparent border-none outline-none text-white placeholder:text-white/50 font-body"
-                      value={url}
-                      onChange={(e) => setUrl(e.target.value)}
-                      required
-                    />
-                  </div>
-                  <button
-                    type="submit"
-                    className="w-full sm:w-auto py-3.5 px-7 bg-accent-blue text-white font-body font-medium hover:brightness-110 disabled:opacity-40 disabled:cursor-not-allowed transition-all"
-                  >
-                    Analyseer mijn merk
-                  </button>
-                </div>
-              </form>
+              <UrlInput onSubmit={handleUrlSubmit} isLoading={isLoading} />
             </div>
 
             {showManualInput && (
