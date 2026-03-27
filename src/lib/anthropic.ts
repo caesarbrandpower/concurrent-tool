@@ -76,34 +76,36 @@ export async function findCompetitors(industry: string): Promise<string[]> {
 
     console.log(`findCompetitors: poging ${attempt + 1}/${queries.length}, query:`, queries[attempt]);
 
-    const response = await anthropic.messages.create({
-      model: 'claude-sonnet-4-5',
-      max_tokens: 500,
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      tools: [{ type: 'web_search_20250305', name: 'web_search' } as any],
-      messages: [{
-        role: 'user',
-        content: queries[attempt],
-      }],
-    });
+    try {
+      const response = await anthropic.messages.create({
+        model: 'claude-sonnet-4-5',
+        max_tokens: 500,
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        tools: [{ type: 'web_search_20250305', name: 'web_search' } as any],
+        messages: [{
+          role: 'user',
+          content: queries[attempt],
+        }],
+      });
 
-    console.log(`findCompetitors poging ${attempt + 1}: raw response:`, JSON.stringify(response.content, null, 2));
-    console.log(`findCompetitors poging ${attempt + 1}: stop_reason:`, response.stop_reason);
+      console.log(`findCompetitors poging ${attempt + 1}: stop_reason:`, response.stop_reason);
 
-    const text = response.content.find(b => b.type === 'text')?.text ?? '';
-    console.log(`findCompetitors poging ${attempt + 1}: raw text:`, text);
+      // Extract URLs from all text blocks in the response
+      const textBlocks = response.content.filter(b => b.type === 'text').map(b => b.type === 'text' ? b.text : '');
+      const fullText = textBlocks.join('\n');
+      console.log(`findCompetitors poging ${attempt + 1}: raw text:`, fullText);
 
-    const urls = text.split('\n')
-      .map(line => line.trim())
-      .filter(line => line.length > 0 && line.includes('.'))
-      .map(line => {
-        const match = line.match(/https?:\/\/[^\s]+/);
-        return match ? match[0] : line;
-      })
-      .filter(url => url.startsWith('http') || url.includes('.'));
+      // Match all URLs in the full text
+      const urlMatches = fullText.match(/https?:\/\/[^\s,)"\]]+/g) || [];
+      const urls = urlMatches
+        .map(u => u.replace(/[.,:;]+$/, '')) // strip trailing punctuation
+        .filter(u => !u.includes('google.') && !u.includes('bing.') && !u.includes('wikipedia.'));
 
-    urls.forEach(url => allUrls.add(url));
-    console.log(`findCompetitors poging ${attempt + 1}: gevonden ${urls.length} URLs, totaal uniek: ${allUrls.size}`);
+      urls.forEach(url => allUrls.add(url));
+      console.log(`findCompetitors poging ${attempt + 1}: gevonden ${urls.length} URLs, totaal uniek: ${allUrls.size}`);
+    } catch (e) {
+      console.error(`findCompetitors poging ${attempt + 1} mislukt:`, e);
+    }
   }
 
   const result = Array.from(allUrls).slice(0, 3);

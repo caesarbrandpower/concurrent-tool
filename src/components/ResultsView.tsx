@@ -105,8 +105,8 @@ export default function ResultsView({ url, result }: ResultsViewProps) {
         <div className="mx-auto px-4" style={{ maxWidth: '680px' }}>
           {emailCaptured ? (
             <div className="text-center animate-fade-in">
-              <div className="w-12 h-12 bg-accent/10 rounded-full flex items-center justify-center mx-auto mb-4">
-                <svg className="w-6 h-6 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+              <div style={{ width: '48px', height: '48px', borderRadius: '50%', background: 'rgba(14,110,255,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 16px' }}>
+                <svg style={{ width: '24px', height: '24px' }} fill="none" stroke="#0E6EFF" viewBox="0 0 24 24" strokeWidth={2}>
                   <polyline points="20 6 9 17 4 12" />
                 </svg>
               </div>
@@ -120,13 +120,13 @@ export default function ResultsView({ url, result }: ResultsViewProps) {
                 <h4 className="font-heading text-white mb-4" style={{ fontSize: 'clamp(18px, 2.5vw, 28px)', fontFamily: 'GreedCondensed, sans-serif', fontWeight: 700, textTransform: 'uppercase' as const }}>
                   Wat jou echt anders maakt
                 </h4>
-                <ul className="space-y-3 mb-8">
+                <ul style={{ listStyle: 'none', padding: 0, margin: '0 0 32px', display: 'flex', flexDirection: 'column', gap: '12px' }}>
                   {result.onderscheid.map((item, index) => (
-                    <li key={index} className="flex items-start gap-3">
-                      <svg className="w-4 h-4 text-green-400 flex-shrink-0 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
+                    <li key={index} style={{ display: 'flex', alignItems: 'flex-start', gap: '12px' }}>
+                      <svg style={{ width: '16px', height: '16px', flexShrink: 0, marginTop: '4px' }} fill="none" stroke="#4ade80" viewBox="0 0 24 24" strokeWidth={2.5}>
                         <polyline points="20 6 9 17 4 12" />
                       </svg>
-                      <span className="text-white font-body" style={{ fontSize: '17px' }}>{item}</span>
+                      <span className="font-body" style={{ fontSize: '17px', color: '#fff' }}>{item}</span>
                     </li>
                   ))}
                 </ul>
@@ -157,44 +157,33 @@ export default function ResultsView({ url, result }: ResultsViewProps) {
                 We hebben gezien waar jij verschilt. Laat je e-mailadres achter en ontvang de volledige analyse: je onderscheidende punten, diagnose en concrete aanbevelingen.
               </p>
 
-              <div className="flex flex-col items-center gap-3 mb-8">
-                <div className="flex items-center gap-2">
-                  <svg className="w-4 h-4 text-green-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
-                    <polyline points="20 6 9 17 4 12" />
-                  </svg>
-                  <span className="text-white font-body" style={{ fontSize: '15px' }}>Waar jij echt verschilt</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <svg className="w-4 h-4 text-green-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
-                    <polyline points="20 6 9 17 4 12" />
-                  </svg>
-                  <span className="text-white font-body" style={{ fontSize: '15px' }}>Diagnose: aanbod-probleem of merk-probleem</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <svg className="w-4 h-4 text-green-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
-                    <polyline points="20 6 9 17 4 12" />
-                  </svg>
-                  <span className="text-white font-body" style={{ fontSize: '15px' }}>Gratis, direct in je inbox</span>
-                </div>
+              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '10px', marginBottom: '32px' }}>
+                {['Waar jij echt verschilt', 'Diagnose: aanbod-probleem of merk-probleem', 'Gratis, direct in je inbox'].map((text, i) => (
+                  <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <svg style={{ width: '16px', height: '16px', flexShrink: 0 }} fill="none" stroke="#4ade80" viewBox="0 0 24 24" strokeWidth={2.5}>
+                      <polyline points="20 6 9 17 4 12" />
+                    </svg>
+                    <span className="font-body" style={{ fontSize: '15px', color: '#fff' }}>{text}</span>
+                  </div>
+                ))}
               </div>
 
-              <form onSubmit={handleEmailSubmit} className="flex flex-col sm:flex-row gap-3 max-w-lg mx-auto">
+              <form onSubmit={handleEmailSubmit} className="input-row" style={{ maxWidth: '520px', margin: '0 auto' }}>
                 <input
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="jouw@emailadres.nl"
-                  className="w-full sm:flex-1 px-4 py-3.5 border border-white/30 rounded-btn focus:outline-none focus:ring-1 focus:ring-accent/40 focus:border-white/60 transition-all font-body text-white placeholder:text-white/50"
-                  style={{ background: 'rgba(255,255,255,0.05)' }}
+                  className="url-input"
                   required
                 />
-
                 <button
                   type="submit"
                   disabled={!email.trim() || isSubmitting}
-                  className="w-full sm:w-auto px-6 py-3.5 bg-accent-blue text-white rounded-btn font-body font-medium hover:brightness-110 disabled:opacity-40 disabled:cursor-not-allowed transition-all duration-200 whitespace-nowrap"
+                  className="submit-btn"
+                  style={{ opacity: (!email.trim() || isSubmitting) ? 0.4 : 1 }}
                 >
-                  {isSubmitting ? 'Bezig...' : 'Stuur me de analyse'}
+                  {isSubmitting ? 'Bezig...' : 'Verstuur'}
                 </button>
               </form>
 
@@ -216,7 +205,8 @@ export default function ResultsView({ url, result }: ResultsViewProps) {
             href="https://newfound.agency"
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 px-7 py-3.5 bg-accent-blue text-white rounded-btn font-body font-medium hover:brightness-110 transition-all duration-200"
+            className="submit-btn"
+            style={{ display: 'inline-block', textDecoration: 'none' }}
           >
             Plan een gesprek
           </a>
