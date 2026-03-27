@@ -216,7 +216,7 @@ export default function Home() {
         </div>
       </header>
 
-      <div className="max-w-4xl mx-auto px-6 py-20">
+      <div className="max-w-4xl mx-auto px-6">
         <AnimatePresence mode="wait">
           {!isLoading && !analysis && !showManualInput && (
             <motion.div
@@ -224,7 +224,7 @@ export default function Home() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -20 }}
-              className="text-center"
+              className="hero-section"
             >
               <h1 className="text-4xl md:text-5xl font-bold mb-12 tracking-wide" style={{ fontFamily: 'Greed, Oswald, sans-serif' }}>
                 CONCURRENTIE-ANALYSE
@@ -237,21 +237,12 @@ export default function Home() {
                     value={url}
                     onChange={(e) => setUrl(e.target.value)}
                     placeholder="jouwwebsite.nl"
-                    className="flex-1 bg-[#15181f] border border-[rgba(255,255,255,0.10)] text-[#e5e7eb] px-6 py-4 text-lg outline-none transition-all"
-                    style={{ 
-                      borderRadius: '12px 0 0 12px',
-                      fontFamily: 'Satoshi, sans-serif'
-                    }}
+                    className="input-field"
                     required
                   />
                   <button
                     type="submit"
-                    className="px-8 py-4 font-medium text-white transition-all hover:opacity-90"
-                    style={{
-                      background: 'linear-gradient(90deg, #2e7cf6, #8463ff)',
-                      borderRadius: '0 12px 12px 0',
-                      fontFamily: 'Satoshi, sans-serif'
-                    }}
+                    className="btn-primary"
                   >
                     Analyseer mijn merk
                   </button>
