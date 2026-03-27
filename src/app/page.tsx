@@ -1,7 +1,6 @@
 'use client'
 
 import { useState, useRef, useEffect } from 'react'
-import UrlInput from '@/components/UrlInput'
 import LoadingState from '@/components/LoadingState'
 import ResultsView from '@/components/ResultsView'
 import { AnalysisResult } from '@/types'
@@ -143,7 +142,31 @@ export default function Home() {
             </p>
 
             <div className="animate-hero-cta">
-              <UrlInput onSubmit={handleUrlSubmit} isLoading={isLoading} />
+              <form
+                className="input-row"
+                onSubmit={(e) => {
+                  e.preventDefault()
+                  const val = url.trim()
+                  if (!val) return
+                  handleUrlSubmit(val.startsWith('http') ? val : 'https://' + val)
+                }}
+              >
+                <input
+                  type="text"
+                  className="url-input"
+                  placeholder="jouwwebsite.nl"
+                  value={url}
+                  onChange={(e) => setUrl(e.target.value)}
+                  disabled={isLoading}
+                />
+                <button
+                  type="submit"
+                  className="submit-btn"
+                  disabled={!url.trim() || isLoading}
+                >
+                  {isLoading ? 'Bezig...' : 'Analyseer'}
+                </button>
+              </form>
             </div>
 
             {showManualInput && (

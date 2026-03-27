@@ -174,3 +174,56 @@ h3, h4, h5, h6 {
 .animate-fade-in {
   animation: fadeIn 0.5s ease-out both;
 }
+
+/* Simple inline URL input */
+.input-row {
+  display: flex;
+  gap: 8px;
+  max-width: 520px;
+  margin: 0 auto;
+}
+
+.url-input {
+  flex: 1;
+  padding: 14px 18px;
+  font-family: 'Satoshi', sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+  color: #fff;
+  background: #2a2a2a;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 6px;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.url-input::placeholder {
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.url-input:focus {
+  border-color: rgba(255, 255, 255, 0.4);
+}
+
+.submit-btn {
+  padding: 14px 28px;
+  font-family: 'Satoshi', sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  color: #fff;
+  background: #0E6EFF;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: filter 0.2s;
+}
+
+.submit-btn:hover {
+  filter: brightness(1.1);
+}
+
+.submit-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
