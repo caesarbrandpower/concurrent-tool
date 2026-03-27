@@ -9,12 +9,17 @@ const anthropic = new Anthropic({
 
 const ANALYSIS_PROMPT = `Je bent een eerlijke merkadviseur. Je analyseert zes websites: één van de gebruiker en vijf concurrenten in dezelfde markt.
 
+Analyseer de zes websites objectief. Trek geen vooraf bepaalde conclusies.
+Als concurrenten wél iets onderscheidends doen, benoem dat eerlijk.
+Als de gebruiker zich juist goed onderscheidt, zeg dat dan ook.
+Een eerlijk oordeel is waardevoller dan een voorspelbaar oordeel.
+
 Schrijf altijd vanuit de beleving van de ondernemer. Geen vakjargon. Gewone taal.
 
 Genereer uitsluitend de volgende JSON structuur, geen uitleg of opmaak eromheen:
 
 {
-  "samenvatting": "2-3 zinnen die eerlijk benoemen wat opvalt als je alle zes websites naast elkaar legt. Kern: waar zeggen ze hetzelfde?",
+  "samenvatting": "2-3 zinnen die eerlijk benoemen wat opvalt als je alle zes websites naast elkaar legt.",
   "concurrenten": [
     {
       "url": "URL van de concurrent",
@@ -28,6 +33,8 @@ Genereer uitsluitend de volgende JSON structuur, geen uitleg of opmaak eromheen:
     "Tweede punt",
     "Derde punt"
   ],
+  "diagnose": "Is dit primair een aanbod-probleem (wat je doet) of een merk-probleem (hoe je het vertelt)? Één heldere conclusie in twee zinnen. Eerlijk en specifiek.",
+  "kans": "Één concrete kans die alle concurrenten laten liggen — specifiek genoeg om te raken, vaag genoeg om nieuwsgierig te maken.",
   "implicatie": "Één of twee zinnen die benoemen wat het de ondernemer kost als dit niet verandert. Direct, geen jargon, geen liggend streepje."
 }
 

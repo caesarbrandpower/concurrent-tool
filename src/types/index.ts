@@ -9,6 +9,8 @@ export interface AnalysisResult {
   samenvatting: string;
   concurrenten: Competitor[];
   onderscheid: string[];
+  diagnose: string;
+  kans: string;
   implicatie: string;
 }
 

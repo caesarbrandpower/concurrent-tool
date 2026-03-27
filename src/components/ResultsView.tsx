@@ -59,6 +59,15 @@ export default function ResultsView({ url, result }: ResultsViewProps) {
               </div>
             ))}
           </div>
+
+          {/* Kans teaser boven email-gate */}
+          {result.kans && (
+            <div style={{ borderLeft: '3px solid var(--text-secondary)', paddingLeft: '1rem', margin: '2rem 0' }}>
+              <p style={{ fontStyle: 'italic', fontSize: '0.95rem', color: 'var(--text-secondary)', margin: 0 }}>
+                {result.kans}
+              </p>
+            </div>
+          )}
         </div>
 
         {/* Layer 2: Email gate */}
@@ -115,16 +124,28 @@ export default function ResultsView({ url, result }: ResultsViewProps) {
               ))}
             </ul>
 
+            {result.diagnose && (
+              <div className="implication-box">
+                <p className="body-text"><strong>Diagnose:</strong> {result.diagnose}</p>
+              </div>
+            )}
+
             <div className="implication-box">
               <p className="body-text">{result.implicatie}</p>
             </div>
 
             <p className="body-text" style={{ marginTop: '1.5rem' }}>
-              Samen scherper naar je merk kijken? We helpen je graag.{" "}
-              <a href="mailto:hello@newfound.agency" className="cta-link">
-                Mail ons
-              </a>
+              Je onderscheid is er — maar het is nog niet zichtbaar voor de mensen die jij wil bereiken. Precies daar helpen wij bij.
             </p>
+            <a
+              href="https://newfound.agency"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="btn-primary"
+              style={{ display: 'inline-block', marginTop: '1rem', textAlign: 'center', textDecoration: 'none' }}
+            >
+              Plan een gesprek
+            </a>
           </div>
         )}
       </div>
