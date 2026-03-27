@@ -53,39 +53,58 @@ export async function identifyIndustry(content: string): Promise<string> {
 
 export async function findCompetitors(industry: string): Promise<string[]> {
   console.log('findCompetitors: industry:', industry);
-  const response = await anthropic.messages.create({
-    model: 'claude-sonnet-4-5',
-    max_tokens: 500,
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    tools: [{ type: 'web_search_20250305', name: 'web_search' } as any],
-    messages: [{
-      role: 'user',
-      content: `Zoek altijd exact drie concurrenten in de ${industry} markt in Nederland. Nooit meer, nooit minder. Als je er maar twee vindt, zoek dan nogmaals. Geef alleen de drie website URLs terug, één per regel, geen uitleg, geen nummering. Focus op directe concurrenten die vergelijkbare diensten/producten aanbieden.`
-    }],
-  });
 
-  console.log('Raw findCompetitors response:', JSON.stringify(response.content, null, 2));
-  console.log('findCompetitors: response stop_reason:', response.stop_reason);
-  console.log('findCompetitors: content blocks:', JSON.stringify(response.content.map(b => b.type)));
-  const text = response.content.find(b => b.type === 'text')?.text ?? '';
-  console.log('findCompetitors: raw text:', text);
-  const urls = text.split('\n')
-    .map(line => line.trim())
-    .filter(line => line.length > 0 && line.includes('.'))
-    .map(line => {
-      const match = line.match(/https?:\/\/[^\s]+/);
-      return match ? match[0] : line;
-    })
-    .filter(url => url.startsWith('http') || url.includes('.'))
-    .slice(0, 3);
+  const queries = [
+    `Zoek exact drie concurrenten in de ${industry} markt in Nederland. Geef alleen de drie website URLs terug, één per regel, geen uitleg, geen nummering. Focus op directe concurrenten die vergelijkbare diensten/producten aanbieden.`,
+    `Zoek drie ${industry} bureaus en vergelijkbare bureaus in Nederland. Geef alleen website URLs terug, één per regel, geen uitleg. Alternatieven voor bestaande ${industry} aanbieders.`,
+    `${industry} bureau Nederland top 3. Geef alleen de website URLs, één per regel, geen uitleg.`,
+  ];
 
-  console.log('findCompetitors: parsed urls:', urls);
+  const allUrls = new Set<string>();
 
-  if (urls.length < 3) {
-    throw new Error(`Kon geen drie concurrenten vinden (gevonden: ${urls.length}). Probeer het opnieuw.`);
+  for (let attempt = 0; attempt < queries.length; attempt++) {
+    if (allUrls.size >= 3) break;
+
+    console.log(`findCompetitors: poging ${attempt + 1}/${queries.length}, query:`, queries[attempt]);
+
+    const response = await anthropic.messages.create({
+      model: 'claude-sonnet-4-5',
+      max_tokens: 500,
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      tools: [{ type: 'web_search_20250305', name: 'web_search' } as any],
+      messages: [{
+        role: 'user',
+        content: queries[attempt],
+      }],
+    });
+
+    console.log(`findCompetitors poging ${attempt + 1}: raw response:`, JSON.stringify(response.content, null, 2));
+    console.log(`findCompetitors poging ${attempt + 1}: stop_reason:`, response.stop_reason);
+
+    const text = response.content.find(b => b.type === 'text')?.text ?? '';
+    console.log(`findCompetitors poging ${attempt + 1}: raw text:`, text);
+
+    const urls = text.split('\n')
+      .map(line => line.trim())
+      .filter(line => line.length > 0 && line.includes('.'))
+      .map(line => {
+        const match = line.match(/https?:\/\/[^\s]+/);
+        return match ? match[0] : line;
+      })
+      .filter(url => url.startsWith('http') || url.includes('.'));
+
+    urls.forEach(url => allUrls.add(url));
+    console.log(`findCompetitors poging ${attempt + 1}: gevonden ${urls.length} URLs, totaal uniek: ${allUrls.size}`);
   }
 
-  return urls;
+  const result = Array.from(allUrls).slice(0, 3);
+  console.log('findCompetitors: final urls:', result);
+
+  if (result.length < 3) {
+    throw new Error(`Kon geen drie concurrenten vinden na ${queries.length} pogingen (gevonden: ${result.length}). Probeer het opnieuw.`);
+  }
+
+  return result;
 }
 
 export async function analyzeWebsites(
