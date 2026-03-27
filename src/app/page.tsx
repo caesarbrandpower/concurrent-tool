@@ -56,7 +56,8 @@ export default function Home() {
       }
 
       if (!response.ok) {
-        throw new Error('Analyse mislukt')
+        const errData = await response.json().catch(() => null)
+        throw new Error(errData?.message || errData?.error || 'Analyse mislukt')
       }
 
       const data = await response.json()
@@ -66,11 +67,8 @@ export default function Home() {
         resultRef.current?.scrollIntoView({ behavior: 'smooth' })
       }, 100)
     } catch (err) {
-      if (err instanceof DOMException && err.name === 'AbortError') {
-        setError('De analyse duurde te lang. Probeer het opnieuw met een andere URL.')
-      } else {
-        setError(err instanceof Error ? err.message : 'Er ging iets mis')
-      }
+      console.error('Analyse error:', err)
+      setError(err instanceof Error ? err.message : 'Er ging iets mis')
     } finally {
       setIsLoading(false)
     }
@@ -94,7 +92,8 @@ export default function Home() {
       })
 
       if (!response.ok) {
-        throw new Error('Analyse mislukt')
+        const errData = await response.json().catch(() => null)
+        throw new Error(errData?.message || errData?.error || 'Analyse mislukt')
       }
 
       const data = await response.json()
@@ -105,11 +104,8 @@ export default function Home() {
         resultRef.current?.scrollIntoView({ behavior: 'smooth' })
       }, 100)
     } catch (err) {
-      if (err instanceof DOMException && err.name === 'AbortError') {
-        setError('De analyse duurde te lang. Probeer het opnieuw met een andere URL.')
-      } else {
-        setError(err instanceof Error ? err.message : 'Er ging iets mis')
-      }
+      console.error('Analyse error:', err)
+      setError(err instanceof Error ? err.message : 'Er ging iets mis')
     } finally {
       setIsLoading(false)
     }
@@ -118,10 +114,10 @@ export default function Home() {
   return (
     <main className="min-h-screen bg-dark">
       {/* Navbar with gradient background — full bleed */}
-      <nav className="gradient-navbar" style={{ height: '72px', paddingLeft: '24px', paddingRight: '24px' }}>
+      <nav className="gradient-navbar">
         <a href="https://newfound.agency" target="_blank">
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="https://newfound.agency/wp-content/uploads/2025/06/Logo_newfound.svg" height={18} alt="Newfound" style={{ height: '18px' }} />
+          <img src="https://newfound.agency/wp-content/uploads/2025/06/Logo_newfound.svg" alt="Newfound" style={{ height: '18px' }} />
         </a>
       </nav>
 
@@ -190,9 +186,6 @@ export default function Home() {
             )}
           </div>
 
-          <div className="pb-8 text-sm text-white/50 animate-hero-footer">
-            Een product van <a href="https://newfound.agency" target="_blank" rel="noopener noreferrer" className="text-white underline hover:text-accent transition-colors">Newfound</a>
-          </div>
         </div>
       )}
 
@@ -233,6 +226,13 @@ export default function Home() {
             url={url}
             result={result}
           />
+        </div>
+      )}
+
+      {/* Footer — altijd zichtbaar */}
+      {!result && (
+        <div className="fixed bottom-0 left-0 right-0 pb-6 text-center text-sm text-white/50" style={{ fontWeight: 300 }}>
+          Een product van <a href="https://newfound.agency" target="_blank" rel="noopener noreferrer" className="text-white underline hover:text-accent transition-colors">Newfound</a>
         </div>
       )}
 
