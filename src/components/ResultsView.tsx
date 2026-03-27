@@ -100,8 +100,7 @@ export default function ResultsView({ url, result }: ResultsViewProps) {
         </section>
       )}
 
-      {/* Email lead sectie — gradient lines top/bottom, distinct bg */}
-      <div className="gradient-line" />
+      {/* Email lead sectie */}
       <section style={{ padding: '80px 0', background: 'rgba(255,255,255,0.04)' }}>
         <div className="mx-auto px-4" style={{ maxWidth: '680px' }}>
           {emailCaptured ? (
@@ -124,7 +123,9 @@ export default function ResultsView({ url, result }: ResultsViewProps) {
                 <ul className="space-y-3 mb-8">
                   {result.onderscheid.map((item, index) => (
                     <li key={index} className="flex items-start gap-3">
-                      <span className="text-accent mt-0.5">&rarr;</span>
+                      <svg className="w-4 h-4 text-green-400 flex-shrink-0 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
+                        <polyline points="20 6 9 17 4 12" />
+                      </svg>
                       <span className="text-white font-body" style={{ fontSize: '17px' }}>{item}</span>
                     </li>
                   ))}
@@ -149,7 +150,7 @@ export default function ResultsView({ url, result }: ResultsViewProps) {
             </div>
           ) : (
             <div className="text-center">
-              <h3 className="font-label text-white mb-4" style={{ fontSize: '2.2rem' }}>
+              <h3 className="font-heading text-white mb-4" style={{ fontSize: 'clamp(24px, 3vw, 36px)', fontFamily: 'GreedCondensed, sans-serif', fontWeight: 700, textTransform: 'uppercase' as const }}>
                 Wat jou echt anders maakt
               </h3>
               <p className="text-white font-body mb-8 leading-relaxed" style={{ maxWidth: '560px', margin: '0 auto 32px', fontSize: '17px' }}>
@@ -157,23 +158,23 @@ export default function ResultsView({ url, result }: ResultsViewProps) {
               </p>
 
               <div className="flex flex-col items-center gap-3 mb-8">
-                <div className="flex items-start gap-2">
-                  <svg className="w-4 h-4 text-accent flex-shrink-0 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+                <div className="flex items-center gap-2">
+                  <svg className="w-4 h-4 text-green-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
                     <polyline points="20 6 9 17 4 12" />
                   </svg>
-                  <span className="text-white font-body" style={{ fontSize: '17px' }}>Waar jij echt verschilt</span>
+                  <span className="text-white font-body" style={{ fontSize: '15px' }}>Waar jij echt verschilt</span>
                 </div>
-                <div className="flex items-start gap-2">
-                  <svg className="w-4 h-4 text-accent flex-shrink-0 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+                <div className="flex items-center gap-2">
+                  <svg className="w-4 h-4 text-green-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
                     <polyline points="20 6 9 17 4 12" />
                   </svg>
-                  <span className="text-white font-body" style={{ fontSize: '17px' }}>Diagnose: aanbod-probleem of merk-probleem</span>
+                  <span className="text-white font-body" style={{ fontSize: '15px' }}>Diagnose: aanbod-probleem of merk-probleem</span>
                 </div>
-                <div className="flex items-start gap-2">
-                  <svg className="w-4 h-4 text-accent flex-shrink-0 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+                <div className="flex items-center gap-2">
+                  <svg className="w-4 h-4 text-green-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
                     <polyline points="20 6 9 17 4 12" />
                   </svg>
-                  <span className="text-white font-body" style={{ fontSize: '17px' }}>Gratis, direct in je inbox</span>
+                  <span className="text-white font-body" style={{ fontSize: '15px' }}>Gratis, direct in je inbox</span>
                 </div>
               </div>
 
@@ -191,15 +192,9 @@ export default function ResultsView({ url, result }: ResultsViewProps) {
                 <button
                   type="submit"
                   disabled={!email.trim() || isSubmitting}
-                  className="w-full sm:w-auto px-6 py-3.5 bg-accent-blue text-white rounded-btn font-body font-medium hover:brightness-110 disabled:opacity-40 disabled:cursor-not-allowed transition-all duration-200 flex items-center justify-center gap-2 whitespace-nowrap"
+                  className="w-full sm:w-auto px-6 py-3.5 bg-accent-blue text-white rounded-btn font-body font-medium hover:brightness-110 disabled:opacity-40 disabled:cursor-not-allowed transition-all duration-200 whitespace-nowrap"
                 >
                   {isSubmitting ? 'Bezig...' : 'Stuur me de analyse'}
-                  {!isSubmitting && (
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
-                      <line x1="5" y1="12" x2="19" y2="12" />
-                      <polyline points="12 5 19 12 12 19" />
-                    </svg>
-                  )}
                 </button>
               </form>
 
@@ -210,7 +205,6 @@ export default function ResultsView({ url, result }: ResultsViewProps) {
           )}
         </div>
       </section>
-      <div className="gradient-line" />
 
       {/* CTA — Newfound */}
       <section className="bg-dark" style={{ padding: '96px 0' }}>
@@ -225,34 +219,16 @@ export default function ResultsView({ url, result }: ResultsViewProps) {
             className="inline-flex items-center gap-2 px-7 py-3.5 bg-accent-blue text-white rounded-btn font-body font-medium hover:brightness-110 transition-all duration-200"
           >
             Plan een gesprek
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
-              <line x1="5" y1="12" x2="19" y2="12" />
-              <polyline points="12 5 19 12 12 19" />
-            </svg>
           </a>
         </div>
       </section>
 
       {/* Footer */}
-      <section style={{ padding: '60px 0', background: 'rgba(255,255,255,0.04)' }}>
-        <div className="mx-auto px-4 text-center" style={{ maxWidth: '540px' }}>
-          <p className="text-white font-body leading-relaxed mb-8" style={{ fontSize: '17px' }}>
-            Gemaakt door Newfound. Het branding bureau voor groei. Strategie, creatie en slimme AI-tools die jouw merk elke dag laten werken.
-          </p>
-          <a
-            href="https://newfound.agency"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 px-7 py-3.5 border border-white text-white rounded-btn font-body hover:bg-white/5 transition-colors"
-          >
-            Bekijk wat we doen
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
-              <line x1="5" y1="12" x2="19" y2="12" />
-              <polyline points="12 5 19 12 12 19" />
-            </svg>
-          </a>
-        </div>
-      </section>
+      <footer style={{ padding: '32px 0', borderTop: '1px solid rgba(255,255,255,0.08)' }}>
+        <p className="text-center text-sm text-white/40 font-body" style={{ fontWeight: 300 }}>
+          Een product van <a href="https://newfound.agency" target="_blank" rel="noopener noreferrer" className="text-white/60 underline hover:text-white transition-colors">Newfound</a>
+        </p>
+      </footer>
     </div>
   )
 }

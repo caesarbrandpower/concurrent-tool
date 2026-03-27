@@ -9,7 +9,7 @@ const anthropic = new Anthropic({
 
 const ANALYSIS_PROMPT = `Je bent een eerlijke merkadviseur. Je analyseert vier websites: één van de gebruiker en drie concurrenten in dezelfde markt.
 
-Analyseer de zes websites objectief. Trek geen vooraf bepaalde conclusies.
+Analyseer de vier websites objectief. Trek geen vooraf bepaalde conclusies.
 Als concurrenten wél iets onderscheidends doen, benoem dat eerlijk.
 Als de gebruiker zich juist goed onderscheidt, zeg dat dan ook.
 Een eerlijk oordeel is waardevoller dan een voorspelbaar oordeel.
@@ -109,8 +109,8 @@ export async function findCompetitors(industry: string): Promise<string[]> {
   const result = Array.from(allUrls).slice(0, 3);
   console.log('findCompetitors: final urls:', result);
 
-  if (result.length < 3) {
-    throw new Error(`Kon geen drie concurrenten vinden na ${queries.length} pogingen (gevonden: ${result.length}). Probeer het opnieuw.`);
+  if (result.length < 2) {
+    throw new Error(`Kon niet genoeg concurrenten vinden na ${queries.length} pogingen (gevonden: ${result.length}). Probeer het opnieuw.`);
   }
 
   return result;
