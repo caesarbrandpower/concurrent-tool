@@ -42,7 +42,8 @@ Regels:
 - Als er onvoldoende informatie is schrijf je: 'Onvoldoende informatie gevonden — dit verdient aandacht.'
 - Wees specifiek. Niet: 'je positionering kan sterker.' Wel een concreet voorbeeld.
 - Geef uitsluitend JSON terug. Geen uitleg, geen markdown, geen code-blokken.
-- Taal: Nederlands, tenzij de website volledig in het Engels is.`;
+- Taal: Nederlands, tenzij de website volledig in het Engels is.
+- Kies alleen bedrijven die actief commerciële diensten aanbieden in dezelfde branche. Geen magazines, geen directories, geen nieuwssites, geen community-platforms.`;
 
 export async function identifyIndustry(content: string): Promise<string> {
   console.log('identifyIndustry: start, content length:', content.length);
@@ -63,9 +64,9 @@ export async function findCompetitors(industry: string): Promise<string[]> {
   console.log('findCompetitors: industry:', industry);
 
   const queries = [
-    `Zoek exact vijf concurrenten in de ${industry} markt in Nederland. Geef alleen de vijf website URLs terug, één per regel, geen uitleg, geen nummering. Focus op directe concurrenten die vergelijkbare diensten/producten aanbieden.`,
-    `Zoek vijf ${industry} bureaus en vergelijkbare bureaus in Nederland. Geef alleen website URLs terug, één per regel, geen uitleg. Alternatieven voor bestaande ${industry} aanbieders.`,
-    `${industry} bureau Nederland top 5. Geef alleen de website URLs, één per regel, geen uitleg.`,
+    `Zoek exact vijf concurrenten in de ${industry} markt in Nederland. Geef alleen de vijf website URLs terug, één per regel, geen uitleg, geen nummering. Focus op directe concurrenten die vergelijkbare diensten/producten aanbieden. Geen magazines, directories, nieuwssites of community-platforms — alleen bedrijven die actief commerciële diensten aanbieden.`,
+    `Zoek vijf ${industry} bureaus en vergelijkbare bureaus in Nederland. Geef alleen website URLs terug, één per regel, geen uitleg. Alternatieven voor bestaande ${industry} aanbieders. Alleen commerciële bedrijven, geen media of directories.`,
+    `${industry} bureau Nederland top 5. Geef alleen de website URLs, één per regel, geen uitleg. Alleen commerciële dienstverleners.`,
   ];
 
   const allUrls = new Set<string>();
