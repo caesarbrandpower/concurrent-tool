@@ -7,19 +7,20 @@ const anthropic = new Anthropic({
   apiKey: process.env.ANTHROPIC_API_KEY,
 });
 
-const ANALYSIS_PROMPT = `Je bent een eerlijke merkadviseur. Je analyseert vier websites: één van de gebruiker en drie concurrenten in dezelfde markt.
+const ANALYSIS_PROMPT = `Je bent een eerlijke merkadviseur. Je analyseert zes websites: één van de gebruiker en vijf concurrenten in dezelfde markt.
 
 Schrijf altijd vanuit de beleving van de ondernemer. Geen vakjargon. Gewone taal.
 
 Genereer uitsluitend de volgende JSON structuur, geen uitleg of opmaak eromheen:
 
 {
-  "samenvatting": "2-3 zinnen die eerlijk benoemen wat opvalt als je alle vier websites naast elkaar legt. Kern: waar zeggen ze hetzelfde?",
+  "samenvatting": "2-3 zinnen die eerlijk benoemen wat opvalt als je alle zes websites naast elkaar legt. Kern: waar zeggen ze hetzelfde?",
   "concurrenten": [
     {
       "url": "URL van de concurrent",
       "omschrijving": "Twee zinnen over hoe deze concurrent overkomt op een nieuwe bezoeker",
-      "overlap": "Één zin over waar deze concurrent hetzelfde zegt als de gebruiker"
+      "overlap": "Één zin over waar deze concurrent hetzelfde zegt als de gebruiker",
+      "reden": "Één zin die uitlegt waarom dit een relevante concurrent is — zelfde doelgroep, zelfde markt, zelfde dienst."
     }
   ],
   "onderscheid": [
@@ -55,15 +56,15 @@ export async function findCompetitors(industry: string): Promise<string[]> {
   console.log('findCompetitors: industry:', industry);
 
   const queries = [
-    `Zoek exact drie concurrenten in de ${industry} markt in Nederland. Geef alleen de drie website URLs terug, één per regel, geen uitleg, geen nummering. Focus op directe concurrenten die vergelijkbare diensten/producten aanbieden.`,
-    `Zoek drie ${industry} bureaus en vergelijkbare bureaus in Nederland. Geef alleen website URLs terug, één per regel, geen uitleg. Alternatieven voor bestaande ${industry} aanbieders.`,
-    `${industry} bureau Nederland top 3. Geef alleen de website URLs, één per regel, geen uitleg.`,
+    `Zoek exact vijf concurrenten in de ${industry} markt in Nederland. Geef alleen de vijf website URLs terug, één per regel, geen uitleg, geen nummering. Focus op directe concurrenten die vergelijkbare diensten/producten aanbieden.`,
+    `Zoek vijf ${industry} bureaus en vergelijkbare bureaus in Nederland. Geef alleen website URLs terug, één per regel, geen uitleg. Alternatieven voor bestaande ${industry} aanbieders.`,
+    `${industry} bureau Nederland top 5. Geef alleen de website URLs, één per regel, geen uitleg.`,
   ];
 
   const allUrls = new Set<string>();
 
   for (let attempt = 0; attempt < queries.length; attempt++) {
-    if (allUrls.size >= 3) break;
+    if (allUrls.size >= 5) break;
 
     console.log(`findCompetitors: poging ${attempt + 1}/${queries.length}, query:`, queries[attempt]);
 
@@ -97,11 +98,11 @@ export async function findCompetitors(industry: string): Promise<string[]> {
     console.log(`findCompetitors poging ${attempt + 1}: gevonden ${urls.length} URLs, totaal uniek: ${allUrls.size}`);
   }
 
-  const result = Array.from(allUrls).slice(0, 3);
+  const result = Array.from(allUrls).slice(0, 5);
   console.log('findCompetitors: final urls:', result);
 
-  if (result.length < 3) {
-    throw new Error(`Kon geen drie concurrenten vinden na ${queries.length} pogingen (gevonden: ${result.length}). Probeer het opnieuw.`);
+  if (result.length < 5) {
+    throw new Error(`Kon geen vijf concurrenten vinden na ${queries.length} pogingen (gevonden: ${result.length}). Probeer het opnieuw.`);
   }
 
   return result;

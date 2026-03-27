@@ -51,6 +51,11 @@ export default function ResultsView({ url, result }: ResultsViewProps) {
                 <p className="competitor-url">{competitor.url}</p>
                 <p className="competitor-description">{competitor.omschrijving}</p>
                 <p className="competitor-overlap">{competitor.overlap}</p>
+                {competitor.reden && (
+                  <p style={{ fontStyle: 'italic', fontSize: '0.8rem', color: 'var(--text-secondary)', marginTop: '0.5rem' }}>
+                    Waarom deze concurrent? {competitor.reden}
+                  </p>
+                )}
               </div>
             ))}
           </div>

@@ -2,6 +2,7 @@ export interface Competitor {
   url: string;
   omschrijving: string;
   overlap: string;
+  reden: string;
 }
 
 export interface AnalysisResult {
