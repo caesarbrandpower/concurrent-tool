@@ -7,6 +7,31 @@ const anthropic = new Anthropic({
   apiKey: process.env.ANTHROPIC_API_KEY,
 });
 
+// Retry wrapper for rate limit errors (429)
+async function withRetry<T>(fn: () => Promise<T>, label: string, maxRetries = 2): Promise<T> {
+  for (let attempt = 0; attempt <= maxRetries; attempt++) {
+    try {
+      return await fn();
+    } catch (error: unknown) {
+      const isRateLimit = error instanceof Error && (
+        error.message.includes('429') || error.message.includes('rate_limit')
+      );
+      // Also check Anthropic SDK error shape
+      const apiError = error as { status?: number };
+      const is429 = apiError?.status === 429;
+
+      if ((isRateLimit || is429) && attempt < maxRetries) {
+        const wait = (attempt + 1) * 10000; // 10s, 20s
+        console.log(`${label}: rate limit hit, wacht ${wait / 1000}s (poging ${attempt + 1}/${maxRetries})...`);
+        await new Promise(resolve => setTimeout(resolve, wait));
+        continue;
+      }
+      throw error;
+    }
+  }
+  throw new Error(`${label}: max retries exceeded`);
+}
+
 const ANALYSIS_PROMPT = `Je bent een eerlijke merkadviseur. Je analyseert vier websites: één van de gebruiker en drie concurrenten in dezelfde markt.
 
 Analyseer de vier websites objectief. Trek geen vooraf bepaalde conclusies.
@@ -47,62 +72,67 @@ Regels:
 
 export async function identifyIndustry(content: string): Promise<string> {
   console.log('identifyIndustry: start, content length:', content.length);
-  const response = await anthropic.messages.create({
-    model: 'claude-sonnet-4-5',
-    max_tokens: 100,
-    messages: [{
-      role: 'user',
-      content: `Identificeer in één korte zin (max 5 woorden) de branche/markt van deze website. Geen uitleg, alleen de branche naam:\n\n${content.substring(0, 3000)}`
-    }],
-  });
+  return withRetry(async () => {
+    const response = await anthropic.messages.create({
+      model: 'claude-sonnet-4-5',
+      max_tokens: 100,
+      messages: [{
+        role: 'user',
+        content: `Identificeer in max 5 woorden de branche/markt van deze website. Alleen de branche naam:\n\n${content.substring(0, 1500)}`
+      }],
+    });
 
-  const text = response.content[0].type === 'text' ? response.content[0].text : '';
-  return text.trim();
+    const text = response.content[0].type === 'text' ? response.content[0].text : '';
+    return text.trim();
+  }, 'identifyIndustry');
 }
 
 export async function findCompetitors(industry: string): Promise<string[]> {
   console.log('findCompetitors: industry:', industry);
 
   const queries = [
-    `Zoek exact drie concurrenten in de ${industry} markt in Nederland. Geef alleen de drie website URLs terug, één per regel, geen uitleg, geen nummering. Focus op directe concurrenten die vergelijkbare diensten/producten aanbieden. Geen magazines, directories, nieuwssites of community-platforms — alleen bedrijven die actief commerciële diensten aanbieden.`,
-    `Zoek drie ${industry} bureaus en vergelijkbare bureaus in Nederland. Geef alleen website URLs terug, één per regel, geen uitleg. Alternatieven voor bestaande ${industry} aanbieders. Alleen commerciële bedrijven, geen media of directories.`,
-    `${industry} bureau Nederland top 3. Geef alleen de website URLs, één per regel, geen uitleg. Alleen commerciële dienstverleners.`,
+    `Zoek drie concurrenten in de ${industry} markt in Nederland. Geef alleen de website URLs terug, één per regel. Alleen commerciële bedrijven, geen magazines of directories.`,
+    `${industry} bureaus Nederland top 3. Geef alleen website URLs, één per regel. Alleen commerciële dienstverleners.`,
+    `Alternatieven voor ${industry} aanbieders Nederland. Drie website URLs, één per regel.`,
   ];
 
   const allUrls = new Set<string>();
 
   for (let attempt = 0; attempt < queries.length; attempt++) {
+    // Stop als we genoeg URLs hebben
     if (allUrls.size >= 6) break;
 
-    console.log(`findCompetitors: poging ${attempt + 1}/${queries.length}, query:`, queries[attempt]);
+    console.log(`findCompetitors: poging ${attempt + 1}/${queries.length}`);
 
     try {
-      const response = await anthropic.messages.create({
-        model: 'claude-sonnet-4-5',
-        max_tokens: 500,
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        tools: [{ type: 'web_search_20250305', name: 'web_search' } as any],
-        messages: [{
-          role: 'user',
-          content: queries[attempt],
-        }],
-      });
+      const response = await withRetry(async () => {
+        return await anthropic.messages.create({
+          model: 'claude-sonnet-4-5',
+          max_tokens: 300,
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          tools: [{ type: 'web_search_20250305', name: 'web_search' } as any],
+          messages: [{
+            role: 'user',
+            content: queries[attempt],
+          }],
+        });
+      }, `findCompetitors poging ${attempt + 1}`);
 
       console.log(`findCompetitors poging ${attempt + 1}: stop_reason:`, response.stop_reason);
 
-      // Extract URLs from all text blocks in the response
       const textBlocks = response.content.filter(b => b.type === 'text').map(b => b.type === 'text' ? b.text : '');
       const fullText = textBlocks.join('\n');
-      console.log(`findCompetitors poging ${attempt + 1}: raw text:`, fullText);
 
-      // Match all URLs in the full text
       const urlMatches = fullText.match(/https?:\/\/[^\s,)"\]]+/g) || [];
       const urls = urlMatches
-        .map(u => u.replace(/[.,:;]+$/, '')) // strip trailing punctuation
+        .map(u => u.replace(/[.,:;]+$/, ''))
         .filter(u => !u.includes('google.') && !u.includes('bing.') && !u.includes('wikipedia.'));
 
       urls.forEach(url => allUrls.add(url));
       console.log(`findCompetitors poging ${attempt + 1}: gevonden ${urls.length} URLs, totaal uniek: ${allUrls.size}`);
+
+      // Genoeg URLs na eerste query? Stop — bespaar tokens
+      if (allUrls.size >= 3) break;
     } catch (e) {
       console.error(`findCompetitors poging ${attempt + 1} mislukt:`, e);
     }
@@ -112,7 +142,7 @@ export async function findCompetitors(industry: string): Promise<string[]> {
   console.log('findCompetitors: final urls:', result);
 
   if (result.length < 2) {
-    throw new Error(`Kon niet genoeg concurrenten vinden na ${queries.length} pogingen (gevonden: ${result.length}). Probeer het opnieuw.`);
+    throw new Error(`Kon niet genoeg concurrenten vinden (gevonden: ${result.length}). Probeer het opnieuw.`);
   }
 
   return result;
@@ -122,33 +152,29 @@ export async function analyzeWebsites(
   userContent: string,
   competitors: { url: string; content: string }[]
 ): Promise<AnalysisResult> {
-  const competitorTexts = competitors.map((c, i) => 
-    `Concurrent ${i + 1} (${c.url}):\n${c.content.substring(0, 2000)}`
+  const competitorTexts = competitors.map((c, i) =>
+    `Concurrent ${i + 1} (${c.url}):\n${c.content.substring(0, 1500)}`
   ).join('\n\n---\n\n');
 
-  const fullPrompt = `${ANALYSIS_PROMPT}\n\nWebsite van gebruiker:\n${userContent.substring(0, 3000)}\n\n---\n\n${competitorTexts}`;
+  const fullPrompt = `${ANALYSIS_PROMPT}\n\nWebsite van gebruiker:\n${userContent.substring(0, 2000)}\n\n---\n\n${competitorTexts}`;
 
-  const response = await anthropic.messages.create({
-    model: 'claude-sonnet-4-5',
-    max_tokens: 2000,
-    messages: [{
-      role: 'user',
-      content: fullPrompt
-    }],
-  });
+  return withRetry(async () => {
+    const response = await anthropic.messages.create({
+      model: 'claude-sonnet-4-5',
+      max_tokens: 2000,
+      messages: [{
+        role: 'user',
+        content: fullPrompt
+      }],
+    });
 
-  const text = response.content[0].type === 'text' ? response.content[0].text : '';
+    const text = response.content[0].type === 'text' ? response.content[0].text : '';
 
-  // Extract JSON from response
-  const jsonMatch = text.match(/\{[\s\S]*\}/);
-  if (!jsonMatch) {
-    throw new Error('Invalid JSON response from Claude');
-  }
+    const jsonMatch = text.match(/\{[\s\S]*\}/);
+    if (!jsonMatch) {
+      throw new Error('Invalid JSON response from Claude');
+    }
 
-  try {
-    const result = JSON.parse(jsonMatch[0]) as AnalysisResult;
-    return result;
-  } catch (e) {
-    throw new Error('Failed to parse analysis result');
-  }
+    return JSON.parse(jsonMatch[0]) as AnalysisResult;
+  }, 'analyzeWebsites');
 }
