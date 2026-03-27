@@ -1,6 +1,8 @@
 'use client'
 
 import { useState, useRef, useEffect } from 'react'
+import UrlInput from '@/components/UrlInput'
+import LoadingState from '@/components/LoadingState'
 import ResultsView from '@/components/ResultsView'
 import { AnalysisResult } from '@/types'
 
@@ -29,27 +31,8 @@ export default function Home() {
     }
   }, [isLoading, loadingStep])
 
-  const [showReassurance, setShowReassurance] = useState(false)
-  const isLastStep = loadingStep === loadingSteps.length - 1
-
-  useEffect(() => {
-    if (!isLoading || !isLastStep) {
-      setShowReassurance(false)
-      return
-    }
-    const timer = setTimeout(() => setShowReassurance(true), 8000)
-    return () => clearTimeout(timer)
-  }, [isLoading, isLastStep])
-
-  const handleUrlSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    if (!url.trim()) return
-
-    let submittedUrl = url.trim()
-    if (!submittedUrl.startsWith('http')) {
-      submittedUrl = 'https://' + submittedUrl
-    }
-
+  const handleUrlSubmit = async (submittedUrl: string) => {
+    setUrl(submittedUrl)
     setIsLoading(true)
     setLoadingStep(0)
     setError(null)
@@ -84,7 +67,11 @@ export default function Home() {
         resultRef.current?.scrollIntoView({ behavior: 'smooth' })
       }, 100)
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Er ging iets mis')
+      if (err instanceof DOMException && err.name === 'AbortError') {
+        setError('De analyse duurde te lang. Probeer het opnieuw met een andere URL.')
+      } else {
+        setError(err instanceof Error ? err.message : 'Er ging iets mis')
+      }
     } finally {
       setIsLoading(false)
     }
@@ -102,7 +89,7 @@ export default function Home() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          url: url.trim(),
+          url: url,
           manualContent: manualInput,
         }),
       })
@@ -119,7 +106,11 @@ export default function Home() {
         resultRef.current?.scrollIntoView({ behavior: 'smooth' })
       }, 100)
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Er ging iets mis')
+      if (err instanceof DOMException && err.name === 'AbortError') {
+        setError('De analyse duurde te lang. Probeer het opnieuw met een andere URL.')
+      } else {
+        setError(err instanceof Error ? err.message : 'Er ging iets mis')
+      }
     } finally {
       setIsLoading(false)
     }
@@ -152,23 +143,7 @@ export default function Home() {
             </p>
 
             <div className="animate-hero-cta">
-              <form onSubmit={handleUrlSubmit} className="w-full">
-                <div className="input-row">
-                  <input
-                    type="text"
-                    name="url"
-                    placeholder="jouwwebsite.nl"
-                    className="url-input"
-                    value={url}
-                    onChange={(e) => setUrl(e.target.value)}
-                    disabled={isLoading}
-                    required
-                  />
-                  <button type="submit" className="submit-btn" disabled={!url.trim() || isLoading}>
-                    {isLoading ? 'Bezig...' : 'Analyseer mijn merk'}
-                  </button>
-                </div>
-              </form>
+              <UrlInput onSubmit={handleUrlSubmit} isLoading={isLoading} />
             </div>
 
             {showManualInput && (
@@ -201,56 +176,7 @@ export default function Home() {
       {/* Loading state */}
       {isLoading && !result && (
         <div className="min-h-[calc(100vh-72px)] flex items-center justify-center px-4">
-          <div className="text-center max-w-sm">
-            {/* Progress dots */}
-            <div className="flex items-center justify-center gap-3 mb-12">
-              {loadingSteps.map((_, index) => (
-                <div key={index} className="flex items-center gap-3">
-                  <div
-                    className={`
-                      w-2.5 h-2.5 rounded-full transition-all duration-700
-                      ${index < loadingStep ? 'bg-accent scale-100' : ''}
-                      ${index === loadingStep ? 'bg-accent-blue scale-125 progress-dot' : ''}
-                      ${index > loadingStep ? 'bg-white/20 scale-100' : ''}
-                    `}
-                  />
-                  {index < loadingSteps.length - 1 && (
-                    <div
-                      className={`
-                        w-12 h-px transition-all duration-700
-                        ${index < loadingStep ? 'bg-accent' : 'bg-white/20'}
-                      `}
-                    />
-                  )}
-                </div>
-              ))}
-            </div>
-
-            {/* Current step text */}
-            <div className="relative h-16">
-              {loadingSteps.map((step, index) => (
-                <div
-                  key={index}
-                  className={`
-                    absolute inset-0 flex items-center justify-center
-                    transition-all duration-500
-                    ${index === loadingStep ? 'opacity-100 transform translate-y-0' : ''}
-                    ${index < loadingStep ? 'opacity-0 transform -translate-y-4' : ''}
-                    ${index > loadingStep ? 'opacity-0 transform translate-y-4' : ''}
-                  `}
-                >
-                  <p className="text-xl font-body text-white" style={{ fontWeight: 400 }}>
-                    {index === loadingSteps.length - 1 && showReassurance ? 'Nog heel even, bijna klaar\u2026' : step}
-                  </p>
-                </div>
-              ))}
-            </div>
-
-            {/* Step counter */}
-            <p className="mt-10 text-sm text-white/50 font-body" style={{ fontWeight: 300 }}>
-              Stap {loadingStep + 1} van {loadingSteps.length}
-            </p>
-          </div>
+          <LoadingState steps={loadingSteps} currentStep={loadingStep} />
         </div>
       )}
 
@@ -286,6 +212,7 @@ export default function Home() {
           />
         </div>
       )}
+
     </main>
   )
 }
