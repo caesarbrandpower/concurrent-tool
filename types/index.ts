@@ -11,9 +11,15 @@ export interface Concurrent {
   overlap: string;
 }
 
-export interface LeadData {
-  email: string;
+export interface ScrapedData {
   url: string;
-  timestamp: string;
-  analysis?: AnalysisResult;
+  content: string;
+  success: boolean;
+  error?: string;
+}
+
+export interface AnalysisStep {
+  id: number;
+  text: string;
+  status: 'pending' | 'active' | 'completed';
 }

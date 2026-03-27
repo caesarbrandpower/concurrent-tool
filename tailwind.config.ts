@@ -1,45 +1,31 @@
-import type { Config } from 'tailwindcss'
+import type { Config } from "tailwindcss"
 
 const config: Config = {
   content: [
-    './pages/**/*.{js,ts,jsx,tsx,mdx}',
-    './components/**/*.{js,ts,jsx,tsx,mdx}',
-    './app/**/*.{js,ts,jsx,tsx,mdx}',
+    "./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
+    "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
+    "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
   ],
   theme: {
     extend: {
       colors: {
-        dark: '#202020',
-        'dark-light': '#2a2a2a',
-        'dark-lighter': '#333333',
-        accent: '#DDB3FF',
-        'accent-blue': '#0E6EFF',
-        'accent-pink': '#E8A0BF',
+        bg: "#0f0f10",
+        surface: "#15181f",
+        "surface-2": "#1a1f29",
+        text: "#e5e7eb",
+        "text-muted": "rgba(229, 231, 235, 0.7)",
+        border: "rgba(255, 255, 255, 0.10)",
+        "grad-a": "#2e7cf6",
+        "grad-b": "#8463ff",
+        cta: "#23c26b",
       },
       fontFamily: {
-        heading: ['GreedCondensed', 'sans-serif'],
-        body: ['Satoshi', 'sans-serif'],
-        label: ['KansasNew', 'sans-serif'],
-      },
-      borderRadius: {
-        btn: '6px',
-      },
-      animation: {
-        'fade-in': 'fadeIn 0.5s ease-out',
-        'slide-up': 'slideUp 0.5s ease-out',
-      },
-      keyframes: {
-        fadeIn: {
-          '0%': { opacity: '0' },
-          '100%': { opacity: '1' },
-        },
-        slideUp: {
-          '0%': { transform: 'translateY(20px)', opacity: '0' },
-          '100%': { transform: 'translateY(0)', opacity: '1' },
-        },
+        satoshi: ["Satoshi", "sans-serif"],
+        greed: ["Greed", "sans-serif"],
       },
     },
   },
   plugins: [],
 }
+
 export default config

@@ -1,21 +1,21 @@
-import type { Metadata } from 'next'
-import './globals.css'
+import type { Metadata } from "next";
+import "./globals.css";
 
 export const metadata: Metadata = {
-  title: 'Concurrent Analyse | Newfound Agency',
-  description: 'Zie hoe jij je onderscheidt van je concurrenten. Gratis analyse van je merkpositionering.',
-}
+  title: "Concurrentie-analyse tool | Newfound Agency",
+  description: "Ontdek hoe je je onderscheidt van je concurrenten in 2 minuten. Gratis analyse, geen registratie nodig.",
+};
 
 export default function RootLayout({
   children,
-}: {
-  children: React.ReactNode
-}) {
+}: Readonly<{
+  children: React.ReactNode;
+}>) {
   return (
     <html lang="nl">
-      <body className="antialiased min-h-screen font-body">
+      <body className="antialiased">
         {children}
       </body>
     </html>
-  )
+  );
 }
