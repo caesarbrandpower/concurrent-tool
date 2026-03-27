@@ -12,7 +12,6 @@ export default function Home() {
   const [result, setResult] = useState<AnalysisResult | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [showManualInput, setShowManualInput] = useState(false)
-  const [isFocused, setIsFocused] = useState(false)
   const resultRef = useRef<HTMLDivElement>(null)
 
   const loadingSteps = [
@@ -154,54 +153,21 @@ export default function Home() {
 
             <div className="animate-hero-cta">
               <form onSubmit={handleUrlSubmit} className="w-full">
-                <div
-                  className={`
-                    relative flex flex-col sm:flex-row sm:items-center overflow-hidden bg-dark-light rounded-btn border transition-all duration-300
-                    ${isFocused
-                      ? 'border-white/60 shadow-[0_0_0_1px_rgba(255,255,255,0.2),0_4px_24px_rgba(0,0,0,0.3)]'
-                      : 'border-white/30 shadow-[0_2px_12px_rgba(0,0,0,0.2)]'
-                    }
-                  `}
-                >
-                  <div className="flex items-center flex-1">
-                    <div className="pl-5">
-                      <svg className={`w-5 h-5 transition-colors duration-300 ${isFocused ? 'text-accent' : 'text-white/50'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
-                        <circle cx="12" cy="12" r="10" />
-                        <line x1="2" y1="12" x2="22" y2="12" />
-                        <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
-                      </svg>
-                    </div>
-
-                    <input
-                      type="text"
-                      value={url}
-                      onChange={(e) => setUrl(e.target.value)}
-                      onFocus={() => setIsFocused(true)}
-                      onBlur={() => setIsFocused(false)}
-                      placeholder="Voer je website-URL in"
-                      className="flex-1 py-5 px-4 text-lg bg-transparent border-none outline-none text-white placeholder:text-white/50 font-body"
-                      disabled={isLoading}
-                    />
-                  </div>
-
-                  <button
-                    type="submit"
-                    disabled={!url.trim() || isLoading}
-                    className="w-full sm:w-auto py-3.5 px-7 bg-accent-blue text-white font-body font-medium hover:brightness-110 disabled:opacity-40 disabled:cursor-not-allowed transition-all duration-200 flex items-center justify-center gap-2 rounded-none sm:rounded-none sm:m-2.5 sm:rounded-btn"
-                  >
+                <div className="input-row">
+                  <input
+                    type="text"
+                    name="url"
+                    placeholder="jouwwebsite.nl"
+                    className="url-input"
+                    value={url}
+                    onChange={(e) => setUrl(e.target.value)}
+                    disabled={isLoading}
+                    required
+                  />
+                  <button type="submit" className="submit-btn" disabled={!url.trim() || isLoading}>
                     {isLoading ? 'Bezig...' : 'Analyseer mijn merk'}
-                    {!isLoading && (
-                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
-                        <line x1="5" y1="12" x2="19" y2="12" />
-                        <polyline points="12 5 19 12 12 19" />
-                      </svg>
-                    )}
                   </button>
                 </div>
-
-                <p className="mt-4 text-sm text-white/50 font-body" style={{ fontWeight: 300 }}>
-                  Bijvoorbeeld: newfound.agency of www.jouwsite.nl
-                </p>
               </form>
             </div>
 
