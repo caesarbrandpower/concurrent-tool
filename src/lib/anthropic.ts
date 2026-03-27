@@ -131,8 +131,8 @@ export async function findCompetitors(industry: string): Promise<string[]> {
       urls.forEach(url => allUrls.add(url));
       console.log(`findCompetitors poging ${attempt + 1}: gevonden ${urls.length} URLs, totaal uniek: ${allUrls.size}`);
 
-      // Genoeg URLs na eerste query? Stop — bespaar tokens
-      if (allUrls.size >= 3) break;
+      // Stop pas na 2e query als we genoeg hebben — eerste query alleen is te weinig buffer
+      if (attempt >= 1 && allUrls.size >= 5) break;
     } catch (e) {
       console.error(`findCompetitors poging ${attempt + 1} mislukt:`, e);
     }

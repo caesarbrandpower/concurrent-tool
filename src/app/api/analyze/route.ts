@@ -63,10 +63,11 @@ export async function POST(request: NextRequest) {
     const competitorUrls = await findCompetitors(industry);
 
     // Step 4: Scrape all competitor URLs in parallel, take first 3 valid
+    // Lagere drempel voor concurrenten: 50 woorden is genoeg voor analyse
     console.log(`Scraping ${competitorUrls.length} competitor URLs in parallel...`);
     const allScraped = await scrapeMultipleUrls(competitorUrls);
     const competitorData = allScraped.filter(s => {
-      const valid = isValidScrape(s);
+      const valid = s.wordCount >= 50 && s.content.length > 0;
       console.log(`Competitor ${s.url}: ${valid ? 'OK' : 'overgeslagen'} (${s.wordCount} woorden)`);
       return valid;
     }).slice(0, 3);
