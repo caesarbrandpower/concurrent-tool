@@ -4,7 +4,7 @@ import Anthropic from '@anthropic-ai/sdk';
 import { AnalysisResult } from '@/types';
 
 const anthropic = new Anthropic({
-  apiKey: process.env.ANTHROPIC_API_KEY || '',
+  apiKey: process.env.ANTHROPIC_API_KEY,
 });
 
 const ANALYSIS_PROMPT = `Je bent een eerlijke merkadviseur. Je analyseert vier websites: één van de gebruiker en drie concurrenten in dezelfde markt.
