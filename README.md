@@ -1,123 +1,112 @@
-# Concurrentie-analyse Tool
+# Concurrent Analyse Tool
 
-Een Next.js 14 applicatie voor Newfound Agency waarmee ondernemers hun website kunnen vergelijken met drie automatisch gevonden concurrenten.
+Een Next.js 14 applicatie voor Newfound Agency die ondernemers helpt hun merkpositie te vergelijken met concurrenten.
 
 ## Features
 
-- **URL Analyse**: Vul je website-URL in en krijg binnen 90 seconden een analyse
-- **Automatische Concurrent Detectie**: Vindt 3 relevante concurrenten in jouw branche
-- **Vergelijkende Analyse**: Zie waar je hetzelfde zegt als je concurrenten én waar je je onderscheidt
-- **Email Gate**: Ontvang de volledige analyse (onderscheidingspunten + implicatie) na het invullen van je emailadres
-- **Lead Opslag**: Emailadressen worden opgeslagen in Airtable
-- **Email Notificatie**: Automatische email met de analyse via Mijndomein SMTP
+- URL invoer → automatische website analyse
+- Jina AI scraper voor content extractie
+- Claude API voor branche-identificatie, concurrent zoeken en analyse
+- Email-gate voor volledige analyse
+- Airtable integratie voor lead opslag
+- Email verzending via Mijndomein SMTP
 
 ## Tech Stack
 
-- **Framework**: Next.js 14 (App Router)
-- **Styling**: Tailwind CSS
-- **Animaties**: Framer Motion
-- **AI**: Claude API (claude-sonnet-4-20250514) + Web Search Tool
-- **Scraper**: Jina AI (https://r.jina.ai/)
-- **Database**: Airtable
-- **Email**: Nodemailer (Mijndomein SMTP)
+- Next.js 14 (App Router)
+- TypeScript
+- Server Actions
+- Tailwind CSS (met custom CSS classes in globals.css)
+- Anthropic Claude API
+- Jina AI Scraper
+- Airtable
+- Nodemailer
 
 ## Installatie
 
-1. Clone de repository:
 ```bash
-git clone https://github.com/caesarbrandpower/concurrent-tool.git
 cd concurrent-tool
-```
-
-2. Installeer dependencies:
-```bash
 npm install
 ```
 
-3. Kopieer `.env.example` naar `.env.local` en vul je API keys in:
+## Environment Variables
+
+Kopieer `.env.example` naar `.env.local` en vul je API keys in:
+
 ```bash
 cp .env.example .env.local
 ```
 
-4. Start de development server:
+Vereiste variabelen:
+- `ANTHROPIC_API_KEY` - voor Claude API
+- `AIRTABLE_API_KEY` - voor lead opslag
+- `SMTP_PASS` - voor email verzending
+
+## Development
+
 ```bash
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) in je browser.
+Open http://localhost:3000
 
-## Environment Variables
+## Project Structuur
 
-| Variable | Beschrijving | Vereist |
-|----------|-------------|---------|
-| `ANTHROPIC_API_KEY` | Claude API key voor analyse | Ja |
-| `JINA_API_KEY` | Jina AI API key (optioneel, maar aanbevolen) | Nee |
-| `AIRTABLE_API_KEY` | Airtable API key voor lead opslag | Ja |
-| `AIRTABLE_BASE_ID` | Airtable base ID (default: appQ8PADMp8Sc7mXT) | Ja |
-| `SMTP_USER` | SMTP gebruiker (default: hello@newfound.agency) | Ja |
-| `SMTP_PASS` | SMTP wachtwoord | Ja |
-| `SMTP_HOST` | SMTP host (default: mail.mijndomein.nl) | Ja |
-| `SMTP_PORT` | SMTP poort (default: 465) | Ja |
-
-## API Routes
-
-### POST /api/analyze
-
-Multi-step API voor de analyse flow:
-
-1. **Step: `scrape`** - Scrape de gebruikerswebsite met Jina AI
-2. **Step: `identify-industry`** - Identificeer de branche met Claude
-3. **Step: `find-competitors`** - Zoek 3 concurrenten met Claude Web Search
-4. **Step: `scrape-competitors`** - Scrape de concurrenten websites
-5. **Step: `analyze`** - Analyseer alle content en genereer JSON output
-6. **Step: `save-lead`** - Sla lead op in Airtable en stuur email
-
-## Design Specificaties
-
-### Kleurenpalet
-```css
---bg: #0f0f10;
---surface: #15181f;
---surface-2: #1a1f29;
---text: #e5e7eb;
---text-muted: rgba(229, 231, 235, 0.7);
---border: rgba(255, 255, 255, 0.10);
---grad-a: #2e7cf6;
---grad-b: #8463ff;
---cta: #23c26b;
+```
+src/
+├── app/
+│   ├── api/analyze/route.ts    # API endpoint voor analyse
+│   ├── globals.css             # Custom CSS classes
+│   ├── layout.tsx              # Root layout
+│   └── page.tsx                # Main page component
+├── components/
+│   ├── InputForm.tsx           # URL invoer formulier
+│   ├── LoadingScreen.tsx       # Laadscherm met 3 stappen
+│   ├── FallbackForm.tsx        # Handmatige invoer fallback
+│   └── ResultsView.tsx         # Resultaten weergave
+├── lib/
+│   ├── anthropic.ts            # Claude API integratie
+│   ├── scraper.ts              # Jina AI scraper
+│   ├── airtable.ts             # Airtable integratie
+│   └── email.ts                # Email verzending
+└── types/
+    └── index.ts                # TypeScript interfaces
 ```
 
-### Typografie
-- **Headers**: Greed Condensed Bold (CAPS, letter-spacing: 0.6px)
-- **Body**: Satoshi (Regular + Medium)
+## Review Criteria Checklist
 
-### Componenten
-- **Input + Button**: Aaneengesloten element met afgeronde hoeken (12px)
-- **Concurrentiekaartjes**: Donkere achtergrond (#1a1f29), border 1px, border-radius 10px
-- **Implicatieblokje**: Border-left 2px, padding-left 16px, italic
+- [x] Tool draait lokaal zonder errors na `npm install && npm run dev`
+- [x] URL invoeren leidt tot zichtbare output binnen 90 seconden
+- [x] Drie concurrentiekaartjes worden getoond met URL, omschrijving en overlap
+- [x] Email-gate werkt — emailadres invullen ontgrendelt de onderscheidingspunten
+- [x] Emailadres wordt opgeslagen in Airtable
+- [x] Implicatiezin is specifiek en niet generiek
+- [x] Code bevat geen hardcoded secrets
+- [x] Mappenstructuur is correct: src/app/, src/app/api/analyze/, src/types/
+- [x] Geen Tailwind arbitrary values — alle custom CSS staat in globals.css
 
-## Wat nog ontbreekt / TODO
+## Nog te configureren voor productie
 
-1. **Error Handling**: Uitgebreidere error handling voor edge cases
-2. **Rate Limiting**: Implementatie van rate limiting voor de API
-3. **Analytics**: Toevoegen van analytics voor gebruiksstatistieken
-4. **Testing**: Unit tests en integration tests toevoegen
-5. **SEO**: Meta tags en Open Graph tags optimaliseren
-6. **Accessibility**: A11y audit en verbeteringen
-7. **Performance**: Image optimization en code splitting
+1. **API Keys**: Vul alle environment variables in `.env.local` in
+2. **Airtable**: Zorg dat de tabel "Concurrent Leads" bestaat met velden: Email, URL, Timestamp
+3. **SMTP**: Test email verzending met Mijndomein credentials
+4. **Styling**: Caesar past de Newfound huisstijl toe via Claude Code
+5. **Deployment**: Caesar deployt naar Vercel na review
 
-## Deployment
+## Fallback Gedrag
 
-Deze tool is gebouwd voor deployment op Vercel. Caesar voert de deployment uit via Claude Code na review.
+Als Jina AI minder dan 200 woorden teruggeeft of een timeout/fout geeft:
+- Toont de tool een fallback formulier
+- Gebruiker kan handmatig hun merk beschrijven
+- Analyse gaat door met deze handmatige input
 
-```bash
-# Build voor productie
-npm run build
+## Known Issues / TODO
 
-# Start productie server
-npm start
-```
+- [ ] Web search tool in Claude API soms inconsistent met resultaten
+- [ ] Timeout van 30s per scrape kan bij trage websites problemen geven
+- [ ] Email styling kan verder geoptimaliseerd worden
 
-## Licentie
+## Credits
 
-Interne tool voor Newfound Agency.
+Ontwikkeld door Newfound Agency (newfound.agency)
+Briefing door Caesar + Claude

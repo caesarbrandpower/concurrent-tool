@@ -1,25 +1,30 @@
-export interface AnalysisResult {
-  samenvatting: string;
-  concurrenten: Concurrent[];
-  onderscheid: string[];
-  implicatie: string;
-}
-
-export interface Concurrent {
+export interface Competitor {
   url: string;
   omschrijving: string;
   overlap: string;
 }
 
+export interface AnalysisResult {
+  samenvatting: string;
+  concurrenten: Competitor[];
+  onderscheid: string[];
+  implicatie: string;
+}
+
 export interface ScrapedData {
   url: string;
   content: string;
-  success: boolean;
-  error?: string;
+  wordCount: number;
 }
 
-export interface AnalysisStep {
-  id: number;
-  text: string;
-  status: 'pending' | 'active' | 'completed';
+export interface AnalysisState {
+  step: 'input' | 'loading' | 'fallback' | 'layer1' | 'layer2' | 'complete';
+  loadingStep: number;
+  userUrl: string;
+  userContent: string;
+  industry: string;
+  competitors: ScrapedData[];
+  result: AnalysisResult | null;
+  email: string;
+  error: string | null;
 }
