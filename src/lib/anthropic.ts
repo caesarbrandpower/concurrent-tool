@@ -7,7 +7,7 @@ const anthropic = new Anthropic({
   apiKey: process.env.ANTHROPIC_API_KEY,
 });
 
-const ANALYSIS_PROMPT = `Je bent een eerlijke merkadviseur. Je analyseert zes websites: één van de gebruiker en vijf concurrenten in dezelfde markt.
+const ANALYSIS_PROMPT = `Je bent een eerlijke merkadviseur. Je analyseert vier websites: één van de gebruiker en drie concurrenten in dezelfde markt.
 
 Analyseer de zes websites objectief. Trek geen vooraf bepaalde conclusies.
 Als concurrenten wél iets onderscheidends doen, benoem dat eerlijk.
@@ -19,7 +19,7 @@ Schrijf altijd vanuit de beleving van de ondernemer. Geen vakjargon. Gewone taal
 Genereer uitsluitend de volgende JSON structuur, geen uitleg of opmaak eromheen:
 
 {
-  "samenvatting": "2-3 zinnen die eerlijk benoemen wat opvalt als je alle zes websites naast elkaar legt.",
+  "samenvatting": "2-3 zinnen die eerlijk benoemen wat opvalt als je alle vier websites naast elkaar legt.",
   "concurrenten": [
     {
       "url": "URL van de concurrent",
@@ -64,15 +64,15 @@ export async function findCompetitors(industry: string): Promise<string[]> {
   console.log('findCompetitors: industry:', industry);
 
   const queries = [
-    `Zoek exact vijf concurrenten in de ${industry} markt in Nederland. Geef alleen de vijf website URLs terug, één per regel, geen uitleg, geen nummering. Focus op directe concurrenten die vergelijkbare diensten/producten aanbieden. Geen magazines, directories, nieuwssites of community-platforms — alleen bedrijven die actief commerciële diensten aanbieden.`,
-    `Zoek vijf ${industry} bureaus en vergelijkbare bureaus in Nederland. Geef alleen website URLs terug, één per regel, geen uitleg. Alternatieven voor bestaande ${industry} aanbieders. Alleen commerciële bedrijven, geen media of directories.`,
-    `${industry} bureau Nederland top 5. Geef alleen de website URLs, één per regel, geen uitleg. Alleen commerciële dienstverleners.`,
+    `Zoek exact drie concurrenten in de ${industry} markt in Nederland. Geef alleen de drie website URLs terug, één per regel, geen uitleg, geen nummering. Focus op directe concurrenten die vergelijkbare diensten/producten aanbieden. Geen magazines, directories, nieuwssites of community-platforms — alleen bedrijven die actief commerciële diensten aanbieden.`,
+    `Zoek drie ${industry} bureaus en vergelijkbare bureaus in Nederland. Geef alleen website URLs terug, één per regel, geen uitleg. Alternatieven voor bestaande ${industry} aanbieders. Alleen commerciële bedrijven, geen media of directories.`,
+    `${industry} bureau Nederland top 3. Geef alleen de website URLs, één per regel, geen uitleg. Alleen commerciële dienstverleners.`,
   ];
 
   const allUrls = new Set<string>();
 
   for (let attempt = 0; attempt < queries.length; attempt++) {
-    if (allUrls.size >= 5) break;
+    if (allUrls.size >= 3) break;
 
     console.log(`findCompetitors: poging ${attempt + 1}/${queries.length}, query:`, queries[attempt]);
 
@@ -106,11 +106,11 @@ export async function findCompetitors(industry: string): Promise<string[]> {
     console.log(`findCompetitors poging ${attempt + 1}: gevonden ${urls.length} URLs, totaal uniek: ${allUrls.size}`);
   }
 
-  const result = Array.from(allUrls).slice(0, 5);
+  const result = Array.from(allUrls).slice(0, 3);
   console.log('findCompetitors: final urls:', result);
 
-  if (result.length < 5) {
-    throw new Error(`Kon geen vijf concurrenten vinden na ${queries.length} pogingen (gevonden: ${result.length}). Probeer het opnieuw.`);
+  if (result.length < 3) {
+    throw new Error(`Kon geen drie concurrenten vinden na ${queries.length} pogingen (gevonden: ${result.length}). Probeer het opnieuw.`);
   }
 
   return result;

@@ -17,7 +17,7 @@ export default function Home() {
 
   const loadingSteps = [
     'We lezen jouw website...',
-    'We zoeken vijf concurrenten in jouw markt...',
+    'We zoeken drie concurrenten in jouw markt...',
     'We vergelijken hoe jullie overkomen...',
   ]
 
