@@ -64,6 +64,7 @@ export async function findCompetitors(industry: string): Promise<string[]> {
     }],
   });
 
+  console.log('Raw findCompetitors response:', JSON.stringify(response.content, null, 2));
   console.log('findCompetitors: response stop_reason:', response.stop_reason);
   console.log('findCompetitors: content blocks:', JSON.stringify(response.content.map(b => b.type)));
   const text = response.content.find(b => b.type === 'text')?.text ?? '';
