@@ -1,15 +1,19 @@
-export interface Competitor {
-  url: string;
-  omschrijving: string;
-  overlap: string;
-  reden: string;
-}
-
 export interface AnalysisResult {
-  samenvatting: string;
-  concurrenten: Competitor[];
-  onderscheid: string[];
-  diagnose: string;
+  intro: string;
+  jouwSite: {
+    naam: string;
+    watGoedGaat: string[];
+    samenvatting: string;
+  };
+  concurrenten: {
+    url: string;
+    naam: string;
+    omschrijving: string;
+    overlap: string;
+    reden: string;
+  }[];
+  vergelijking: string;
+  watBeterKan: string[];
   kans: string;
   implicatie: string;
 }

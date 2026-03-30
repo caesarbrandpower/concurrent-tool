@@ -37,29 +37,45 @@ export default function ResultsView({ url, result }: ResultsViewProps) {
 
   return (
     <div className="animate-slide-up">
-      {/* Samenvatting header */}
+      {/* Intro */}
       <section className="bg-dark" style={{ paddingTop: '80px', paddingBottom: '24px' }}>
         <div className="mx-auto px-4 text-center" style={{ maxWidth: '680px' }}>
           <p className="label-style text-accent mb-6">Jouw concurrentieanalyse</p>
-          <h1 className="font-heading text-white" style={{ fontSize: 'clamp(32px, 4.5vw, 56px)' }}>
-            WAT WE ZAGEN
-          </h1>
+          <p className="text-white font-body leading-relaxed" style={{ fontSize: '17px' }}>
+            {result.intro}
+          </p>
         </div>
       </section>
 
-      {/* Samenvatting */}
-      <section className="bg-dark" style={{ paddingBottom: '64px' }}>
+      {/* Jouw website */}
+      <section className="bg-dark" style={{ padding: '48px 0 64px' }}>
         <div className="mx-auto px-4" style={{ maxWidth: '680px' }}>
+          <h2 className="font-heading text-white mb-8" style={{ fontSize: 'clamp(18px, 2.5vw, 28px)', fontFamily: 'GreedCondensed, sans-serif', fontWeight: 700, textTransform: 'uppercase' as const }}>
+            Jouw website
+          </h2>
           <div style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', padding: '32px' }}>
-            <p className="text-white font-body leading-relaxed" style={{ fontSize: '17px' }}>
-              {result.samenvatting}
+            <p className="text-accent-blue font-body mb-4" style={{ fontSize: '15px', fontWeight: 600 }}>
+              {result.jouwSite.naam}
+            </p>
+            <ul style={{ listStyle: 'none', padding: 0, margin: '0 0 20px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
+              {result.jouwSite.watGoedGaat.map((item, index) => (
+                <li key={index} style={{ display: 'flex', alignItems: 'flex-start', gap: '12px' }}>
+                  <svg style={{ width: '16px', height: '16px', flexShrink: 0, marginTop: '4px' }} fill="none" stroke="#4ade80" viewBox="0 0 24 24" strokeWidth={2.5}>
+                    <polyline points="20 6 9 17 4 12" />
+                  </svg>
+                  <span className="font-body" style={{ fontSize: '16px', color: '#fff' }}>{item}</span>
+                </li>
+              ))}
+            </ul>
+            <p className="text-white/70 font-body leading-relaxed" style={{ fontSize: '16px' }}>
+              {result.jouwSite.samenvatting}
             </p>
           </div>
         </div>
       </section>
 
       {/* Concurrenten */}
-      <section className="bg-dark" style={{ padding: '0 0 80px' }}>
+      <section className="bg-dark" style={{ padding: '0 0 64px' }}>
         <div className="mx-auto px-4" style={{ maxWidth: '680px' }}>
           <h2 className="font-heading text-white mb-8" style={{ fontSize: 'clamp(18px, 2.5vw, 28px)', fontFamily: 'GreedCondensed, sans-serif', fontWeight: 700, textTransform: 'uppercase' as const }}>
             Jouw concurrenten
@@ -67,7 +83,10 @@ export default function ResultsView({ url, result }: ResultsViewProps) {
           <div className="space-y-4">
             {result.concurrenten.map((competitor, index) => (
               <div key={index} style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', padding: '32px' }}>
-                <p className="text-accent-blue font-body mb-3" style={{ fontSize: '15px', fontWeight: 400 }}>
+                <p className="text-accent-blue font-body mb-1" style={{ fontSize: '15px', fontWeight: 600 }}>
+                  {competitor.naam}
+                </p>
+                <p className="text-white/40 font-body mb-3" style={{ fontSize: '13px' }}>
                   {competitor.url}
                 </p>
                 <p className="text-white font-body mb-3 leading-relaxed" style={{ fontSize: '17px' }}>
@@ -87,7 +106,41 @@ export default function ResultsView({ url, result }: ResultsViewProps) {
         </div>
       </section>
 
-      {/* Kans teaser */}
+      {/* Vergelijking — Wat we zagen */}
+      <section className="bg-dark" style={{ padding: '0 0 64px' }}>
+        <div className="mx-auto px-4" style={{ maxWidth: '680px' }}>
+          <h2 className="font-heading text-white mb-8" style={{ fontSize: 'clamp(18px, 2.5vw, 28px)', fontFamily: 'GreedCondensed, sans-serif', fontWeight: 700, textTransform: 'uppercase' as const }}>
+            Wat we zagen
+          </h2>
+          <div style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', padding: '32px' }}>
+            <p className="text-white font-body leading-relaxed" style={{ fontSize: '17px' }}>
+              {result.vergelijking}
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* Wat beter kan */}
+      <section className="bg-dark" style={{ padding: '0 0 64px' }}>
+        <div className="mx-auto px-4" style={{ maxWidth: '680px' }}>
+          <h2 className="font-heading text-white mb-8" style={{ fontSize: 'clamp(18px, 2.5vw, 28px)', fontFamily: 'GreedCondensed, sans-serif', fontWeight: 700, textTransform: 'uppercase' as const }}>
+            Wat beter kan
+          </h2>
+          <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '12px' }}>
+            {result.watBeterKan.map((item, index) => (
+              <li key={index} style={{ display: 'flex', alignItems: 'flex-start', gap: '12px' }}>
+                <svg style={{ width: '16px', height: '16px', flexShrink: 0, marginTop: '4px' }} fill="none" stroke="#f87171" viewBox="0 0 24 24" strokeWidth={2.5}>
+                  <line x1="18" y1="6" x2="6" y2="18" />
+                  <line x1="6" y1="6" x2="18" y2="18" />
+                </svg>
+                <span className="font-body" style={{ fontSize: '17px', color: '#fff' }}>{item}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
+
+      {/* Kans blockquote */}
       {result.kans && (
         <section className="bg-dark" style={{ padding: '0 0 80px' }}>
           <div className="mx-auto px-4" style={{ maxWidth: '680px' }}>
@@ -115,33 +168,9 @@ export default function ResultsView({ url, result }: ResultsViewProps) {
                 Je analyse is onderweg. Check je inbox.
               </p>
 
-              {/* Onderscheid */}
+              {/* Implicatie */}
               <div className="text-left mt-8">
-                <h4 className="font-heading text-white mb-4" style={{ fontSize: 'clamp(18px, 2.5vw, 28px)', fontFamily: 'GreedCondensed, sans-serif', fontWeight: 700, textTransform: 'uppercase' as const }}>
-                  Wat jou echt anders maakt
-                </h4>
-                <ul style={{ listStyle: 'none', padding: 0, margin: '0 0 32px', display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                  {result.onderscheid.map((item, index) => (
-                    <li key={index} style={{ display: 'flex', alignItems: 'flex-start', gap: '12px' }}>
-                      <svg style={{ width: '16px', height: '16px', flexShrink: 0, marginTop: '4px' }} fill="none" stroke="#4ade80" viewBox="0 0 24 24" strokeWidth={2.5}>
-                        <polyline points="20 6 9 17 4 12" />
-                      </svg>
-                      <span className="font-body" style={{ fontSize: '17px', color: '#fff' }}>{item}</span>
-                    </li>
-                  ))}
-                </ul>
-
-                {/* Diagnose */}
-                {result.diagnose && (
-                  <div style={{ background: 'rgba(14, 110, 255, 0.08)', borderLeft: '3px solid #0E6EFF', borderRadius: '0 8px 8px 0', padding: '24px', marginBottom: '24px' }}>
-                    <p className="text-white font-body italic" style={{ fontSize: '17px' }}>
-                      <strong>Diagnose:</strong> {result.diagnose}
-                    </p>
-                  </div>
-                )}
-
-                {/* Implicatie */}
-                <div style={{ background: 'rgba(14, 110, 255, 0.08)', borderLeft: '3px solid #0E6EFF', borderRadius: '0 8px 8px 0', padding: '24px', marginBottom: '24px' }}>
+                <div style={{ background: 'rgba(14, 110, 255, 0.08)', borderLeft: '3px solid #0E6EFF', borderRadius: '0 8px 8px 0', padding: '24px' }}>
                   <p className="text-white font-body italic" style={{ fontSize: '17px' }}>
                     {result.implicatie}
                   </p>
@@ -151,14 +180,14 @@ export default function ResultsView({ url, result }: ResultsViewProps) {
           ) : (
             <div className="text-center">
               <h3 className="font-heading text-white mb-4" style={{ fontSize: 'clamp(24px, 3vw, 36px)', fontFamily: 'GreedCondensed, sans-serif', fontWeight: 700, textTransform: 'uppercase' as const }}>
-                Wat jou echt anders maakt
+                De volledige analyse in je inbox
               </h3>
               <p className="text-white font-body mb-8 leading-relaxed" style={{ maxWidth: '560px', margin: '0 auto 32px', fontSize: '17px' }}>
-                We hebben gezien waar jij verschilt. Laat je e-mailadres achter en ontvang de volledige analyse: je onderscheidende punten, diagnose en concrete aanbevelingen.
+                Ontvang je analyse als overzicht. Inclusief de implicatie als je niets verandert.
               </p>
 
               <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '10px', marginBottom: '32px' }}>
-                {['Waar jij echt verschilt', 'Diagnose: aanbod-probleem of merk-probleem', 'Gratis, direct in je inbox'].map((text, i) => (
+                {['Jouw sterke punten en verbeterpunten', 'De kans die jouw concurrenten laten liggen', 'Gratis, direct in je inbox'].map((text, i) => (
                   <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                     <svg style={{ width: '16px', height: '16px', flexShrink: 0 }} fill="none" stroke="#4ade80" viewBox="0 0 24 24" strokeWidth={2.5}>
                       <polyline points="20 6 9 17 4 12" />
@@ -199,7 +228,7 @@ export default function ResultsView({ url, result }: ResultsViewProps) {
       <section className="bg-dark" style={{ padding: '96px 0' }}>
         <div className="mx-auto px-4 text-center" style={{ maxWidth: '680px' }}>
           <p className="text-white font-body leading-relaxed mb-4" style={{ fontSize: '17px' }}>
-            Je onderscheid is er — maar het is nog niet zichtbaar voor de mensen die jij wil bereiken. Precies daar helpen wij bij.
+            Je onderscheid is er, maar het is nog niet zichtbaar voor de mensen die jij wil bereiken. Precies daar helpen wij bij.
           </p>
           <a
             href="https://newfound.agency"

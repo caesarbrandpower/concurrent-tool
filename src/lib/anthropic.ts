@@ -32,43 +32,54 @@ async function withRetry<T>(fn: () => Promise<T>, label: string, maxRetries = 2)
   throw new Error(`${label}: max retries exceeded`);
 }
 
-const ANALYSIS_PROMPT = `Je bent een eerlijke merkadviseur. Je analyseert vier websites: één van de gebruiker en drie concurrenten in dezelfde markt.
+const ANALYSIS_PROMPT = `Je bent een eerlijke merkadviseur. Je analyseert de website van de gebruiker en drie concurrenten in dezelfde markt.
 
-Analyseer de vier websites objectief. Trek geen vooraf bepaalde conclusies.
-Als concurrenten wél iets onderscheidends doen, benoem dat eerlijk.
-Als de gebruiker zich juist goed onderscheidt, zeg dat dan ook.
-Een eerlijk oordeel is waardevoller dan een voorspelbaar oordeel.
+Schrijf altijd vanuit de beleving van de ondernemer. Geen vakjargon. Gewone taal. Geen gedachtestreepjes.
 
-Schrijf altijd vanuit de beleving van de ondernemer. Geen vakjargon. Gewone taal.
+BELANGRIJK: Analyseer alleen concurrenten waarvoor je voldoende inhoud hebt ontvangen (minimaal een duidelijke propositie, doelgroep of dienst). Als de content van een concurrent te beperkt is om eerlijk te analyseren, sla die concurrent dan over. Neem alleen concurrenten op in je JSON die je echt kunt onderbouwen.
 
 Genereer uitsluitend de volgende JSON structuur, geen uitleg of opmaak eromheen:
 
 {
-  "samenvatting": "2-3 zinnen die eerlijk benoemen wat opvalt als je alle vier websites naast elkaar legt.",
+  "intro": "Twee zinnen die kort en direct beschrijven wat je gaat zien. Niet analyseren -- alleen kaderen. Bijvoorbeeld: wat je hebt onderzocht en hoe het er in grote lijnen uitziet.",
+
+  "jouwSite": {
+    "naam": "Naam van het bedrijf, afgeleid uit de website",
+    "watGoedGaat": [
+      "Eerste sterke punt -- concreet en complimenteus, één zin",
+      "Tweede sterke punt"
+    ],
+    "samenvatting": "Hoe de website overkomt op een nieuwe bezoeker. Eerlijk, twee zinnen. Geen oordeel over wat beter kan -- dat komt later."
+  },
+
   "concurrenten": [
     {
       "url": "URL van de concurrent",
-      "omschrijving": "Twee zinnen over hoe deze concurrent overkomt op een nieuwe bezoeker",
-      "overlap": "Één zin over waar deze concurrent hetzelfde zegt als de gebruiker",
-      "reden": "Één zin die uitlegt waarom dit een relevante concurrent is — zelfde doelgroep, zelfde markt, zelfde dienst."
+      "naam": "Naam van het bedrijf, afgeleid uit de content",
+      "omschrijving": "Hoe deze concurrent overkomt op een nieuwe bezoeker. Twee zinnen.",
+      "overlap": "Waar deze concurrent hetzelfde zegt of belooft als de gebruiker. Één zin.",
+      "reden": "Waarom dit een relevante concurrent is. Zelfde markt, zelfde doelgroep, zelfde dienst. Één zin."
     }
   ],
-  "onderscheid": [
-    "Eerste punt waar de gebruiker écht anders is — concreet, één zin",
-    "Tweede punt",
-    "Derde punt"
+
+  "vergelijking": "Twee tot drie zinnen over wat alle partijen gemeen hebben. Dit is de kern van de analyse -- de rode draad die de gebruiker laat zien dat ze in een drukke, gelijkvormige markt opereren.",
+
+  "watBeterKan": [
+    "Eerste verbeterpunt -- concreet, gebaseerd op wat je bij concurrenten ziet. Één zin.",
+    "Tweede verbeterpunt"
   ],
-  "diagnose": "Is dit primair een aanbod-probleem (wat je doet) of een merk-probleem (hoe je het vertelt)? Één heldere conclusie in twee zinnen. Eerlijk en specifiek.",
-  "kans": "Één concrete kans die alle concurrenten laten liggen — specifiek genoeg om te raken, vaag genoeg om nieuwsgierig te maken.",
-  "implicatie": "Één of twee zinnen die benoemen wat het de ondernemer kost als dit niet verandert. Direct, geen jargon, geen liggend streepje."
+
+  "kans": "Één concrete kans die alle concurrenten laten liggen. Specifiek genoeg om te raken, prikkelend genoeg om nieuwsgierig te maken.",
+
+  "implicatie": "Wat het de ondernemer kost als dit niet verandert. Één of twee zinnen. Direct, geen jargon."
 }
 
 Regels:
-- Als er onvoldoende informatie is schrijf je: 'Onvoldoende informatie gevonden — dit verdient aandacht.'
+- Neem een concurrent alleen op als je zijn propositie, dienst of doelgroep kunt benoemen op basis van de ontvangen content. Bij twijfel: weglaten.
 - Wees specifiek. Niet: 'je positionering kan sterker.' Wel een concreet voorbeeld.
 - Geef uitsluitend JSON terug. Geen uitleg, geen markdown, geen code-blokken.
 - Taal: Nederlands, tenzij de website volledig in het Engels is.
-- Kies alleen bedrijven die actief commerciële diensten aanbieden in dezelfde branche. Geen magazines, geen directories, geen nieuwssites, geen community-platforms.`;
+- Geen gedachtestreepjes in de output.`;
 
 export async function identifyIndustry(content: string): Promise<string> {
   console.log('identifyIndustry: start, content length:', content.length);
@@ -132,13 +143,13 @@ export async function findCompetitors(industry: string): Promise<string[]> {
       console.log(`findCompetitors poging ${attempt + 1}: gevonden ${urls.length} URLs, totaal uniek: ${allUrls.size}`);
 
       // Stop pas na 2e query als we genoeg hebben — eerste query alleen is te weinig buffer
-      if (attempt >= 1 && allUrls.size >= 5) break;
+      if (attempt >= 1 && allUrls.size >= 7) break;
     } catch (e) {
       console.error(`findCompetitors poging ${attempt + 1} mislukt:`, e);
     }
   }
 
-  const result = Array.from(allUrls).slice(0, 6);
+  const result = Array.from(allUrls).slice(0, 9);
   console.log('findCompetitors: final urls:', result);
 
   if (result.length < 2) {

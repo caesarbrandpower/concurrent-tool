@@ -22,13 +22,25 @@ export async function sendAnalysisEmail(
     <h1>Jouw Concurrent Analyse</h1>
     <p>Bedankt voor je interesse in onze analyse voor <strong>${url}</strong>.</p>
 
-    <h2>Samenvatting</h2>
-    <p>${result.samenvatting}</p>
+    <p>${result.intro}</p>
 
-    <h2>Wat jou echt anders maakt</h2>
+    <h2>Jouw website: ${result.jouwSite.naam}</h2>
+    <p><strong>Wat goed gaat:</strong></p>
     <ul>
-      ${result.onderscheid.map(item => `<li>${item}</li>`).join('')}
+      ${result.jouwSite.watGoedGaat.map(item => `<li>${item}</li>`).join('')}
     </ul>
+    <p>${result.jouwSite.samenvatting}</p>
+
+    <h2>Wat we zagen</h2>
+    <p>${result.vergelijking}</p>
+
+    <h2>Wat beter kan</h2>
+    <ul>
+      ${result.watBeterKan.map(item => `<li>${item}</li>`).join('')}
+    </ul>
+
+    <h2>De kans</h2>
+    <p><em>${result.kans}</em></p>
 
     <h2>De implicatie</h2>
     <p><em>${result.implicatie}</em></p>
