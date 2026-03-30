@@ -12,6 +12,21 @@ export interface AnalysisResult {
     overlap: string;
     reden: string;
   }[];
+  scoreboard: {
+    jij: {
+      kernbelofte: string;
+      aanbod: string;
+      toon: string;
+      onderscheid: string;
+    };
+    concurrenten: {
+      naam: string;
+      kernbelofte: string;
+      aanbod: string;
+      toon: string;
+      onderscheid: string;
+    }[];
+  };
   vergelijkingTitel: string;
   vergelijking: string;
   watBeterKan: string[];

@@ -78,13 +78,31 @@ Genereer uitsluitend de volgende JSON structuur, geen uitleg of opmaak eromheen:
     }
   ],
 
-  "vergelijkingTitel": "Een pakkende titel van 3-5 woorden die de kern van de vergelijking samenvat. Niet 'Wat we zagen' maar iets als 'Iedereen belooft hetzelfde' of 'De markt klinkt als één stem'. Concreet, scherp, direct.",
+  "scoreboard": {
+    "jij": {
+      "kernbelofte": "Wat jij claimt in max 6 woorden",
+      "aanbod": "Wat je concreet verkoopt, max 6 woorden",
+      "toon": "Één woord dat je toon typeert",
+      "onderscheid": "Wat jij doet dat anderen niet claimen. Één zin."
+    },
+    "concurrenten": [
+      {
+        "naam": "Naam concurrent",
+        "kernbelofte": "Wat zij claimen in max 6 woorden",
+        "aanbod": "Wat zij concreet verkopen, max 6 woorden",
+        "toon": "Één woord dat hun toon typeert",
+        "onderscheid": "Wat zij doen dat anderen niet claimen. Één zin."
+      }
+    ]
+  },
+
+  "vergelijkingTitel": "Een pakkende subtitel van 3-6 woorden die de kern samenvat. Concreet en scherp. Bijv: 'Iedereen belooft hetzelfde' of 'De markt klinkt als één stem'.",
 
   "vergelijking": "Twee tot drie zinnen over wat alle partijen gemeen hebben. De rode draad die laat zien dat ze in een gelijkvormige markt opereren.",
 
   "watBeterKan": [
-    "Eerste verbeterpunt -- concreet en direct gebaseerd op wat je bij de concurrenten ziet. Noem specifiek wat concurrenten wél doen of claimen dat de gebruiker mist. Geen generiek advies.",
-    "Tweede verbeterpunt -- zelfde aanpak."
+    "Eerste verbeterpunt: begin altijd met wat er op de eigen site van de gebruiker ontbreekt of onduidelijk is. Concreet, gebaseerd op wat je op die site ziet. Één zin.",
+    "Tweede verbeterpunt: gebaseerd op wat een of meerdere concurrenten wél doen of claimen dat de gebruiker mist. Noem de concurrent bij naam. Één zin."
   ],
 
   "kans": "Één concrete kans die alle concurrenten laten liggen. Specifiek genoeg om te raken, prikkelend genoeg om nieuwsgierig te maken.",
@@ -94,7 +112,7 @@ Genereer uitsluitend de volgende JSON structuur, geen uitleg of opmaak eromheen:
 
 Regels:
 - Neem een concurrent alleen op als je zijn propositie, dienst of doelgroep kunt benoemen op basis van de ontvangen content. Bij twijfel: weglaten.
-- watBeterKan moet altijd gebaseerd zijn op iets concreets dat je bij de concurrenten ziet. Nooit generiek.
+- watBeterKan: eerste punt altijd over de eigen site, tweede punt altijd met naam van concurrent. Nooit generiek.
 - Geef uitsluitend JSON terug. Geen uitleg, geen markdown, geen code-blokken.
 - Taal: Nederlands, tenzij de website volledig in het Engels is.
 - Geen gedachtestreepjes in de output.`;
@@ -179,7 +197,7 @@ export async function analyzeWebsites(
   return withRetry(async () => {
     const response = await anthropic.messages.create({
       model: 'claude-sonnet-4-5',
-      max_tokens: 2000,
+      max_tokens: 3000,
       messages: [{
         role: 'user',
         content: fullPrompt

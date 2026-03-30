@@ -37,20 +37,26 @@ export default function ResultsView({ url, result }: ResultsViewProps) {
 
   return (
     <div className="animate-slide-up">
-      {/* Merknaam */}
-      <section className="bg-dark" style={{ paddingTop: '64px', paddingBottom: '0' }}>
+      {/* Wijziging 2 — Merknaam bovenin: wit, geen gradient */}
+      <section className="bg-dark" style={{ paddingTop: '64px', paddingBottom: '8px' }}>
         <div className="mx-auto px-4 text-center" style={{ maxWidth: '680px' }}>
-          <p className="label-style" style={{ color: 'rgba(255,255,255,0.4)', fontSize: '12px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '8px' }}>
-            Concurrentieanalyse voor
+          <p style={{
+            fontSize: '11px',
+            fontWeight: 600,
+            textTransform: 'uppercase',
+            letterSpacing: '0.12em',
+            color: 'rgba(255,255,255,0.4)',
+            marginBottom: '12px',
+            fontFamily: 'Satoshi, sans-serif'
+          }}>
+            Marktscan voor
           </p>
           <h1 style={{
             fontFamily: 'GreedCondensed, sans-serif',
             fontWeight: 700,
             textTransform: 'uppercase',
-            fontSize: 'clamp(36px, 6vw, 72px)',
-            background: 'linear-gradient(90deg, #2e7cf6, #8463ff, #ff6bba)',
-            WebkitBackgroundClip: 'text',
-            WebkitTextFillColor: 'transparent',
+            fontSize: 'clamp(48px, 8vw, 96px)',
+            color: '#ffffff',
             margin: 0,
             lineHeight: 1
           }}>
@@ -58,6 +64,65 @@ export default function ResultsView({ url, result }: ResultsViewProps) {
           </h1>
         </div>
       </section>
+
+      {/* Wijziging 3 — Scoreboard */}
+      {result.scoreboard && (
+        <section className="bg-dark" style={{ padding: '48px 0 64px' }}>
+          <div className="mx-auto px-4" style={{ maxWidth: '780px' }}>
+
+            {/* Kolomkoppen */}
+            <div style={{ display: 'grid', gridTemplateColumns: `160px repeat(${1 + result.scoreboard.concurrenten.length}, 1fr)`, gap: '2px', marginBottom: '2px' }}>
+              <div />
+              <div style={{ padding: '10px 16px', background: 'rgba(46,124,246,0.15)', borderRadius: '8px 8px 0 0', textAlign: 'center' }}>
+                <p style={{ fontSize: '13px', fontWeight: 700, color: '#fff', fontFamily: 'Satoshi, sans-serif', margin: 0 }}>
+                  {result.jouwSite.naam}
+                </p>
+                <p style={{ fontSize: '10px', color: 'rgba(255,255,255,0.4)', fontFamily: 'Satoshi, sans-serif', margin: '2px 0 0', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
+                  Jij
+                </p>
+              </div>
+              {result.scoreboard.concurrenten.map((c, i) => (
+                <div key={i} style={{ padding: '10px 16px', background: 'rgba(255,255,255,0.04)', borderRadius: '8px 8px 0 0', textAlign: 'center' }}>
+                  <p style={{ fontSize: '13px', fontWeight: 700, color: '#fff', fontFamily: 'Satoshi, sans-serif', margin: 0 }}>
+                    {c.naam}
+                  </p>
+                  <p style={{ fontSize: '10px', color: 'rgba(255,255,255,0.4)', fontFamily: 'Satoshi, sans-serif', margin: '2px 0 0', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
+                    Concurrent
+                  </p>
+                </div>
+              ))}
+            </div>
+
+            {/* Rijen */}
+            {[
+              { label: 'Kernbelofte', key: 'kernbelofte' },
+              { label: 'Aanbod', key: 'aanbod' },
+              { label: 'Toon', key: 'toon' },
+              { label: 'Onderscheid', key: 'onderscheid' },
+            ].map((row, rowIdx) => (
+              <div key={rowIdx} style={{ display: 'grid', gridTemplateColumns: `160px repeat(${1 + result.scoreboard.concurrenten.length}, 1fr)`, gap: '2px', marginBottom: '2px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', padding: '12px 16px' }}>
+                  <p style={{ fontSize: '10px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', color: 'rgba(255,255,255,0.35)', fontFamily: 'Satoshi, sans-serif', margin: 0 }}>
+                    {row.label}
+                  </p>
+                </div>
+                <div style={{ padding: '12px 16px', background: 'rgba(46,124,246,0.08)', border: '1px solid rgba(46,124,246,0.2)' }}>
+                  <p style={{ fontSize: '14px', color: '#fff', fontFamily: 'Satoshi, sans-serif', margin: 0, lineHeight: '1.4' }}>
+                    {result.scoreboard.jij[row.key as keyof typeof result.scoreboard.jij]}
+                  </p>
+                </div>
+                {result.scoreboard.concurrenten.map((c, i) => (
+                  <div key={i} style={{ padding: '12px 16px', background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.06)' }}>
+                    <p style={{ fontSize: '14px', color: 'rgba(255,255,255,0.75)', fontFamily: 'Satoshi, sans-serif', margin: 0, lineHeight: '1.4' }}>
+                      {c[row.key as keyof typeof c]}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
 
       {/* Intro */}
       <section className="bg-dark" style={{ paddingTop: '48px', paddingBottom: '48px' }}>
@@ -71,11 +136,11 @@ export default function ResultsView({ url, result }: ResultsViewProps) {
       {/* Jouw website */}
       <section className="bg-dark" style={{ padding: '48px 0 64px' }}>
         <div className="mx-auto px-4" style={{ maxWidth: '680px' }}>
-          <h2 className="font-heading text-white mb-8" style={{ fontSize: 'clamp(18px, 2.5vw, 28px)', fontFamily: 'GreedCondensed, sans-serif', fontWeight: 700, textTransform: 'uppercase' as const }}>
+          <h2 style={{ fontFamily: 'GreedCondensed, sans-serif', fontWeight: 700, textTransform: 'uppercase', fontSize: 'clamp(18px, 2.5vw, 28px)', color: '#fff', marginBottom: '32px' }}>
             Jouw website
           </h2>
           <div style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', padding: '32px' }}>
-            <p className="text-accent-blue font-body mb-4" style={{ fontSize: '15px', fontWeight: 600 }}>
+            <p style={{ fontSize: '15px', fontWeight: 600, color: '#2e7cf6', fontFamily: 'Satoshi, sans-serif', marginBottom: '16px' }}>
               {result.jouwSite.naam}
             </p>
             <ul style={{ listStyle: 'none', padding: 0, margin: '0 0 20px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
@@ -84,52 +149,43 @@ export default function ResultsView({ url, result }: ResultsViewProps) {
                   <svg style={{ width: '16px', height: '16px', flexShrink: 0, marginTop: '4px' }} fill="none" stroke="#4ade80" viewBox="0 0 24 24" strokeWidth={2.5}>
                     <polyline points="20 6 9 17 4 12" />
                   </svg>
-                  <span className="font-body" style={{ fontSize: '16px', color: '#fff' }}>{item}</span>
+                  <span style={{ fontSize: '16px', color: '#fff', fontFamily: 'Satoshi, sans-serif' }}>{item}</span>
                 </li>
               ))}
             </ul>
-            <p className="text-white/70 font-body leading-relaxed" style={{ fontSize: '16px' }}>
+            <p style={{ fontSize: '16px', color: 'rgba(255,255,255,0.7)', lineHeight: '1.6', fontFamily: 'Satoshi, sans-serif' }}>
               {result.jouwSite.samenvatting}
             </p>
           </div>
         </div>
       </section>
 
-      {/* Concurrenten */}
+      {/* Wijziging 5 — Concurrenten: labels Satoshi wit, geen gradient, geen cursief */}
       <section className="bg-dark" style={{ padding: '0 0 64px' }}>
         <div className="mx-auto px-4" style={{ maxWidth: '680px' }}>
-          <h2 className="font-heading text-white mb-8" style={{ fontSize: 'clamp(18px, 2.5vw, 28px)', fontFamily: 'GreedCondensed, sans-serif', fontWeight: 700, textTransform: 'uppercase' as const }}>
+          <h2 style={{ fontFamily: 'GreedCondensed, sans-serif', fontWeight: 700, textTransform: 'uppercase', fontSize: 'clamp(18px, 2.5vw, 28px)', color: '#fff', marginBottom: '32px' }}>
             Jouw concurrenten
           </h2>
           <div className="space-y-4">
             {result.concurrenten.map((competitor, index) => (
               <div key={index} style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', padding: '32px' }}>
-                <p className="text-accent-blue font-body mb-1" style={{ fontSize: '15px', fontWeight: 600 }}>
+                <p style={{ fontSize: '15px', fontWeight: 600, color: '#2e7cf6', fontFamily: 'Satoshi, sans-serif', marginBottom: '4px' }}>
                   {competitor.naam}
                 </p>
-                <p className="text-white/40 font-body mb-3" style={{ fontSize: '13px' }}>
+                <p style={{ fontSize: '13px', color: 'rgba(255,255,255,0.4)', fontFamily: 'Satoshi, sans-serif', marginBottom: '12px' }}>
                   {competitor.url}
                 </p>
                 {/* omschrijving */}
-                <p style={{ fontSize: '16px', color: '#ffffff', lineHeight: '1.6', marginBottom: '20px' }}>
+                <p style={{ fontSize: '16px', color: '#ffffff', lineHeight: '1.6', marginBottom: '20px', fontFamily: 'Satoshi, sans-serif' }}>
                   {competitor.omschrijving}
                 </p>
 
                 {/* overlap */}
                 <div style={{ marginTop: '16px', paddingTop: '16px', borderTop: '1px solid rgba(255,255,255,0.08)' }}>
-                  <p style={{
-                    fontSize: '10px',
-                    fontWeight: 700,
-                    textTransform: 'uppercase',
-                    letterSpacing: '0.1em',
-                    marginBottom: '6px',
-                    background: 'linear-gradient(90deg, #2e7cf6, #8463ff)',
-                    WebkitBackgroundClip: 'text',
-                    WebkitTextFillColor: 'transparent'
-                  }}>
+                  <p style={{ fontSize: '10px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', color: 'rgba(255,255,255,0.4)', marginBottom: '6px', fontFamily: 'Satoshi, sans-serif' }}>
                     Overlap met jou
                   </p>
-                  <p style={{ fontSize: '15px', color: 'rgba(255,255,255,0.75)', lineHeight: '1.5' }}>
+                  <p style={{ fontSize: '15px', color: 'rgba(255,255,255,0.8)', lineHeight: '1.5', fontFamily: 'Satoshi, sans-serif' }}>
                     {competitor.overlap}
                   </p>
                 </div>
@@ -137,19 +193,10 @@ export default function ResultsView({ url, result }: ResultsViewProps) {
                 {/* reden */}
                 {competitor.reden && (
                   <div style={{ marginTop: '14px' }}>
-                    <p style={{
-                      fontSize: '10px',
-                      fontWeight: 700,
-                      textTransform: 'uppercase',
-                      letterSpacing: '0.1em',
-                      marginBottom: '6px',
-                      background: 'linear-gradient(90deg, #8463ff, #ff6bba)',
-                      WebkitBackgroundClip: 'text',
-                      WebkitTextFillColor: 'transparent'
-                    }}>
+                    <p style={{ fontSize: '10px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', color: 'rgba(255,255,255,0.4)', marginBottom: '6px', fontFamily: 'Satoshi, sans-serif' }}>
                       Waarom concurrent
                     </p>
-                    <p style={{ fontSize: '15px', color: 'rgba(255,255,255,0.75)', lineHeight: '1.5' }}>
+                    <p style={{ fontSize: '15px', color: 'rgba(255,255,255,0.8)', lineHeight: '1.5', fontFamily: 'Satoshi, sans-serif' }}>
                       {competitor.reden}
                     </p>
                   </div>
@@ -160,21 +207,24 @@ export default function ResultsView({ url, result }: ResultsViewProps) {
         </div>
       </section>
 
-      {/* Vergelijking — Wat we zagen */}
+      {/* Wijziging 4 — Conclusie: vaste koptekst + dynamische subtitel */}
       <section className="bg-dark" style={{ padding: '0 0 64px' }}>
         <div className="mx-auto px-4" style={{ maxWidth: '680px' }}>
-          <h2 style={{ fontFamily: 'GreedCondensed, sans-serif', fontWeight: 700, textTransform: 'uppercase', fontSize: 'clamp(18px, 2.5vw, 28px)', color: '#fff', marginBottom: '32px' }}>
-            {result.vergelijkingTitel}
+          <h2 style={{ fontFamily: 'GreedCondensed, sans-serif', fontWeight: 700, textTransform: 'uppercase', fontSize: 'clamp(22px, 3vw, 32px)', color: '#fff', marginBottom: '8px' }}>
+            Conclusie
           </h2>
+          <p style={{ fontSize: '16px', color: 'rgba(255,255,255,0.5)', fontFamily: 'Satoshi, sans-serif', marginBottom: '24px', fontStyle: 'normal' }}>
+            {result.vergelijkingTitel}
+          </p>
           <div style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', padding: '32px' }}>
-            <p className="text-white font-body leading-relaxed" style={{ fontSize: '17px' }}>
+            <p style={{ fontSize: '17px', color: '#fff', lineHeight: '1.6', fontFamily: 'Satoshi, sans-serif' }}>
               {result.vergelijking}
             </p>
           </div>
         </div>
       </section>
 
-      {/* Wat beter kan */}
+      {/* Wijziging 6 — Wat beter kan: rode cirkels, geen cursief */}
       <section className="bg-dark" style={{ padding: '0 0 64px' }}>
         <div className="mx-auto px-4" style={{ maxWidth: '680px' }}>
           <h2 style={{ fontFamily: 'GreedCondensed, sans-serif', fontWeight: 700, textTransform: 'uppercase', fontSize: 'clamp(18px, 2.5vw, 28px)', color: '#fff', marginBottom: '32px' }}>
@@ -183,13 +233,13 @@ export default function ResultsView({ url, result }: ResultsViewProps) {
           <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
             {result.watBeterKan.map((item, index) => (
               <div key={index} style={{ display: 'flex', alignItems: 'flex-start', gap: '16px' }}>
-                <div style={{ flexShrink: 0, width: '24px', height: '24px', borderRadius: '50%', background: 'rgba(248,113,113,0.15)', border: '1px solid rgba(248,113,113,0.3)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginTop: '2px' }}>
+                <div style={{ flexShrink: 0, width: '24px', height: '24px', borderRadius: '50%', background: 'rgba(248,113,113,0.15)', border: '1px solid rgba(248,113,113,0.4)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginTop: '2px' }}>
                   <svg width="10" height="10" fill="none" stroke="#f87171" viewBox="0 0 24 24" strokeWidth={3}>
                     <line x1="18" y1="6" x2="6" y2="18" />
                     <line x1="6" y1="6" x2="18" y2="18" />
                   </svg>
                 </div>
-                <p style={{ fontSize: '17px', color: '#ffffff', lineHeight: '1.6', margin: 0 }}>
+                <p style={{ fontSize: '16px', color: '#ffffff', lineHeight: '1.6', margin: 0, fontFamily: 'Satoshi, sans-serif' }}>
                   {item}
                 </p>
               </div>
@@ -203,7 +253,7 @@ export default function ResultsView({ url, result }: ResultsViewProps) {
         <section className="bg-dark" style={{ padding: '0 0 80px' }}>
           <div className="mx-auto px-4" style={{ maxWidth: '680px' }}>
             <div style={{ borderLeft: '3px solid #DDB3FF', paddingLeft: '24px' }}>
-              <p className="text-white/70 font-body italic leading-relaxed" style={{ fontSize: '17px' }}>
+              <p style={{ fontSize: '17px', color: 'rgba(255,255,255,0.7)', lineHeight: '1.6', fontFamily: 'Satoshi, sans-serif', fontStyle: 'italic' }}>
                 {result.kans}
               </p>
             </div>
@@ -216,7 +266,7 @@ export default function ResultsView({ url, result }: ResultsViewProps) {
         <section className="bg-dark" style={{ padding: '0 0 64px' }}>
           <div className="mx-auto px-4" style={{ maxWidth: '680px' }}>
             <div style={{ borderLeft: '3px solid #0E6EFF', paddingLeft: '24px' }}>
-              <p className="text-white font-body italic leading-relaxed" style={{ fontSize: '17px' }}>
+              <p style={{ fontSize: '17px', color: '#fff', lineHeight: '1.6', fontFamily: 'Satoshi, sans-serif', fontStyle: 'italic' }}>
                 {result.implicatie}
               </p>
             </div>
@@ -234,17 +284,17 @@ export default function ResultsView({ url, result }: ResultsViewProps) {
                   <polyline points="20 6 9 17 4 12" />
                 </svg>
               </div>
-              <h3 className="font-heading text-white mb-2" style={{ fontSize: 'clamp(24px, 3vw, 36px)', textTransform: 'uppercase' as const }}>Verstuurd!</h3>
-              <p className="text-white font-body mb-6" style={{ fontSize: '17px' }}>
+              <h3 style={{ fontFamily: 'GreedCondensed, sans-serif', fontWeight: 700, textTransform: 'uppercase', fontSize: 'clamp(24px, 3vw, 36px)', color: '#fff', marginBottom: '8px' }}>Verstuurd!</h3>
+              <p style={{ fontSize: '17px', color: '#fff', fontFamily: 'Satoshi, sans-serif' }}>
                 Je analyse is onderweg. Check je inbox.
               </p>
             </div>
           ) : (
             <div className="text-center">
-              <h3 className="font-heading text-white mb-4" style={{ fontSize: 'clamp(24px, 3vw, 36px)', fontFamily: 'GreedCondensed, sans-serif', fontWeight: 700, textTransform: 'uppercase' as const }}>
+              <h3 style={{ fontFamily: 'GreedCondensed, sans-serif', fontWeight: 700, textTransform: 'uppercase', fontSize: 'clamp(24px, 3vw, 36px)', color: '#fff', marginBottom: '16px' }}>
                 Bewaar je analyse
               </h3>
-              <p className="text-white font-body mb-8 leading-relaxed" style={{ maxWidth: '560px', margin: '0 auto 32px', fontSize: '17px' }}>
+              <p style={{ fontSize: '17px', color: '#fff', fontFamily: 'Satoshi, sans-serif', maxWidth: '560px', margin: '0 auto 32px', lineHeight: '1.6' }}>
                 Ontvang je volledige concurrentieanalyse als overzicht in je inbox. Gratis, direct.
               </p>
 
@@ -254,7 +304,7 @@ export default function ResultsView({ url, result }: ResultsViewProps) {
                     <svg style={{ width: '16px', height: '16px', flexShrink: 0 }} fill="none" stroke="#4ade80" viewBox="0 0 24 24" strokeWidth={2.5}>
                       <polyline points="20 6 9 17 4 12" />
                     </svg>
-                    <span className="font-body" style={{ fontSize: '15px', color: '#fff' }}>{text}</span>
+                    <span style={{ fontSize: '15px', color: '#fff', fontFamily: 'Satoshi, sans-serif' }}>{text}</span>
                   </div>
                 ))}
               </div>
@@ -279,17 +329,17 @@ export default function ResultsView({ url, result }: ResultsViewProps) {
               </form>
 
               {emailError && (
-                <p className="mt-3 text-sm text-accent-pink font-body">{emailError}</p>
+                <p className="mt-3 text-sm" style={{ color: '#f87171', fontFamily: 'Satoshi, sans-serif' }}>{emailError}</p>
               )}
             </div>
           )}
         </div>
       </section>
 
-      {/* CTA — Newfound */}
+      {/* CTA */}
       <section className="bg-dark" style={{ padding: '96px 0' }}>
         <div className="mx-auto px-4 text-center" style={{ maxWidth: '680px' }}>
-          <p className="text-white font-body leading-relaxed mb-4" style={{ fontSize: '17px' }}>
+          <p style={{ fontSize: '17px', color: '#fff', lineHeight: '1.6', fontFamily: 'Satoshi, sans-serif', marginBottom: '16px' }}>
             Je onderscheid is er, maar het is nog niet zichtbaar voor de mensen die jij wil bereiken. Precies daar helpen wij bij.
           </p>
           <a
@@ -306,8 +356,8 @@ export default function ResultsView({ url, result }: ResultsViewProps) {
 
       {/* Footer */}
       <footer style={{ padding: '32px 0', borderTop: '1px solid rgba(255,255,255,0.08)' }}>
-        <p className="text-center text-sm text-white/40 font-body" style={{ fontWeight: 300 }}>
-          Een product van <a href="https://newfound.agency" target="_blank" rel="noopener noreferrer" className="text-white/60 underline hover:text-white transition-colors">Newfound</a>
+        <p className="text-center" style={{ fontSize: '14px', color: 'rgba(255,255,255,0.4)', fontFamily: 'Satoshi, sans-serif', fontWeight: 300 }}>
+          Een product van <a href="https://newfound.agency" target="_blank" rel="noopener noreferrer" style={{ color: 'rgba(255,255,255,0.6)', textDecoration: 'underline' }}>Newfound</a>
         </p>
       </footer>
     </div>

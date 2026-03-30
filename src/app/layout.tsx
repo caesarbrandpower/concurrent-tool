@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 import './globals.css'
 
 export const metadata: Metadata = {
-  title: 'Concurrent Analyse Tool | Newfound Agency',
+  title: 'Marktscan | Newfound',
   description: 'Ontdek hoe jouw merk zich verhoudt tot concurrenten. Een eerlijke analyse in gewone taal.',
 }
 
