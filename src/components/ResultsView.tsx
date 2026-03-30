@@ -41,15 +41,16 @@ export default function ResultsView({ url, result }: ResultsViewProps) {
       <section className="bg-dark" style={{ paddingTop: '64px', paddingBottom: '8px' }}>
         <div className="mx-auto px-4 text-center" style={{ maxWidth: '680px' }}>
           <p style={{
-            fontSize: '11px',
-            fontWeight: 600,
-            textTransform: 'uppercase',
-            letterSpacing: '0.12em',
+            fontSize: '13px',
+            fontWeight: 400,
+            fontStyle: 'italic',
+            textTransform: 'none',
+            letterSpacing: '0.02em',
             color: 'rgba(255,255,255,0.4)',
             marginBottom: '12px',
-            fontFamily: 'Satoshi, sans-serif'
+            fontFamily: 'KansasNew, serif'
           }}>
-            Marktscan voor
+            Jouw marktscan
           </p>
           <h1 style={{
             fontFamily: 'GreedCondensed, sans-serif',
@@ -65,56 +66,54 @@ export default function ResultsView({ url, result }: ResultsViewProps) {
         </div>
       </section>
 
-      {/* Wijziging 3 — Scoreboard */}
+      {/* Wijziging 3 — Scoreboard: verticale kaarten */}
       {result.scoreboard && (
         <section className="bg-dark" style={{ padding: '48px 0 64px' }}>
-          <div className="mx-auto px-4" style={{ maxWidth: '780px' }}>
+          <div className="mx-auto px-4" style={{ maxWidth: '680px' }}>
 
-            {/* Kolomkoppen */}
-            <div style={{ display: 'grid', gridTemplateColumns: `160px repeat(${1 + result.scoreboard.concurrenten.length}, 1fr)`, gap: '2px', marginBottom: '2px' }}>
-              <div />
-              <div style={{ padding: '10px 16px', background: 'rgba(46,124,246,0.15)', borderRadius: '8px 8px 0 0', textAlign: 'center' }}>
-                <p style={{ fontSize: '13px', fontWeight: 700, color: '#fff', fontFamily: 'Satoshi, sans-serif', margin: 0 }}>
-                  {result.jouwSite.naam}
-                </p>
-                <p style={{ fontSize: '10px', color: 'rgba(255,255,255,0.4)', fontFamily: 'Satoshi, sans-serif', margin: '2px 0 0', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
-                  Jij
-                </p>
-              </div>
-              {result.scoreboard.concurrenten.map((c, i) => (
-                <div key={i} style={{ padding: '10px 16px', background: 'rgba(255,255,255,0.04)', borderRadius: '8px 8px 0 0', textAlign: 'center' }}>
-                  <p style={{ fontSize: '13px', fontWeight: 700, color: '#fff', fontFamily: 'Satoshi, sans-serif', margin: 0 }}>
-                    {c.naam}
+            {/* Jouw kaart */}
+            <div style={{ background: 'rgba(46,124,246,0.08)', border: '1px solid rgba(46,124,246,0.2)', borderRadius: '12px', padding: '28px 32px', marginBottom: '12px' }}>
+              <p style={{ fontSize: '15px', fontWeight: 600, color: '#2e7cf6', fontFamily: 'Satoshi, sans-serif', marginBottom: '20px' }}>
+                {result.jouwSite.naam}
+              </p>
+              {[
+                { label: 'Kernbelofte', value: result.scoreboard.jij.kernbelofte },
+                { label: 'Aanbod', value: result.scoreboard.jij.aanbod },
+                { label: 'Toon', value: result.scoreboard.jij.toon },
+                { label: 'Onderscheid', value: result.scoreboard.jij.onderscheid },
+              ].map((row, i) => (
+                <div key={i} style={{ marginBottom: i < 3 ? '14px' : 0 }}>
+                  <p style={{ fontSize: '10px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', color: 'rgba(255,255,255,0.35)', fontFamily: 'Satoshi, sans-serif', margin: '0 0 4px' }}>
+                    {row.label}
                   </p>
-                  <p style={{ fontSize: '10px', color: 'rgba(255,255,255,0.4)', fontFamily: 'Satoshi, sans-serif', margin: '2px 0 0', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
-                    Concurrent
+                  <p style={{ fontSize: '15px', color: '#fff', fontFamily: 'Satoshi, sans-serif', margin: 0, lineHeight: '1.4' }}>
+                    {row.value}
                   </p>
                 </div>
               ))}
             </div>
 
-            {/* Rijen */}
-            {[
-              { label: 'Kernbelofte', key: 'kernbelofte' },
-              { label: 'Aanbod', key: 'aanbod' },
-              { label: 'Toon', key: 'toon' },
-              { label: 'Onderscheid', key: 'onderscheid' },
-            ].map((row, rowIdx) => (
-              <div key={rowIdx} style={{ display: 'grid', gridTemplateColumns: `160px repeat(${1 + result.scoreboard.concurrenten.length}, 1fr)`, gap: '2px', marginBottom: '2px' }}>
-                <div style={{ display: 'flex', alignItems: 'center', padding: '12px 16px' }}>
-                  <p style={{ fontSize: '10px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', color: 'rgba(255,255,255,0.35)', fontFamily: 'Satoshi, sans-serif', margin: 0 }}>
-                    {row.label}
-                  </p>
-                </div>
-                <div style={{ padding: '12px 16px', background: 'rgba(46,124,246,0.08)', border: '1px solid rgba(46,124,246,0.2)' }}>
-                  <p style={{ fontSize: '14px', color: '#fff', fontFamily: 'Satoshi, sans-serif', margin: 0, lineHeight: '1.4' }}>
-                    {result.scoreboard.jij[row.key as keyof typeof result.scoreboard.jij]}
-                  </p>
-                </div>
-                {result.scoreboard.concurrenten.map((c, i) => (
-                  <div key={i} style={{ padding: '12px 16px', background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.06)' }}>
-                    <p style={{ fontSize: '14px', color: 'rgba(255,255,255,0.75)', fontFamily: 'Satoshi, sans-serif', margin: 0, lineHeight: '1.4' }}>
-                      {c[row.key as keyof typeof c]}
+            {/* Concurrent kaarten */}
+            {result.scoreboard.concurrenten.map((c, idx) => (
+              <div key={idx} style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '12px', padding: '28px 32px', marginBottom: idx < result.scoreboard.concurrenten.length - 1 ? '12px' : 0 }}>
+                <p style={{ fontSize: '15px', fontWeight: 600, color: 'rgba(255,255,255,0.8)', fontFamily: 'Satoshi, sans-serif', marginBottom: '20px' }}>
+                  {c.naam}
+                </p>
+                {[
+                  { label: 'Kernbelofte', value: c.kernbelofte, overlap: c.kernbelofteOverlap },
+                  { label: 'Aanbod', value: c.aanbod, overlap: c.aanbodOverlap },
+                  { label: 'Toon', value: c.toon, overlap: false },
+                  { label: 'Onderscheid', value: c.onderscheid, overlap: false },
+                ].map((row, i) => (
+                  <div key={i} style={{
+                    marginBottom: i < 3 ? '14px' : 0,
+                    ...(row.overlap ? { borderLeft: '2px solid #8463ff', paddingLeft: '12px' } : {})
+                  }}>
+                    <p style={{ fontSize: '10px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', color: row.overlap ? 'rgba(132,99,255,0.6)' : 'rgba(255,255,255,0.35)', fontFamily: 'Satoshi, sans-serif', margin: '0 0 4px' }}>
+                      {row.label}{row.overlap ? ' · overlap' : ''}
+                    </p>
+                    <p style={{ fontSize: '15px', color: 'rgba(255,255,255,0.75)', fontFamily: 'Satoshi, sans-serif', margin: 0, lineHeight: '1.4' }}>
+                      {row.value}
                     </p>
                   </div>
                 ))}
@@ -252,8 +251,8 @@ export default function ResultsView({ url, result }: ResultsViewProps) {
       {result.kans && (
         <section className="bg-dark" style={{ padding: '0 0 80px' }}>
           <div className="mx-auto px-4" style={{ maxWidth: '680px' }}>
-            <div style={{ borderLeft: '3px solid #DDB3FF', paddingLeft: '24px' }}>
-              <p style={{ fontSize: '17px', color: 'rgba(255,255,255,0.7)', lineHeight: '1.6', fontFamily: 'Satoshi, sans-serif', fontStyle: 'italic' }}>
+            <div style={{ borderLeft: '3px solid #8463ff', paddingLeft: '24px' }}>
+              <p style={{ fontSize: '17px', color: 'rgba(255,255,255,0.7)', lineHeight: '1.6', fontFamily: 'Satoshi, sans-serif' }}>
                 {result.kans}
               </p>
             </div>
@@ -265,8 +264,8 @@ export default function ResultsView({ url, result }: ResultsViewProps) {
       {result.implicatie && (
         <section className="bg-dark" style={{ padding: '0 0 64px' }}>
           <div className="mx-auto px-4" style={{ maxWidth: '680px' }}>
-            <div style={{ borderLeft: '3px solid #0E6EFF', paddingLeft: '24px' }}>
-              <p style={{ fontSize: '17px', color: '#fff', lineHeight: '1.6', fontFamily: 'Satoshi, sans-serif', fontStyle: 'italic' }}>
+            <div style={{ borderLeft: '3px solid #2e7cf6', paddingLeft: '24px' }}>
+              <p style={{ fontSize: '17px', color: '#fff', lineHeight: '1.6', fontFamily: 'Satoshi, sans-serif' }}>
                 {result.implicatie}
               </p>
             </div>

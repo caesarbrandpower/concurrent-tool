@@ -22,7 +22,9 @@ export interface AnalysisResult {
     concurrenten: {
       naam: string;
       kernbelofte: string;
+      kernbelofteOverlap: boolean;
       aanbod: string;
+      aanbodOverlap: boolean;
       toon: string;
       onderscheid: string;
     }[];

@@ -89,7 +89,9 @@ Genereer uitsluitend de volgende JSON structuur, geen uitleg of opmaak eromheen:
       {
         "naam": "Naam concurrent",
         "kernbelofte": "Wat zij claimen in max 6 woorden",
+        "kernbelofteOverlap": true,
         "aanbod": "Wat zij concreet verkopen, max 6 woorden",
+        "aanbodOverlap": false,
         "toon": "Één woord dat hun toon typeert",
         "onderscheid": "Wat zij doen dat anderen niet claimen. Één zin."
       }
@@ -112,6 +114,8 @@ Genereer uitsluitend de volgende JSON structuur, geen uitleg of opmaak eromheen:
 
 Regels:
 - Neem een concurrent alleen op als je zijn propositie, dienst of doelgroep kunt benoemen op basis van de ontvangen content. Bij twijfel: weglaten.
+- kernbelofteOverlap: true als de kernbelofte van de concurrent inhoudelijk overlapt met die van de gebruiker. Anders false.
+- aanbodOverlap: true als het aanbod van de concurrent inhoudelijk overlapt met dat van de gebruiker. Anders false.
 - watBeterKan: eerste punt altijd over de eigen site, tweede punt altijd met naam van concurrent. Nooit generiek.
 - Geef uitsluitend JSON terug. Geen uitleg, geen markdown, geen code-blokken.
 - Taal: Nederlands, tenzij de website volledig in het Engels is.

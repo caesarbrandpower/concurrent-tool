@@ -114,10 +114,7 @@ export default function Home() {
   return (
     <main className="min-h-screen bg-dark">
       {/* Navbar with gradient background — full bleed */}
-      <nav className="gradient-navbar" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <span style={{ fontFamily: 'GreedCondensed, sans-serif', fontWeight: 700, textTransform: 'uppercase', fontSize: '16px', color: '#fff', letterSpacing: '0.05em' }}>
-          Marktscan
-        </span>
+      <nav className="gradient-navbar" style={{ display: 'flex', justifyContent: 'flex-start', alignItems: 'center' }}>
         <a href="https://newfound.agency" target="_blank">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src="https://newfound.agency/wp-content/uploads/2025/06/Logo_newfound.svg" alt="Newfound" style={{ height: '18px' }} />
