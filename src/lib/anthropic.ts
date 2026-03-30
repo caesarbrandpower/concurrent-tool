@@ -31,8 +31,9 @@ async function withRetry<T>(fn: () => Promise<T>, label: string, maxRetries = 3)
         err?.message?.includes('ECONNRESET') ||
         err?.message?.includes('fetch failed');
 
-      if (isRetryable && attempt < maxRetries) {
-        const wait = Math.pow(2, attempt) * 5000; // 5s, 10s, 20s
+      const isTokenLimit = err?.message?.includes('input tokens per minute');
+      if ((isRetryable || isTokenLimit) && attempt < maxRetries) {
+        const wait = isTokenLimit ? 15000 : Math.pow(2, attempt) * 5000;
         console.log(`${label}: fout (${err?.status || err?.message}), wacht ${wait/1000}s (poging ${attempt + 1}/${maxRetries})...`);
         await new Promise(resolve => setTimeout(resolve, wait));
         continue;
@@ -96,7 +97,7 @@ export async function identifyIndustry(content: string): Promise<string> {
   console.log('identifyIndustry: start, content length:', content.length);
   return withRetry(async () => {
     const response = await anthropic.messages.create({
-      model: 'claude-sonnet-4-5',
+      model: 'claude-sonnet-4-6',
       max_tokens: 100,
       messages: [{
         role: 'user',
@@ -129,7 +130,7 @@ export async function findCompetitors(industry: string): Promise<string[]> {
     try {
       const response = await withRetry(async () => {
         return await anthropic.messages.create({
-          model: 'claude-sonnet-4-5',
+          model: 'claude-sonnet-4-6',
           max_tokens: 300,
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           tools: [{ type: 'web_search_20250305', name: 'web_search' } as any],
@@ -182,7 +183,7 @@ export async function analyzeWebsites(
 
   return withRetry(async () => {
     const response = await anthropic.messages.create({
-      model: 'claude-sonnet-4-5',
+      model: 'claude-sonnet-4-6',
       max_tokens: 2000,
       messages: [{
         role: 'user',
