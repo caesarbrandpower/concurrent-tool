@@ -41,14 +41,14 @@ export default function ResultsView({ url, result }: ResultsViewProps) {
       <section className="bg-dark" style={{ paddingTop: '64px', paddingBottom: '8px' }}>
         <div className="mx-auto px-4 text-center" style={{ maxWidth: '680px' }}>
           <p style={{
-            fontSize: '14px',
-            fontFamily: 'KansasNew, serif',
-            fontStyle: 'italic',
+            fontSize: '13px',
+            fontFamily: 'Satoshi, sans-serif',
             fontWeight: 400,
-            color: 'rgba(255,255,255,0.5)',
+            color: 'rgba(255,255,255,0.4)',
             marginBottom: '10px',
             textTransform: 'none',
-            letterSpacing: 'normal'
+            letterSpacing: 'normal',
+            fontStyle: 'normal'
           }}>
             Jouw marktscan
           </p>
@@ -66,112 +66,86 @@ export default function ResultsView({ url, result }: ResultsViewProps) {
         </div>
       </section>
 
-      {/* Scoreboard: losse verticale kaarten naast elkaar */}
+      {/* Scoreboard: breed vlak voor jou + drie concurrentkaarten eronder */}
       {result.scoreboard && (
         <section style={{ padding: '48px 0 64px', background: '#0f0f10' }}>
           <div className="mx-auto px-4" style={{ maxWidth: '860px' }}>
-            <div style={{ display: 'grid', gridTemplateColumns: `1.6fr${' 1fr'.repeat(result.scoreboard.concurrenten.length)}`, gap: '10px' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
 
-              {/* Jouw kaart — highlighted */}
-              <div style={{
-                background: 'rgba(46,124,246,0.08)',
-                border: '1px solid rgba(46,124,246,0.35)',
-                borderRadius: '12px',
-                padding: '24px',
-                display: 'flex',
-                flexDirection: 'column',
-                gap: '20px'
-              }}>
-                <div>
-                  <p style={{ fontSize: '10px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', color: '#2e7cf6', fontFamily: 'Satoshi, sans-serif', marginBottom: '4px' }}>Jij</p>
-                  <p style={{ fontSize: '16px', fontWeight: 700, color: '#fff', fontFamily: 'GreedCondensed, sans-serif', textTransform: 'uppercase', margin: 0 }}>{result.jouwSite.naam}</p>
+              {/* Jouw kaart — breed, horizontaal */}
+              <div style={{ background: 'rgba(46,124,246,0.08)', border: '1px solid rgba(46,124,246,0.35)', borderRadius: '12px', padding: '24px 28px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '20px' }}>
+                  <span style={{ fontSize: '10px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', background: 'rgba(46,124,246,0.2)', color: '#2e7cf6', padding: '3px 8px', borderRadius: '4px', fontFamily: 'Satoshi, sans-serif' }}>Jij</span>
+                  <span style={{ fontSize: '16px', fontWeight: 700, color: '#fff', fontFamily: 'GreedCondensed, sans-serif', textTransform: 'uppercase' }}>{result.jouwSite.naam}</span>
                 </div>
-                <div>
-                  <p style={{ fontSize: '10px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', color: 'rgba(255,255,255,0.4)', fontFamily: 'Satoshi, sans-serif', marginBottom: '4px' }}>Kernbelofte</p>
-                  <p style={{ fontSize: '14px', color: '#fff', fontFamily: 'Satoshi, sans-serif', margin: 0, lineHeight: '1.4' }}>{result.scoreboard.jij.kernbelofte}</p>
-                </div>
-                <div>
-                  <p style={{ fontSize: '10px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', color: 'rgba(255,255,255,0.4)', fontFamily: 'Satoshi, sans-serif', marginBottom: '4px' }}>Aanbod</p>
-                  <p style={{ fontSize: '14px', color: '#fff', fontFamily: 'Satoshi, sans-serif', margin: 0, lineHeight: '1.4' }}>{result.scoreboard.jij.aanbod}</p>
-                </div>
-                <div>
-                  <p style={{ fontSize: '10px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', color: 'rgba(255,255,255,0.4)', fontFamily: 'Satoshi, sans-serif', marginBottom: '6px' }}>Toon</p>
-                  <span style={{ display: 'inline-block', padding: '3px 12px', borderRadius: '20px', fontSize: '12px', fontFamily: 'Satoshi, sans-serif', background: 'rgba(46,124,246,0.15)', border: '1px solid rgba(46,124,246,0.3)', color: '#fff' }}>{result.scoreboard.jij.toon}</span>
-                </div>
-                <div>
-                  <p style={{ fontSize: '10px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', color: 'rgba(255,255,255,0.4)', fontFamily: 'Satoshi, sans-serif', marginBottom: '4px' }}>Onderscheid</p>
-                  <p style={{ fontSize: '13px', color: 'rgba(255,255,255,0.8)', fontFamily: 'Satoshi, sans-serif', margin: 0, lineHeight: '1.4' }}>{result.scoreboard.jij.onderscheid}</p>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, minmax(0, 1fr))', gap: '20px' }}>
+                  {[
+                    { label: 'Kernbelofte', value: result.scoreboard.jij.kernbelofte },
+                    { label: 'Aanbod', value: result.scoreboard.jij.aanbod },
+                    { label: 'Toon', value: result.scoreboard.jij.toon, isPill: true },
+                    { label: 'Onderscheid', value: result.scoreboard.jij.onderscheid },
+                  ].map((row, i) => (
+                    <div key={i}>
+                      <p style={{ fontSize: '10px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', color: 'rgba(255,255,255,0.4)', fontFamily: 'Satoshi, sans-serif', marginBottom: '5px' }}>{row.label}</p>
+                      {row.isPill ? (
+                        <span style={{ display: 'inline-block', padding: '3px 10px', borderRadius: '20px', fontSize: '12px', fontFamily: 'Satoshi, sans-serif', background: 'rgba(46,124,246,0.15)', border: '1px solid rgba(46,124,246,0.3)', color: '#fff' }}>{row.value}</span>
+                      ) : (
+                        <p style={{ fontSize: '14px', color: '#fff', fontFamily: 'Satoshi, sans-serif', margin: 0, lineHeight: '1.4', fontWeight: 500 }}>{row.value}</p>
+                      )}
+                    </div>
+                  ))}
                 </div>
               </div>
 
-              {/* Concurrent kaarten */}
-              {result.scoreboard.concurrenten.map((c, idx) => (
-                <div key={idx} style={{
-                  background: 'rgba(255,255,255,0.04)',
-                  border: '1px solid rgba(255,255,255,0.08)',
-                  borderRadius: '12px',
-                  padding: '24px',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  gap: '20px'
-                }}>
-                  <div>
-                    <p style={{ fontSize: '10px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', color: 'rgba(255,255,255,0.35)', fontFamily: 'Satoshi, sans-serif', marginBottom: '4px' }}>Concurrent</p>
-                    <p style={{ fontSize: '16px', fontWeight: 700, color: '#fff', fontFamily: 'GreedCondensed, sans-serif', textTransform: 'uppercase', margin: 0 }}>{c.naam}</p>
+              {/* Concurrent kaarten — drie naast elkaar */}
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, minmax(0, 1fr))', gap: '10px' }}>
+                {result.scoreboard.concurrenten.map((c, idx) => (
+                  <div key={idx} style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '12px', padding: '20px', display: 'flex', flexDirection: 'column', gap: '14px' }}>
+                    <div>
+                      <p style={{ fontSize: '10px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', color: 'rgba(255,255,255,0.35)', fontFamily: 'Satoshi, sans-serif', marginBottom: '3px' }}>Concurrent</p>
+                      <p style={{ fontSize: '15px', fontWeight: 700, color: '#fff', fontFamily: 'GreedCondensed, sans-serif', textTransform: 'uppercase', margin: 0 }}>{c.naam}</p>
+                    </div>
+                    <div>
+                      <p style={{ fontSize: '10px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'rgba(255,255,255,0.35)', fontFamily: 'Satoshi, sans-serif', marginBottom: '3px' }}>Kernbelofte</p>
+                      <p style={{ fontSize: '13px', color: 'rgba(255,255,255,0.8)', fontFamily: 'Satoshi, sans-serif', margin: 0, lineHeight: '1.4', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                        {c.kernbelofte}
+                        {c.kernbelofteOverlap && <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: 'rgba(255,255,255,0.5)', flexShrink: 0, display: 'inline-block' }} />}
+                      </p>
+                    </div>
+                    <div>
+                      <p style={{ fontSize: '10px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'rgba(255,255,255,0.35)', fontFamily: 'Satoshi, sans-serif', marginBottom: '3px' }}>Aanbod</p>
+                      <p style={{ fontSize: '13px', color: 'rgba(255,255,255,0.8)', fontFamily: 'Satoshi, sans-serif', margin: 0, lineHeight: '1.4', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                        {c.aanbod}
+                        {c.aanbodOverlap && <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: 'rgba(255,255,255,0.5)', flexShrink: 0, display: 'inline-block' }} />}
+                      </p>
+                    </div>
+                    <div>
+                      <p style={{ fontSize: '10px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'rgba(255,255,255,0.35)', fontFamily: 'Satoshi, sans-serif', marginBottom: '5px' }}>Toon</p>
+                      <span style={{ display: 'inline-block', padding: '2px 10px', borderRadius: '20px', fontSize: '12px', fontFamily: 'Satoshi, sans-serif', background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)', color: 'rgba(255,255,255,0.6)' }}>{c.toon}</span>
+                    </div>
+                    <div>
+                      <p style={{ fontSize: '10px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'rgba(255,255,255,0.35)', fontFamily: 'Satoshi, sans-serif', marginBottom: '3px' }}>Onderscheid</p>
+                      <p style={{ fontSize: '13px', color: 'rgba(255,255,255,0.55)', fontFamily: 'Satoshi, sans-serif', margin: 0, lineHeight: '1.4' }}>{c.onderscheid}</p>
+                    </div>
                   </div>
+                ))}
+              </div>
 
-                  {/* Kernbelofte — met overlap highlight indien van toepassing */}
-                  <div style={c.kernbelofteOverlap ? {
-                    background: 'rgba(132,99,255,0.12)',
-                    border: '1px solid rgba(132,99,255,0.35)',
-                    borderRadius: '8px',
-                    padding: '10px 12px'
-                  } : {}}>
-                    <p style={{ fontSize: '10px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', color: c.kernbelofteOverlap ? '#8463ff' : 'rgba(255,255,255,0.35)', fontFamily: 'Satoshi, sans-serif', marginBottom: '4px' }}>
-                      Kernbelofte{c.kernbelofteOverlap ? ' \u2194' : ''}
-                    </p>
-                    <p style={{ fontSize: '13px', color: c.kernbelofteOverlap ? 'rgba(255,255,255,0.9)' : 'rgba(255,255,255,0.65)', fontFamily: 'Satoshi, sans-serif', margin: 0, lineHeight: '1.4' }}>{c.kernbelofte}</p>
-                  </div>
+              {/* Legenda */}
+              <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginTop: '4px' }}>
+                <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: 'rgba(255,255,255,0.5)', display: 'inline-block', flexShrink: 0 }} />
+                <p style={{ fontSize: '12px', color: 'rgba(255,255,255,0.35)', fontFamily: 'Satoshi, sans-serif', margin: 0 }}>overlapt met jou</p>
+              </div>
 
-                  {/* Aanbod — met overlap highlight indien van toepassing */}
-                  <div style={c.aanbodOverlap ? {
-                    background: 'rgba(132,99,255,0.12)',
-                    border: '1px solid rgba(132,99,255,0.35)',
-                    borderRadius: '8px',
-                    padding: '10px 12px'
-                  } : {}}>
-                    <p style={{ fontSize: '10px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', color: c.aanbodOverlap ? '#8463ff' : 'rgba(255,255,255,0.35)', fontFamily: 'Satoshi, sans-serif', marginBottom: '4px' }}>
-                      Aanbod{c.aanbodOverlap ? ' \u2194' : ''}
-                    </p>
-                    <p style={{ fontSize: '13px', color: c.aanbodOverlap ? 'rgba(255,255,255,0.9)' : 'rgba(255,255,255,0.65)', fontFamily: 'Satoshi, sans-serif', margin: 0, lineHeight: '1.4' }}>{c.aanbod}</p>
-                  </div>
-
-                  <div>
-                    <p style={{ fontSize: '10px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', color: 'rgba(255,255,255,0.35)', fontFamily: 'Satoshi, sans-serif', marginBottom: '6px' }}>Toon</p>
-                    <span style={{ display: 'inline-block', padding: '3px 12px', borderRadius: '20px', fontSize: '12px', fontFamily: 'Satoshi, sans-serif', background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)', color: 'rgba(255,255,255,0.6)' }}>{c.toon}</span>
-                  </div>
-
-                  <div>
-                    <p style={{ fontSize: '10px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', color: 'rgba(255,255,255,0.35)', fontFamily: 'Satoshi, sans-serif', marginBottom: '4px' }}>Onderscheid</p>
-                    <p style={{ fontSize: '13px', color: 'rgba(255,255,255,0.55)', fontFamily: 'Satoshi, sans-serif', margin: 0, lineHeight: '1.4' }}>{c.onderscheid}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            {/* Legenda */}
-            <div style={{ marginTop: '16px', display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <div style={{ width: '10px', height: '10px', borderRadius: '2px', background: 'rgba(132,99,255,0.3)', border: '1px solid rgba(132,99,255,0.5)' }} />
-              <p style={{ fontSize: '12px', color: 'rgba(255,255,255,0.35)', fontFamily: 'Satoshi, sans-serif', margin: 0 }}>{'\u2194'} kernbelofte of aanbod overlapt met jou</p>
             </div>
           </div>
         </section>
       )}
 
-      {/* Intro */}
-      <section className="bg-dark" style={{ paddingTop: '48px', paddingBottom: '48px' }}>
+      {/* Intro — na scoreboard, voor Jouw website */}
+      <section style={{ padding: '0 0 48px', background: '#0f0f10' }}>
         <div className="mx-auto px-4 text-center" style={{ maxWidth: '600px' }}>
-          <p className="text-white/70 font-body leading-relaxed" style={{ fontSize: '18px', lineHeight: '1.7' }}>
+          <p style={{ fontSize: '17px', color: 'rgba(255,255,255,0.65)', fontFamily: 'Satoshi, sans-serif', lineHeight: '1.7', margin: 0 }}>
             {result.intro}
           </p>
         </div>
