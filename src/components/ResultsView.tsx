@@ -41,14 +41,14 @@ export default function ResultsView({ url, result }: ResultsViewProps) {
       <section className="bg-dark" style={{ paddingTop: '64px', paddingBottom: '8px' }}>
         <div className="mx-auto px-4 text-center" style={{ maxWidth: '680px' }}>
           <p style={{
-            fontSize: '13px',
-            fontWeight: 400,
+            fontSize: '14px',
+            fontFamily: 'KansasNew, serif',
             fontStyle: 'italic',
+            fontWeight: 400,
+            color: 'rgba(255,255,255,0.5)',
+            marginBottom: '10px',
             textTransform: 'none',
-            letterSpacing: '0.02em',
-            color: 'rgba(255,255,255,0.4)',
-            marginBottom: '12px',
-            fontFamily: 'KansasNew, serif'
+            letterSpacing: 'normal'
           }}>
             Jouw marktscan
           </p>
@@ -66,59 +66,104 @@ export default function ResultsView({ url, result }: ResultsViewProps) {
         </div>
       </section>
 
-      {/* Wijziging 3 — Scoreboard: verticale kaarten */}
+      {/* Scoreboard: losse verticale kaarten naast elkaar */}
       {result.scoreboard && (
-        <section className="bg-dark" style={{ padding: '48px 0 64px' }}>
-          <div className="mx-auto px-4" style={{ maxWidth: '680px' }}>
+        <section style={{ padding: '48px 0 64px', background: '#0f0f10' }}>
+          <div className="mx-auto px-4" style={{ maxWidth: '860px' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: `1.6fr${' 1fr'.repeat(result.scoreboard.concurrenten.length)}`, gap: '10px' }}>
 
-            {/* Jouw kaart */}
-            <div style={{ background: 'rgba(46,124,246,0.08)', border: '1px solid rgba(46,124,246,0.2)', borderRadius: '12px', padding: '28px 32px', marginBottom: '12px' }}>
-              <p style={{ fontSize: '15px', fontWeight: 600, color: '#2e7cf6', fontFamily: 'Satoshi, sans-serif', marginBottom: '20px' }}>
-                {result.jouwSite.naam}
-              </p>
-              {[
-                { label: 'Kernbelofte', value: result.scoreboard.jij.kernbelofte },
-                { label: 'Aanbod', value: result.scoreboard.jij.aanbod },
-                { label: 'Toon', value: result.scoreboard.jij.toon },
-                { label: 'Onderscheid', value: result.scoreboard.jij.onderscheid },
-              ].map((row, i) => (
-                <div key={i} style={{ marginBottom: i < 3 ? '14px' : 0 }}>
-                  <p style={{ fontSize: '10px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', color: 'rgba(255,255,255,0.35)', fontFamily: 'Satoshi, sans-serif', margin: '0 0 4px' }}>
-                    {row.label}
-                  </p>
-                  <p style={{ fontSize: '15px', color: '#fff', fontFamily: 'Satoshi, sans-serif', margin: 0, lineHeight: '1.4' }}>
-                    {row.value}
-                  </p>
+              {/* Jouw kaart — highlighted */}
+              <div style={{
+                background: 'rgba(46,124,246,0.08)',
+                border: '1px solid rgba(46,124,246,0.35)',
+                borderRadius: '12px',
+                padding: '24px',
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '20px'
+              }}>
+                <div>
+                  <p style={{ fontSize: '10px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', color: '#2e7cf6', fontFamily: 'Satoshi, sans-serif', marginBottom: '4px' }}>Jij</p>
+                  <p style={{ fontSize: '16px', fontWeight: 700, color: '#fff', fontFamily: 'GreedCondensed, sans-serif', textTransform: 'uppercase', margin: 0 }}>{result.jouwSite.naam}</p>
+                </div>
+                <div>
+                  <p style={{ fontSize: '10px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', color: 'rgba(255,255,255,0.4)', fontFamily: 'Satoshi, sans-serif', marginBottom: '4px' }}>Kernbelofte</p>
+                  <p style={{ fontSize: '14px', color: '#fff', fontFamily: 'Satoshi, sans-serif', margin: 0, lineHeight: '1.4' }}>{result.scoreboard.jij.kernbelofte}</p>
+                </div>
+                <div>
+                  <p style={{ fontSize: '10px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', color: 'rgba(255,255,255,0.4)', fontFamily: 'Satoshi, sans-serif', marginBottom: '4px' }}>Aanbod</p>
+                  <p style={{ fontSize: '14px', color: '#fff', fontFamily: 'Satoshi, sans-serif', margin: 0, lineHeight: '1.4' }}>{result.scoreboard.jij.aanbod}</p>
+                </div>
+                <div>
+                  <p style={{ fontSize: '10px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', color: 'rgba(255,255,255,0.4)', fontFamily: 'Satoshi, sans-serif', marginBottom: '6px' }}>Toon</p>
+                  <span style={{ display: 'inline-block', padding: '3px 12px', borderRadius: '20px', fontSize: '12px', fontFamily: 'Satoshi, sans-serif', background: 'rgba(46,124,246,0.15)', border: '1px solid rgba(46,124,246,0.3)', color: '#fff' }}>{result.scoreboard.jij.toon}</span>
+                </div>
+                <div>
+                  <p style={{ fontSize: '10px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', color: 'rgba(255,255,255,0.4)', fontFamily: 'Satoshi, sans-serif', marginBottom: '4px' }}>Onderscheid</p>
+                  <p style={{ fontSize: '13px', color: 'rgba(255,255,255,0.8)', fontFamily: 'Satoshi, sans-serif', margin: 0, lineHeight: '1.4' }}>{result.scoreboard.jij.onderscheid}</p>
+                </div>
+              </div>
+
+              {/* Concurrent kaarten */}
+              {result.scoreboard.concurrenten.map((c, idx) => (
+                <div key={idx} style={{
+                  background: 'rgba(255,255,255,0.04)',
+                  border: '1px solid rgba(255,255,255,0.08)',
+                  borderRadius: '12px',
+                  padding: '24px',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: '20px'
+                }}>
+                  <div>
+                    <p style={{ fontSize: '10px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', color: 'rgba(255,255,255,0.35)', fontFamily: 'Satoshi, sans-serif', marginBottom: '4px' }}>Concurrent</p>
+                    <p style={{ fontSize: '16px', fontWeight: 700, color: '#fff', fontFamily: 'GreedCondensed, sans-serif', textTransform: 'uppercase', margin: 0 }}>{c.naam}</p>
+                  </div>
+
+                  {/* Kernbelofte — met overlap highlight indien van toepassing */}
+                  <div style={c.kernbelofteOverlap ? {
+                    background: 'rgba(132,99,255,0.12)',
+                    border: '1px solid rgba(132,99,255,0.35)',
+                    borderRadius: '8px',
+                    padding: '10px 12px'
+                  } : {}}>
+                    <p style={{ fontSize: '10px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', color: c.kernbelofteOverlap ? '#8463ff' : 'rgba(255,255,255,0.35)', fontFamily: 'Satoshi, sans-serif', marginBottom: '4px' }}>
+                      Kernbelofte{c.kernbelofteOverlap ? ' \u2194' : ''}
+                    </p>
+                    <p style={{ fontSize: '13px', color: c.kernbelofteOverlap ? 'rgba(255,255,255,0.9)' : 'rgba(255,255,255,0.65)', fontFamily: 'Satoshi, sans-serif', margin: 0, lineHeight: '1.4' }}>{c.kernbelofte}</p>
+                  </div>
+
+                  {/* Aanbod — met overlap highlight indien van toepassing */}
+                  <div style={c.aanbodOverlap ? {
+                    background: 'rgba(132,99,255,0.12)',
+                    border: '1px solid rgba(132,99,255,0.35)',
+                    borderRadius: '8px',
+                    padding: '10px 12px'
+                  } : {}}>
+                    <p style={{ fontSize: '10px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', color: c.aanbodOverlap ? '#8463ff' : 'rgba(255,255,255,0.35)', fontFamily: 'Satoshi, sans-serif', marginBottom: '4px' }}>
+                      Aanbod{c.aanbodOverlap ? ' \u2194' : ''}
+                    </p>
+                    <p style={{ fontSize: '13px', color: c.aanbodOverlap ? 'rgba(255,255,255,0.9)' : 'rgba(255,255,255,0.65)', fontFamily: 'Satoshi, sans-serif', margin: 0, lineHeight: '1.4' }}>{c.aanbod}</p>
+                  </div>
+
+                  <div>
+                    <p style={{ fontSize: '10px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', color: 'rgba(255,255,255,0.35)', fontFamily: 'Satoshi, sans-serif', marginBottom: '6px' }}>Toon</p>
+                    <span style={{ display: 'inline-block', padding: '3px 12px', borderRadius: '20px', fontSize: '12px', fontFamily: 'Satoshi, sans-serif', background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)', color: 'rgba(255,255,255,0.6)' }}>{c.toon}</span>
+                  </div>
+
+                  <div>
+                    <p style={{ fontSize: '10px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', color: 'rgba(255,255,255,0.35)', fontFamily: 'Satoshi, sans-serif', marginBottom: '4px' }}>Onderscheid</p>
+                    <p style={{ fontSize: '13px', color: 'rgba(255,255,255,0.55)', fontFamily: 'Satoshi, sans-serif', margin: 0, lineHeight: '1.4' }}>{c.onderscheid}</p>
+                  </div>
                 </div>
               ))}
             </div>
 
-            {/* Concurrent kaarten */}
-            {result.scoreboard.concurrenten.map((c, idx) => (
-              <div key={idx} style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '12px', padding: '28px 32px', marginBottom: idx < result.scoreboard.concurrenten.length - 1 ? '12px' : 0 }}>
-                <p style={{ fontSize: '15px', fontWeight: 600, color: 'rgba(255,255,255,0.8)', fontFamily: 'Satoshi, sans-serif', marginBottom: '20px' }}>
-                  {c.naam}
-                </p>
-                {[
-                  { label: 'Kernbelofte', value: c.kernbelofte, overlap: c.kernbelofteOverlap },
-                  { label: 'Aanbod', value: c.aanbod, overlap: c.aanbodOverlap },
-                  { label: 'Toon', value: c.toon, overlap: false },
-                  { label: 'Onderscheid', value: c.onderscheid, overlap: false },
-                ].map((row, i) => (
-                  <div key={i} style={{
-                    marginBottom: i < 3 ? '14px' : 0,
-                    ...(row.overlap ? { borderLeft: '2px solid #8463ff', paddingLeft: '12px' } : {})
-                  }}>
-                    <p style={{ fontSize: '10px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', color: row.overlap ? 'rgba(132,99,255,0.6)' : 'rgba(255,255,255,0.35)', fontFamily: 'Satoshi, sans-serif', margin: '0 0 4px' }}>
-                      {row.label}{row.overlap ? ' · overlap' : ''}
-                    </p>
-                    <p style={{ fontSize: '15px', color: 'rgba(255,255,255,0.75)', fontFamily: 'Satoshi, sans-serif', margin: 0, lineHeight: '1.4' }}>
-                      {row.value}
-                    </p>
-                  </div>
-                ))}
-              </div>
-            ))}
+            {/* Legenda */}
+            <div style={{ marginTop: '16px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <div style={{ width: '10px', height: '10px', borderRadius: '2px', background: 'rgba(132,99,255,0.3)', border: '1px solid rgba(132,99,255,0.5)' }} />
+              <p style={{ fontSize: '12px', color: 'rgba(255,255,255,0.35)', fontFamily: 'Satoshi, sans-serif', margin: 0 }}>{'\u2194'} kernbelofte of aanbod overlapt met jou</p>
+            </div>
           </div>
         </section>
       )}
