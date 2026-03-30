@@ -20,6 +20,10 @@ async function withRetry<T>(fn: () => Promise<T>, label: string, maxRetries = 3)
       return await fn();
     } catch (error: unknown) {
       const err = error as { status?: number; message?: string };
+      // Nooit retrien als het een withTimeout hard limit is
+      const isHardTimeout = err?.message?.includes('timeout na');
+      if (isHardTimeout) throw error;
+
       const isRetryable =
         err?.status === 429 ||
         err?.status === 529 ||
@@ -27,7 +31,7 @@ async function withRetry<T>(fn: () => Promise<T>, label: string, maxRetries = 3)
         err?.status === 502 ||
         err?.message?.includes('rate_limit') ||
         err?.message?.includes('overloaded') ||
-        err?.message?.includes('timeout') ||
+        err?.message?.includes('ETIMEDOUT') ||
         err?.message?.includes('ECONNRESET') ||
         err?.message?.includes('fetch failed');
 
@@ -97,7 +101,7 @@ export async function identifyIndustry(content: string): Promise<string> {
   console.log('identifyIndustry: start, content length:', content.length);
   return withRetry(async () => {
     const response = await anthropic.messages.create({
-      model: 'claude-sonnet-4-6',
+      model: 'claude-sonnet-4-5-20250514',
       max_tokens: 100,
       messages: [{
         role: 'user',
@@ -130,7 +134,7 @@ export async function findCompetitors(industry: string): Promise<string[]> {
     try {
       const response = await withRetry(async () => {
         return await anthropic.messages.create({
-          model: 'claude-sonnet-4-6',
+          model: 'claude-sonnet-4-5-20250514',
           max_tokens: 300,
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           tools: [{ type: 'web_search_20250305', name: 'web_search' } as any],
@@ -183,7 +187,7 @@ export async function analyzeWebsites(
 
   return withRetry(async () => {
     const response = await anthropic.messages.create({
-      model: 'claude-sonnet-4-6',
+      model: 'claude-sonnet-4-5-20250514',
       max_tokens: 2000,
       messages: [{
         role: 'user',
