@@ -37,11 +37,32 @@ export default function ResultsView({ url, result }: ResultsViewProps) {
 
   return (
     <div className="animate-slide-up">
-      {/* Intro */}
-      <section className="bg-dark" style={{ paddingTop: '80px', paddingBottom: '24px' }}>
+      {/* Merknaam */}
+      <section className="bg-dark" style={{ paddingTop: '64px', paddingBottom: '0' }}>
         <div className="mx-auto px-4 text-center" style={{ maxWidth: '680px' }}>
-          <p className="label-style text-accent mb-6">Jouw concurrentieanalyse</p>
-          <p className="text-white font-body leading-relaxed" style={{ fontSize: '17px' }}>
+          <p className="label-style" style={{ color: 'rgba(255,255,255,0.4)', fontSize: '12px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '8px' }}>
+            Concurrentieanalyse voor
+          </p>
+          <h1 style={{
+            fontFamily: 'GreedCondensed, sans-serif',
+            fontWeight: 700,
+            textTransform: 'uppercase',
+            fontSize: 'clamp(36px, 6vw, 72px)',
+            background: 'linear-gradient(90deg, #2e7cf6, #8463ff, #ff6bba)',
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent',
+            margin: 0,
+            lineHeight: 1
+          }}>
+            {result.jouwSite.naam}
+          </h1>
+        </div>
+      </section>
+
+      {/* Intro */}
+      <section className="bg-dark" style={{ paddingTop: '48px', paddingBottom: '48px' }}>
+        <div className="mx-auto px-4 text-center" style={{ maxWidth: '600px' }}>
+          <p className="text-white/70 font-body leading-relaxed" style={{ fontSize: '18px', lineHeight: '1.7' }}>
             {result.intro}
           </p>
         </div>
@@ -89,25 +110,46 @@ export default function ResultsView({ url, result }: ResultsViewProps) {
                 <p className="text-white/40 font-body mb-3" style={{ fontSize: '13px' }}>
                   {competitor.url}
                 </p>
-                <p className="text-white font-body mb-3 leading-relaxed" style={{ fontSize: '17px' }}>
+                {/* omschrijving */}
+                <p style={{ fontSize: '16px', color: '#ffffff', lineHeight: '1.6', marginBottom: '20px' }}>
                   {competitor.omschrijving}
                 </p>
-                {/* Overlap */}
-                <div style={{ marginTop: '16px' }}>
-                  <p style={{ fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'rgba(255,255,255,0.35)', marginBottom: '4px' }}>
+
+                {/* overlap */}
+                <div style={{ marginTop: '16px', paddingTop: '16px', borderTop: '1px solid rgba(255,255,255,0.08)' }}>
+                  <p style={{
+                    fontSize: '10px',
+                    fontWeight: 700,
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.1em',
+                    marginBottom: '6px',
+                    background: 'linear-gradient(90deg, #2e7cf6, #8463ff)',
+                    WebkitBackgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent'
+                  }}>
                     Overlap met jou
                   </p>
-                  <p style={{ fontSize: '15px', color: 'rgba(255,255,255,0.65)' }}>
+                  <p style={{ fontSize: '15px', color: 'rgba(255,255,255,0.75)', lineHeight: '1.5' }}>
                     {competitor.overlap}
                   </p>
                 </div>
-                {/* Reden */}
+
+                {/* reden */}
                 {competitor.reden && (
-                  <div style={{ marginTop: '12px' }}>
-                    <p style={{ fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'rgba(255,255,255,0.35)', marginBottom: '4px' }}>
+                  <div style={{ marginTop: '14px' }}>
+                    <p style={{
+                      fontSize: '10px',
+                      fontWeight: 700,
+                      textTransform: 'uppercase',
+                      letterSpacing: '0.1em',
+                      marginBottom: '6px',
+                      background: 'linear-gradient(90deg, #8463ff, #ff6bba)',
+                      WebkitBackgroundClip: 'text',
+                      WebkitTextFillColor: 'transparent'
+                    }}>
                       Waarom concurrent
                     </p>
-                    <p style={{ fontSize: '15px', color: 'rgba(255,255,255,0.5)' }}>
+                    <p style={{ fontSize: '15px', color: 'rgba(255,255,255,0.75)', lineHeight: '1.5' }}>
                       {competitor.reden}
                     </p>
                   </div>
@@ -121,8 +163,8 @@ export default function ResultsView({ url, result }: ResultsViewProps) {
       {/* Vergelijking — Wat we zagen */}
       <section className="bg-dark" style={{ padding: '0 0 64px' }}>
         <div className="mx-auto px-4" style={{ maxWidth: '680px' }}>
-          <h2 className="font-heading text-white mb-8" style={{ fontSize: 'clamp(18px, 2.5vw, 28px)', fontFamily: 'GreedCondensed, sans-serif', fontWeight: 700, textTransform: 'uppercase' as const }}>
-            Wat we zagen
+          <h2 style={{ fontFamily: 'GreedCondensed, sans-serif', fontWeight: 700, textTransform: 'uppercase', fontSize: 'clamp(18px, 2.5vw, 28px)', color: '#fff', marginBottom: '32px' }}>
+            {result.vergelijkingTitel}
           </h2>
           <div style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', padding: '32px' }}>
             <p className="text-white font-body leading-relaxed" style={{ fontSize: '17px' }}>
@@ -135,20 +177,24 @@ export default function ResultsView({ url, result }: ResultsViewProps) {
       {/* Wat beter kan */}
       <section className="bg-dark" style={{ padding: '0 0 64px' }}>
         <div className="mx-auto px-4" style={{ maxWidth: '680px' }}>
-          <h2 className="font-heading text-white mb-8" style={{ fontSize: 'clamp(18px, 2.5vw, 28px)', fontFamily: 'GreedCondensed, sans-serif', fontWeight: 700, textTransform: 'uppercase' as const }}>
+          <h2 style={{ fontFamily: 'GreedCondensed, sans-serif', fontWeight: 700, textTransform: 'uppercase', fontSize: 'clamp(18px, 2.5vw, 28px)', color: '#fff', marginBottom: '32px' }}>
             Wat beter kan
           </h2>
-          <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '12px' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
             {result.watBeterKan.map((item, index) => (
-              <li key={index} style={{ display: 'flex', alignItems: 'flex-start', gap: '12px' }}>
-                <svg style={{ width: '16px', height: '16px', flexShrink: 0, marginTop: '4px' }} fill="none" stroke="#f87171" viewBox="0 0 24 24" strokeWidth={2.5}>
-                  <line x1="18" y1="6" x2="6" y2="18" />
-                  <line x1="6" y1="6" x2="18" y2="18" />
-                </svg>
-                <span className="font-body" style={{ fontSize: '17px', color: '#fff' }}>{item}</span>
-              </li>
+              <div key={index} style={{ display: 'flex', alignItems: 'flex-start', gap: '16px' }}>
+                <div style={{ flexShrink: 0, width: '24px', height: '24px', borderRadius: '50%', background: 'rgba(248,113,113,0.15)', border: '1px solid rgba(248,113,113,0.3)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginTop: '2px' }}>
+                  <svg width="10" height="10" fill="none" stroke="#f87171" viewBox="0 0 24 24" strokeWidth={3}>
+                    <line x1="18" y1="6" x2="6" y2="18" />
+                    <line x1="6" y1="6" x2="18" y2="18" />
+                  </svg>
+                </div>
+                <p style={{ fontSize: '17px', color: '#ffffff', lineHeight: '1.6', margin: 0 }}>
+                  {item}
+                </p>
+              </div>
             ))}
-          </ul>
+          </div>
         </div>
       </section>
 

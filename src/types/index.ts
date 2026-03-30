@@ -12,6 +12,7 @@ export interface AnalysisResult {
     overlap: string;
     reden: string;
   }[];
+  vergelijkingTitel: string;
   vergelijking: string;
   watBeterKan: string[];
   kans: string;

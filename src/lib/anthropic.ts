@@ -57,7 +57,7 @@ BELANGRIJK: Analyseer alleen concurrenten waarvoor je voldoende inhoud hebt ontv
 Genereer uitsluitend de volgende JSON structuur, geen uitleg of opmaak eromheen:
 
 {
-  "intro": "Twee zinnen die kort en direct beschrijven wat je gaat zien. Niet analyseren -- alleen kaderen.",
+  "intro": "Drie tot vier zinnen die kort en direct beschrijven wat de gebruiker gaat zien. Stel de toon in: eerlijk, zonder oordeel, nieuwsgierig makend. Benoem kort wat je hebt onderzocht en wat de rode draad is die je alvast ziet.",
 
   "jouwSite": {
     "naam": "Naam van het bedrijf, afgeleid uit de website",
@@ -77,6 +77,8 @@ Genereer uitsluitend de volgende JSON structuur, geen uitleg of opmaak eromheen:
       "reden": "Waarom dit een relevante concurrent is. Zelfde markt, zelfde doelgroep, zelfde dienst. Één zin."
     }
   ],
+
+  "vergelijkingTitel": "Een pakkende titel van 3-5 woorden die de kern van de vergelijking samenvat. Niet 'Wat we zagen' maar iets als 'Iedereen belooft hetzelfde' of 'De markt klinkt als één stem'. Concreet, scherp, direct.",
 
   "vergelijking": "Twee tot drie zinnen over wat alle partijen gemeen hebben. De rode draad die laat zien dat ze in een gelijkvormige markt opereren.",
 
@@ -118,9 +120,9 @@ export async function findCompetitors(industry: string): Promise<string[]> {
   console.log('findCompetitors: industry:', industry);
 
   const queries = [
-    `Zoek drie concurrenten in de ${industry} markt in Nederland. Geef alleen de website URLs terug, één per regel. Alleen commerciële bedrijven, geen magazines of directories.`,
-    `${industry} bureaus Nederland top 3. Geef alleen website URLs, één per regel. Alleen commerciële dienstverleners.`,
-    `Alternatieven voor ${industry} aanbieders Nederland. Drie website URLs, één per regel.`,
+    `Zoek drie concurrenten in de ${industry} markt in Nederland. Geef alleen de website URLs terug, één per regel. Alleen commerciële bedrijven met een toegankelijke website (geen cookiewalls, geen login-vereiste). Geen magazines of directories.`,
+    `${industry} bureaus Nederland top 3. Geef alleen website URLs, één per regel. Alleen commerciële dienstverleners met een toegankelijke website (geen cookiewalls, geen login-vereiste).`,
+    `Alternatieven voor ${industry} aanbieders Nederland. Drie website URLs, één per regel. Alleen toegankelijke websites zonder cookiewalls of login.`,
   ];
 
   const allUrls = new Set<string>();
