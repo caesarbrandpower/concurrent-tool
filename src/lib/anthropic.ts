@@ -14,7 +14,7 @@ export async function withTimeout<T>(fn: () => Promise<T>, ms: number, label: st
   return Promise.race([fn(), timeout]);
 }
 
-async function withRetry<T>(fn: () => Promise<T>, label: string, maxRetries = 3): Promise<T> {
+async function withRetry<T>(fn: () => Promise<T>, label: string, maxRetries = 2): Promise<T> {
   for (let attempt = 0; attempt <= maxRetries; attempt++) {
     try {
       return await fn();
@@ -37,7 +37,7 @@ async function withRetry<T>(fn: () => Promise<T>, label: string, maxRetries = 3)
 
       const isTokenLimit = err?.message?.includes('input tokens per minute');
       if ((isRetryable || isTokenLimit) && attempt < maxRetries) {
-        const wait = isTokenLimit ? 15000 : Math.pow(2, attempt) * 5000;
+        const wait = isTokenLimit ? 10000 : Math.pow(2, attempt) * 3000; // 3s, 6s
         console.log(`${label}: fout (${err?.status || err?.message}), wacht ${wait/1000}s (poging ${attempt + 1}/${maxRetries})...`);
         await new Promise(resolve => setTimeout(resolve, wait));
         continue;
@@ -103,7 +103,7 @@ export async function identifyIndustry(content: string): Promise<string> {
   console.log('identifyIndustry: start, content length:', content.length);
   return withRetry(async () => {
     const response = await anthropic.messages.create({
-      model: 'claude-sonnet-4-20250514',
+      model: 'claude-sonnet-4-5',
       max_tokens: 100,
       messages: [{
         role: 'user',
@@ -119,55 +119,44 @@ export async function identifyIndustry(content: string): Promise<string> {
 export async function findCompetitors(industry: string): Promise<string[]> {
   console.log('findCompetitors: industry:', industry);
 
-  const queries = [
-    `Zoek drie concurrenten in de ${industry} markt in Nederland. Geef alleen de website URLs terug, één per regel. Alleen commerciële bedrijven met een toegankelijke website (geen cookiewalls, geen login-vereiste). Geen magazines of directories.`,
-    `${industry} bureaus Nederland top 3. Geef alleen website URLs, één per regel. Alleen commerciële dienstverleners met een toegankelijke website (geen cookiewalls, geen login-vereiste).`,
-    `Alternatieven voor ${industry} aanbieders Nederland. Drie website URLs, één per regel. Alleen toegankelijke websites zonder cookiewalls of login.`,
-  ];
+  // Eén brede query i.p.v. drie — bespaart API calls en voorkomt rate limits
+  const query = `Zoek vijf concurrenten in de ${industry} markt in Nederland. Geef alleen de website URLs terug, één per regel. Alleen commerciële bedrijven met een toegankelijke website (geen cookiewalls, geen login-vereiste). Geen magazines, directories of nieuwssites.`;
 
   const allUrls = new Set<string>();
 
-  for (let attempt = 0; attempt < queries.length; attempt++) {
-    // Stop als we genoeg URLs hebben
-    if (allUrls.size >= 9) break;
+  console.log('findCompetitors: start, query:', query.substring(0, 80));
 
-    console.log(`findCompetitors: poging ${attempt + 1}/${queries.length}`);
+  try {
+    const response = await withRetry(async () => {
+      return await anthropic.messages.create({
+        model: 'claude-sonnet-4-5',
+        max_tokens: 300,
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        tools: [{ type: 'web_search_20250305', name: 'web_search' } as any],
+        messages: [{
+          role: 'user',
+          content: query,
+        }],
+      });
+    }, 'findCompetitors');
 
-    try {
-      const response = await withRetry(async () => {
-        return await anthropic.messages.create({
-          model: 'claude-sonnet-4-20250514',
-          max_tokens: 300,
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          tools: [{ type: 'web_search_20250305', name: 'web_search' } as any],
-          messages: [{
-            role: 'user',
-            content: queries[attempt],
-          }],
-        });
-      }, `findCompetitors poging ${attempt + 1}`);
+    console.log('findCompetitors: stop_reason:', response.stop_reason);
 
-      console.log(`findCompetitors poging ${attempt + 1}: stop_reason:`, response.stop_reason);
+    const textBlocks = response.content.filter(b => b.type === 'text').map(b => b.type === 'text' ? b.text : '');
+    const fullText = textBlocks.join('\n');
 
-      const textBlocks = response.content.filter(b => b.type === 'text').map(b => b.type === 'text' ? b.text : '');
-      const fullText = textBlocks.join('\n');
+    const urlMatches = fullText.match(/https?:\/\/[^\s,)"\]]+/g) || [];
+    const urls = urlMatches
+      .map(u => u.replace(/[.,:;]+$/, ''))
+      .filter(u => !u.includes('google.') && !u.includes('bing.') && !u.includes('wikipedia.'));
 
-      const urlMatches = fullText.match(/https?:\/\/[^\s,)"\]]+/g) || [];
-      const urls = urlMatches
-        .map(u => u.replace(/[.,:;]+$/, ''))
-        .filter(u => !u.includes('google.') && !u.includes('bing.') && !u.includes('wikipedia.'));
-
-      urls.forEach(url => allUrls.add(url));
-      console.log(`findCompetitors poging ${attempt + 1}: gevonden ${urls.length} URLs, totaal uniek: ${allUrls.size}`);
-
-      // Stop pas na 2e query als we genoeg hebben — eerste query alleen is te weinig buffer
-      if (attempt >= 1 && allUrls.size >= 7) break;
-    } catch (e) {
-      console.error(`findCompetitors poging ${attempt + 1} mislukt:`, e);
-    }
+    urls.forEach(url => allUrls.add(url));
+    console.log(`findCompetitors: gevonden ${urls.length} URLs, uniek: ${allUrls.size}`);
+  } catch (e) {
+    console.error('findCompetitors mislukt:', e);
   }
 
-  const result = Array.from(allUrls).slice(0, 9);
+  const result = Array.from(allUrls).slice(0, 6);
   console.log('findCompetitors: final urls:', result);
 
   if (result.length < 2) {
@@ -189,7 +178,7 @@ export async function analyzeWebsites(
 
   return withRetry(async () => {
     const response = await anthropic.messages.create({
-      model: 'claude-sonnet-4-20250514',
+      model: 'claude-sonnet-4-5',
       max_tokens: 2000,
       messages: [{
         role: 'user',
