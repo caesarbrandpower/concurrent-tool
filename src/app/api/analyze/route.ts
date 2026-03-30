@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { scrapeWebsite, scrapeMultipleUrls, isValidScrape } from '@/lib/scraper';
-import { identifyIndustry, findCompetitors, analyzeWebsites } from '@/lib/anthropic';
+import { identifyIndustry, findCompetitors, analyzeWebsites, withTimeout } from '@/lib/anthropic';
 import { ScrapedData, AnalysisResult } from '@/types';
 
-export const maxDuration = 60;
+export const maxDuration = 120;
 
 export async function POST(request: NextRequest) {
   try {
@@ -81,9 +81,10 @@ export async function POST(request: NextRequest) {
     }
 
     // Step 5: Analyze all websites
-    const analysis = await analyzeWebsites(
-      userScraped.content,
-      competitorData.map(c => ({ url: c.url, content: c.content }))
+    const analysis = await withTimeout(
+      () => analyzeWebsites(userScraped.content, competitorData.map(c => ({ url: c.url, content: c.content }))),
+      90000,
+      'analyzeWebsites'
     );
 
     return NextResponse.json({

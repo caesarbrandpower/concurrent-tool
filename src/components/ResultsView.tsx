@@ -92,13 +92,25 @@ export default function ResultsView({ url, result }: ResultsViewProps) {
                 <p className="text-white font-body mb-3 leading-relaxed" style={{ fontSize: '17px' }}>
                   {competitor.omschrijving}
                 </p>
-                <p className="text-white/60 font-body italic" style={{ fontSize: '15px' }}>
-                  {competitor.overlap}
-                </p>
-                {competitor.reden && (
-                  <p className="text-white/40 font-body italic mt-3" style={{ fontSize: '14px' }}>
-                    Waarom deze concurrent? {competitor.reden}
+                {/* Overlap */}
+                <div style={{ marginTop: '16px' }}>
+                  <p style={{ fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'rgba(255,255,255,0.35)', marginBottom: '4px' }}>
+                    Overlap met jou
                   </p>
+                  <p style={{ fontSize: '15px', color: 'rgba(255,255,255,0.65)' }}>
+                    {competitor.overlap}
+                  </p>
+                </div>
+                {/* Reden */}
+                {competitor.reden && (
+                  <div style={{ marginTop: '12px' }}>
+                    <p style={{ fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'rgba(255,255,255,0.35)', marginBottom: '4px' }}>
+                      Waarom concurrent
+                    </p>
+                    <p style={{ fontSize: '15px', color: 'rgba(255,255,255,0.5)' }}>
+                      {competitor.reden}
+                    </p>
+                  </div>
                 )}
               </div>
             ))}
@@ -153,6 +165,19 @@ export default function ResultsView({ url, result }: ResultsViewProps) {
         </section>
       )}
 
+      {/* Implicatie */}
+      {result.implicatie && (
+        <section className="bg-dark" style={{ padding: '0 0 64px' }}>
+          <div className="mx-auto px-4" style={{ maxWidth: '680px' }}>
+            <div style={{ borderLeft: '3px solid #0E6EFF', paddingLeft: '24px' }}>
+              <p className="text-white font-body italic leading-relaxed" style={{ fontSize: '17px' }}>
+                {result.implicatie}
+              </p>
+            </div>
+          </div>
+        </section>
+      )}
+
       {/* Email lead sectie */}
       <section style={{ padding: '80px 0', background: 'rgba(255,255,255,0.04)' }}>
         <div className="mx-auto px-4" style={{ maxWidth: '680px' }}>
@@ -167,27 +192,18 @@ export default function ResultsView({ url, result }: ResultsViewProps) {
               <p className="text-white font-body mb-6" style={{ fontSize: '17px' }}>
                 Je analyse is onderweg. Check je inbox.
               </p>
-
-              {/* Implicatie */}
-              <div className="text-left mt-8">
-                <div style={{ background: 'rgba(14, 110, 255, 0.08)', borderLeft: '3px solid #0E6EFF', borderRadius: '0 8px 8px 0', padding: '24px' }}>
-                  <p className="text-white font-body italic" style={{ fontSize: '17px' }}>
-                    {result.implicatie}
-                  </p>
-                </div>
-              </div>
             </div>
           ) : (
             <div className="text-center">
               <h3 className="font-heading text-white mb-4" style={{ fontSize: 'clamp(24px, 3vw, 36px)', fontFamily: 'GreedCondensed, sans-serif', fontWeight: 700, textTransform: 'uppercase' as const }}>
-                De volledige analyse in je inbox
+                Bewaar je analyse
               </h3>
               <p className="text-white font-body mb-8 leading-relaxed" style={{ maxWidth: '560px', margin: '0 auto 32px', fontSize: '17px' }}>
-                Ontvang je analyse als overzicht. Inclusief de implicatie als je niets verandert.
+                Ontvang je volledige concurrentieanalyse als overzicht in je inbox. Gratis, direct.
               </p>
 
               <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '10px', marginBottom: '32px' }}>
-                {['Jouw sterke punten en verbeterpunten', 'De kans die jouw concurrenten laten liggen', 'Gratis, direct in je inbox'].map((text, i) => (
+                {['Jouw sterke punten op een rij', 'De kans die jouw concurrenten laten liggen', 'Gratis, direct in je inbox'].map((text, i) => (
                   <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                     <svg style={{ width: '16px', height: '16px', flexShrink: 0 }} fill="none" stroke="#4ade80" viewBox="0 0 24 24" strokeWidth={2.5}>
                       <polyline points="20 6 9 17 4 12" />

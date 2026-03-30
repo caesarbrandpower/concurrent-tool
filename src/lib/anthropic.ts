@@ -7,22 +7,33 @@ const anthropic = new Anthropic({
   apiKey: process.env.ANTHROPIC_API_KEY,
 });
 
-// Retry wrapper for rate limit errors (429)
-async function withRetry<T>(fn: () => Promise<T>, label: string, maxRetries = 2): Promise<T> {
+export async function withTimeout<T>(fn: () => Promise<T>, ms: number, label: string): Promise<T> {
+  const timeout = new Promise<never>((_, reject) =>
+    setTimeout(() => reject(new Error(`${label}: timeout na ${ms/1000}s`)), ms)
+  );
+  return Promise.race([fn(), timeout]);
+}
+
+async function withRetry<T>(fn: () => Promise<T>, label: string, maxRetries = 3): Promise<T> {
   for (let attempt = 0; attempt <= maxRetries; attempt++) {
     try {
       return await fn();
     } catch (error: unknown) {
-      const isRateLimit = error instanceof Error && (
-        error.message.includes('429') || error.message.includes('rate_limit')
-      );
-      // Also check Anthropic SDK error shape
-      const apiError = error as { status?: number };
-      const is429 = apiError?.status === 429;
+      const err = error as { status?: number; message?: string };
+      const isRetryable =
+        err?.status === 429 ||
+        err?.status === 529 ||
+        err?.status === 503 ||
+        err?.status === 502 ||
+        err?.message?.includes('rate_limit') ||
+        err?.message?.includes('overloaded') ||
+        err?.message?.includes('timeout') ||
+        err?.message?.includes('ECONNRESET') ||
+        err?.message?.includes('fetch failed');
 
-      if ((isRateLimit || is429) && attempt < maxRetries) {
-        const wait = (attempt + 1) * 10000; // 10s, 20s
-        console.log(`${label}: rate limit hit, wacht ${wait / 1000}s (poging ${attempt + 1}/${maxRetries})...`);
+      if (isRetryable && attempt < maxRetries) {
+        const wait = Math.pow(2, attempt) * 5000; // 5s, 10s, 20s
+        console.log(`${label}: fout (${err?.status || err?.message}), wacht ${wait/1000}s (poging ${attempt + 1}/${maxRetries})...`);
         await new Promise(resolve => setTimeout(resolve, wait));
         continue;
       }
@@ -41,15 +52,15 @@ BELANGRIJK: Analyseer alleen concurrenten waarvoor je voldoende inhoud hebt ontv
 Genereer uitsluitend de volgende JSON structuur, geen uitleg of opmaak eromheen:
 
 {
-  "intro": "Twee zinnen die kort en direct beschrijven wat je gaat zien. Niet analyseren -- alleen kaderen. Bijvoorbeeld: wat je hebt onderzocht en hoe het er in grote lijnen uitziet.",
+  "intro": "Twee zinnen die kort en direct beschrijven wat je gaat zien. Niet analyseren -- alleen kaderen.",
 
   "jouwSite": {
     "naam": "Naam van het bedrijf, afgeleid uit de website",
     "watGoedGaat": [
-      "Eerste sterke punt -- concreet en complimenteus, één zin",
-      "Tweede sterke punt"
+      "Eerste sterke punt -- concreet en complimenteus, één zin. Noem iets specifieks van de site.",
+      "Tweede sterke punt -- ook concreet, niet generiek."
     ],
-    "samenvatting": "Hoe de website overkomt op een nieuwe bezoeker. Eerlijk, twee zinnen. Geen oordeel over wat beter kan -- dat komt later."
+    "samenvatting": "Hoe de website overkomt op een nieuwe bezoeker. Eerlijk, twee zinnen. Geen oordeel over wat beter kan."
   },
 
   "concurrenten": [
@@ -62,11 +73,11 @@ Genereer uitsluitend de volgende JSON structuur, geen uitleg of opmaak eromheen:
     }
   ],
 
-  "vergelijking": "Twee tot drie zinnen over wat alle partijen gemeen hebben. Dit is de kern van de analyse -- de rode draad die de gebruiker laat zien dat ze in een drukke, gelijkvormige markt opereren.",
+  "vergelijking": "Twee tot drie zinnen over wat alle partijen gemeen hebben. De rode draad die laat zien dat ze in een gelijkvormige markt opereren.",
 
   "watBeterKan": [
-    "Eerste verbeterpunt -- concreet, gebaseerd op wat je bij concurrenten ziet. Één zin.",
-    "Tweede verbeterpunt"
+    "Eerste verbeterpunt -- concreet en direct gebaseerd op wat je bij de concurrenten ziet. Noem specifiek wat concurrenten wél doen of claimen dat de gebruiker mist. Geen generiek advies.",
+    "Tweede verbeterpunt -- zelfde aanpak."
   ],
 
   "kans": "Één concrete kans die alle concurrenten laten liggen. Specifiek genoeg om te raken, prikkelend genoeg om nieuwsgierig te maken.",
@@ -76,7 +87,7 @@ Genereer uitsluitend de volgende JSON structuur, geen uitleg of opmaak eromheen:
 
 Regels:
 - Neem een concurrent alleen op als je zijn propositie, dienst of doelgroep kunt benoemen op basis van de ontvangen content. Bij twijfel: weglaten.
-- Wees specifiek. Niet: 'je positionering kan sterker.' Wel een concreet voorbeeld.
+- watBeterKan moet altijd gebaseerd zijn op iets concreets dat je bij de concurrenten ziet. Nooit generiek.
 - Geef uitsluitend JSON terug. Geen uitleg, geen markdown, geen code-blokken.
 - Taal: Nederlands, tenzij de website volledig in het Engels is.
 - Geen gedachtestreepjes in de output.`;
@@ -111,7 +122,7 @@ export async function findCompetitors(industry: string): Promise<string[]> {
 
   for (let attempt = 0; attempt < queries.length; attempt++) {
     // Stop als we genoeg URLs hebben
-    if (allUrls.size >= 6) break;
+    if (allUrls.size >= 9) break;
 
     console.log(`findCompetitors: poging ${attempt + 1}/${queries.length}`);
 
