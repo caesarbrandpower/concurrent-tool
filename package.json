@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.24.0",
+    "@mendable/firecrawl-js": "^1.0.0",
     "airtable": "^0.12.2",
     "cheerio": "^1.2.0",
     "lucide-react": "^1.7.0",

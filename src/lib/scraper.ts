@@ -1,4 +1,5 @@
 import * as cheerio from 'cheerio';
+import FirecrawlApp from '@mendable/firecrawl-js';
 import { ScrapedData } from '@/types';
 
 const MIN_WORDS = 200;
@@ -123,7 +124,23 @@ async function fetchDirectPlain(pageUrl: string): Promise<string | null> {
   }
 }
 
-// --- Main scraper: Jina → Cheerio → Googlebot ---
+// --- Layer 4: Firecrawl (voor beveiligde sites) ---
+async function fetchViaFirecrawl(pageUrl: string): Promise<string | null> {
+  if (!process.env.FIRECRAWL_API_KEY) return null;
+  try {
+    const app = new FirecrawlApp({ apiKey: process.env.FIRECRAWL_API_KEY });
+    const result = await app.scrapeUrl(pageUrl, { formats: ['markdown'] });
+    if (!result.success) return null;
+    const text = result.markdown || '';
+    if (text.split(/\s+/).length < MIN_WORDS) return null;
+    return text;
+  } catch (error) {
+    console.error('Firecrawl failed for', pageUrl, error);
+    return null;
+  }
+}
+
+// --- Main scraper: Jina → Cheerio → Googlebot → Firecrawl ---
 export async function scrapeWebsite(url: string): Promise<ScrapedData> {
   console.log(`scrapeWebsite: ${url}`);
 
@@ -160,6 +177,16 @@ export async function scrapeWebsite(url: string): Promise<ScrapedData> {
 
   if (content) {
     console.log(`scrapeWebsite OK via Googlebot: ${url}`);
+    const wordCount = content.split(/\s+/).filter(w => w.length > 0).length;
+    return { url, content: content.trim(), wordCount };
+  }
+
+  // Layer 4: Firecrawl (voor beveiligde sites met age gates, cookiewalls)
+  console.log(`Googlebot failed, trying Firecrawl for: ${url}`);
+  content = await fetchViaFirecrawl(url);
+
+  if (content) {
+    console.log(`scrapeWebsite OK via Firecrawl: ${url}`);
     const wordCount = content.split(/\s+/).filter(w => w.length > 0).length;
     return { url, content: content.trim(), wordCount };
   }
