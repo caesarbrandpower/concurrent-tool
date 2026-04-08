@@ -20,7 +20,6 @@ async function withRetry<T>(fn: () => Promise<T>, label: string, maxRetries = 2)
       return await fn();
     } catch (error: unknown) {
       const err = error as { status?: number; message?: string };
-      // Nooit retrien als het een withTimeout hard limit is
       const isHardTimeout = err?.message?.includes('timeout na');
       if (isHardTimeout) throw error;
 
@@ -37,7 +36,7 @@ async function withRetry<T>(fn: () => Promise<T>, label: string, maxRetries = 2)
 
       const isTokenLimit = err?.message?.includes('input tokens per minute');
       if ((isRetryable || isTokenLimit) && attempt < maxRetries) {
-        const wait = isTokenLimit ? 10000 : Math.pow(2, attempt) * 3000; // 3s, 6s
+        const wait = isTokenLimit ? 10000 : Math.pow(2, attempt) * 3000;
         console.log(`${label}: fout (${err?.status || err?.message}), wacht ${wait/1000}s (poging ${attempt + 1}/${maxRetries})...`);
         await new Promise(resolve => setTimeout(resolve, wait));
         continue;
@@ -58,10 +57,13 @@ ANALYSEER ALTIJD ALS VOLGT:
 - Kijk wat de site claimt maar niet bewijst.
 - Generieke observaties zijn verboden. Elk punt moet alleen voor deze ondernemer kunnen gelden.
 
-Je geeft eerst een conclusie in een zin. Dan drie inzichten. Bij elk inzicht een concrete actie.
+Je geeft eerst een conclusie, dan de concurrenten, dan drie inzichten. Bij elk inzicht een concrete actie.
 
 CONCLUSIE
-Een zin die direct samenvat wat de ondernemer moet weten. Prikkelend genoeg om verder te lezen.
+Een zin van maximaal 12 woorden die direct de kern raakt. Prikkelend genoeg om verder te lezen.
+
+CONCURRENTEN
+Geef per concurrent de naam, URL en een omschrijving van een zin over hoe zij overkomen op een nieuwe bezoeker.
 
 INZICHT 1: ZO STA JIJ ERVOOR
 Wat ziet een klant als hij op deze website landt? Twee zinnen. Begin eerlijk maar niet hard. Dit is de spiegel.
@@ -79,11 +81,19 @@ Regels:
 - Geen gedachtestreepjes.
 - Geen vakjargon.
 - Geen algemene observaties.
+- Conclusie maximaal 12 woorden.
 - Uitsluitend JSON terug. Geen uitleg, geen markdown, geen code-blokken.
 - Taal: Nederlands, tenzij de website volledig in het Engels is.
 
 {
-  "conclusie": "Een zin die direct de kern raakt.",
+  "conclusie": "Maximaal 12 woorden die direct de kern raken.",
+  "concurrenten": [
+    {
+      "naam": "Naam van het bedrijf",
+      "url": "URL van de concurrent",
+      "omschrijving": "Een zin hoe zij overkomen op een nieuwe bezoeker."
+    }
+  ],
   "inzicht1": { "titel": "Zo sta jij ervoor", "tekst": "...", "actie": "..." },
   "inzicht2": { "titel": "Hier val je niet op", "tekst": "...", "actie": "..." },
   "inzicht3": { "titel": "Jouw kans in de markt", "tekst": "...", "actie": "..." }
@@ -168,7 +178,7 @@ export async function analyzeWebsites(
   return withRetry(async () => {
     const response = await anthropic.messages.create({
       model: 'claude-sonnet-4-5',
-      max_tokens: 2000,
+      max_tokens: 2500,
       messages: [{
         role: 'user',
         content: fullPrompt

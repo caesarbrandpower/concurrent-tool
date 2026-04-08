@@ -4,8 +4,15 @@ export interface Inzicht {
   actie: string;
 }
 
+export interface Concurrent {
+  naam: string;
+  url: string;
+  omschrijving: string;
+}
+
 export interface AnalysisResult {
   conclusie: string;
+  concurrenten: Concurrent[];
   inzicht1: Inzicht;
   inzicht2: Inzicht;
   inzicht3: Inzicht;

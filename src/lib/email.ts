@@ -18,12 +18,21 @@ export async function sendAnalysisEmail(
   url: string,
   result: AnalysisResult
 ): Promise<void> {
+  const competitorHtml = result.concurrenten && result.concurrenten.length > 0
+    ? `<h2>Jouw concurrenten</h2>
+       <ul>
+         ${result.concurrenten.map(c => `<li><strong>${c.naam}</strong> (${c.url}): ${c.omschrijving}</li>`).join('')}
+       </ul>`
+    : '';
+
   const htmlContent = `
     <h1>Jouw Marktscan</h1>
     <p>Bedankt voor je interesse in onze analyse voor <strong>${url}</strong>.</p>
 
     <h2>Conclusie</h2>
     <p><strong>${result.conclusie}</strong></p>
+
+    ${competitorHtml}
 
     <h2>${result.inzicht1.titel}</h2>
     <p>${result.inzicht1.tekst}</p>

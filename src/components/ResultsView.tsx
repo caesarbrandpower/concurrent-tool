@@ -24,7 +24,6 @@ function InzichtCard({ inzicht, index }: { inzicht: Inzicht; index: number }) {
         animationDelay: `${(index + 1) * 0.15}s`,
       }}
     >
-      {/* Inzicht nummer */}
       <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '20px' }}>
         <span style={{
           display: 'inline-flex',
@@ -53,7 +52,6 @@ function InzichtCard({ inzicht, index }: { inzicht: Inzicht; index: number }) {
         </h3>
       </div>
 
-      {/* Tekst */}
       <p style={{
         fontSize: '17px',
         color: 'rgba(255,255,255,0.8)',
@@ -64,7 +62,6 @@ function InzichtCard({ inzicht, index }: { inzicht: Inzicht; index: number }) {
         {inzicht.tekst}
       </p>
 
-      {/* Actie blok */}
       <div style={{
         background: isLast ? 'rgba(14,110,255,0.08)' : 'rgba(255,255,255,0.04)',
         border: isLast ? '1px solid rgba(14,110,255,0.15)' : '1px solid rgba(255,255,255,0.06)',
@@ -124,16 +121,13 @@ export default function ResultsView({ url, result }: ResultsViewProps) {
 
   return (
     <div className="animate-slide-up">
-      {/* Conclusie: grote quote bovenaan */}
+      {/* Conclusie */}
       <section style={{ padding: '80px 0 64px', background: '#0f0f10' }}>
         <div className="mx-auto px-4 text-center" style={{ maxWidth: '720px' }}>
           <p className="label-style animate-hero-title" style={{ color: '#DDB3FF', marginBottom: '24px' }}>
             Jouw marktscan
           </p>
-          <blockquote style={{
-            margin: 0,
-            padding: 0,
-          }}>
+          <blockquote style={{ margin: 0, padding: 0 }}>
             <p style={{
               fontFamily: 'GreedCondensed, sans-serif',
               fontWeight: 700,
@@ -149,6 +143,74 @@ export default function ResultsView({ url, result }: ResultsViewProps) {
           <div className="gradient-line" style={{ marginTop: '48px', opacity: 0.4 }} />
         </div>
       </section>
+
+      {/* Concurrenten sectie */}
+      {result.concurrenten && result.concurrenten.length > 0 && (
+        <section style={{ padding: '48px 0 16px', background: '#0f0f10' }}>
+          <div className="mx-auto px-4" style={{ maxWidth: '680px' }}>
+            <h2 style={{
+              fontFamily: 'GreedCondensed, sans-serif',
+              fontWeight: 700,
+              textTransform: 'uppercase',
+              fontSize: 'clamp(16px, 2vw, 20px)',
+              color: 'rgba(255,255,255,0.5)',
+              marginBottom: '20px',
+              letterSpacing: '0.02em',
+            }}>
+              Dit zijn jouw drie concurrenten
+            </h2>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+              {result.concurrenten.map((c, idx) => (
+                <div
+                  key={idx}
+                  className="animate-fade-in"
+                  style={{
+                    background: 'rgba(255,255,255,0.03)',
+                    border: '1px solid rgba(255,255,255,0.06)',
+                    borderRadius: '12px',
+                    padding: '20px 24px',
+                    animationDelay: `${idx * 0.1}s`,
+                  }}
+                >
+                  <div style={{ display: 'flex', alignItems: 'baseline', gap: '10px', marginBottom: '6px' }}>
+                    <p style={{
+                      fontSize: '15px',
+                      fontWeight: 600,
+                      color: '#fff',
+                      fontFamily: 'Satoshi, sans-serif',
+                      margin: 0,
+                    }}>
+                      {c.naam}
+                    </p>
+                    <a
+                      href={c.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      style={{
+                        fontSize: '13px',
+                        color: 'rgba(255,255,255,0.35)',
+                        fontFamily: 'Satoshi, sans-serif',
+                        textDecoration: 'none',
+                      }}
+                    >
+                      {c.url.replace(/^https?:\/\//, '').replace(/\/$/, '')}
+                    </a>
+                  </div>
+                  <p style={{
+                    fontSize: '15px',
+                    color: 'rgba(255,255,255,0.6)',
+                    lineHeight: '1.5',
+                    fontFamily: 'Satoshi, sans-serif',
+                    margin: 0,
+                  }}>
+                    {c.omschrijving}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* Drie inzichtkaarten */}
       <section className="bg-dark" style={{ padding: '48px 0 64px' }}>
