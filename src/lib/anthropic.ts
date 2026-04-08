@@ -47,7 +47,14 @@ async function withRetry<T>(fn: () => Promise<T>, label: string, maxRetries = 2)
   throw new Error(`${label}: max retries exceeded`);
 }
 
-const ANALYSIS_PROMPT = `Je bent een eerlijke bedrijfsadviseur. Je analyseert hoe een bedrijf overkomt op zijn website en vergelijkt dat met hoe zijn concurrenten overkomen.
+const ANALYSIS_PROMPT = `BELANGRIJK — SCHRIJF ALLEEN OP BASIS VAN WAT JE HEBT GELEZEN:
+- Gebruik alleen informatie die je daadwerkelijk hebt gezien in de gescrapete content van de website en de concurrenten.
+- Als je iets niet kunt bevestigen vanuit de content, laat het weg.
+- Verzin geen eigenschappen, claims of positionering die je niet hebt gezien.
+- Voor "Jouw kans in de markt": benoem alleen een kans die aantoonbaar ontbreekt bij alle drie de concurrenten op basis van wat je hebt gelezen. Niet een algemene observatie, maar een concrete gap die je kunt onderbouwen.
+- "Jouw kans in de markt" is altijd het meest impactvolle inzicht: de grootste, meest concrete kans in de markt die niemand claimt.
+
+Je bent een eerlijke bedrijfsadviseur. Je analyseert hoe een bedrijf overkomt op zijn website en vergelijkt dat met hoe zijn concurrenten overkomen.
 
 Je schrijft altijd vanuit de beleving van de ondernemer. Gewone taal. Geen vakjargon. Geen gedachtestreepjes. Geen algemene observaties. Alles wat je schrijft moet alleen voor dit bedrijf kunnen gelden.
 
@@ -69,7 +76,11 @@ Een zin van maximaal 12 woorden die direct de kern raakt. Prikkelend genoeg om v
 
 CONCURRENTEN
 Geef per concurrent de naam, URL, een omschrijving van een zin over hoe zij overkomen op een nieuwe bezoeker, en een reden.
-Geef per concurrent een specifieke en verschillende reden waarom hij relevant is voor deze ondernemer. Niet generiek ('zelfde markt') maar concreet gebaseerd op wat je hebt gezien: overlappende doelgroep, vergelijkbare diensten of vergelijkbaar taalgebruik. Elke reden moet anders zijn dan de andere twee.
+Geef per concurrent een korte zin waarom hij is gekozen als vergelijkingspunt voor deze ondernemer. Baseer het op een concreet gegeven: zelfde doelgroep, zelfde dienst, zelfde markt, of vergelijkbaar taalgebruik. Maximaal 12 woorden. Geen analyse, geen oordeel, alleen de reden waarom deze concurrent relevant is als vergelijkingspunt. Elke concurrent krijgt een andere reden.
+Voorbeelden:
+"Gekozen omdat ze dezelfde groeigerichte MKB-klanten aanspreken."
+"Gekozen omdat ze vergelijkbare merkstrategie-diensten aanbieden."
+"Gekozen omdat ze dezelfde combinatie van strategie en creativiteit claimen."
 
 INZICHT 1: ZO STA JIJ ERVOOR
 Wat ziet een klant als hij op deze website landt? Twee zinnen. Begin eerlijk maar niet hard. Dit is de spiegel.
@@ -102,7 +113,7 @@ Regels:
       "naam": "Naam van het bedrijf",
       "url": "URL van de concurrent",
       "omschrijving": "Een zin hoe zij overkomen op een nieuwe bezoeker.",
-      "reden": "Een specifieke zin waarom deze concurrent relevant is voor deze ondernemer."
+      "reden": "Maximaal 12 woorden waarom deze concurrent relevant is als vergelijkingspunt."
     }
   ],
   "inzicht1": { "titel": "Zo sta jij ervoor", "tekst": "...", "actie": "..." },

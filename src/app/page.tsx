@@ -171,9 +171,9 @@ export default function Home() {
         </div>
       )}
 
-      {/* Loading state */}
+      {/* Loading state — iets hoger dan midden */}
       {isLoading && !result && (
-        <div className="min-h-[calc(100vh-72px)] flex items-center justify-center px-4">
+        <div className="min-h-[calc(100vh-72px)] flex items-center justify-center px-4" style={{ paddingBottom: '15vh' }}>
           <LoadingState steps={loadingSteps} currentStep={loadingStep} />
         </div>
       )}

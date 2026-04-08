@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { ArrowRight, Globe } from 'lucide-react'
+import { Globe } from 'lucide-react'
 
 interface UrlInputProps {
   onSubmit: (url: string) => void
@@ -27,42 +27,78 @@ export default function UrlInput({ onSubmit, isLoading }: UrlInputProps) {
   return (
     <form onSubmit={handleSubmit} className="w-full">
       <div
-        className={`
-          relative flex items-center overflow-hidden bg-dark-light rounded-btn border transition-all duration-300
-          ${isFocused
-            ? 'border-white/60 shadow-[0_0_0_1px_rgba(255,255,255,0.2),0_4px_24px_rgba(0,0,0,0.3)]'
-            : 'border-white/30 shadow-[0_2px_12px_rgba(0,0,0,0.2)]'
-          }
-        `}
+        style={{
+          background: 'rgb(42, 42, 42)',
+          border: isFocused ? '0.9px solid rgba(255, 255, 255, 0.6)' : '0.9px solid rgba(255, 255, 255, 0.3)',
+          borderRadius: '6px',
+          display: 'flex',
+          flexDirection: 'row' as const,
+          alignItems: 'center',
+          overflow: 'hidden',
+          boxShadow: isFocused
+            ? '0 0 0 1px rgba(255,255,255,0.2), 0 4px 24px rgba(0,0,0,0.3)'
+            : '0 2px 12px rgba(0,0,0,0.2)',
+          transition: 'all 0.3s',
+        }}
       >
-        <div className="flex items-center flex-1 min-w-0">
-          <div className="pl-5 flex-shrink-0">
-            <Globe className={`w-5 h-5 transition-colors duration-300 ${isFocused ? 'text-accent' : 'text-white/50'}`} />
-          </div>
-
-          <input
-            type="text"
-            value={url}
-            onChange={(e) => setUrl(e.target.value)}
-            onFocus={() => setIsFocused(true)}
-            onBlur={() => setIsFocused(false)}
-            placeholder="jouwwebsite.nl"
-            className="flex-1 min-w-0 py-5 px-4 text-lg bg-transparent border-none outline-none text-white placeholder:text-white/50 font-body"
-            disabled={isLoading}
+        <div style={{ paddingLeft: '20px', flexShrink: 0, display: 'flex', alignItems: 'center' }}>
+          <Globe
+            style={{
+              width: '20px',
+              height: '20px',
+              color: isFocused ? '#DDB3FF' : 'rgba(255, 255, 255, 0.4)',
+              transition: 'color 0.3s',
+            }}
           />
         </div>
+
+        <input
+          type="text"
+          value={url}
+          onChange={(e) => setUrl(e.target.value)}
+          onFocus={() => setIsFocused(true)}
+          onBlur={() => setIsFocused(false)}
+          placeholder="jouwwebsite.nl"
+          disabled={isLoading}
+          style={{
+            background: 'transparent',
+            color: 'rgb(255, 255, 255)',
+            fontSize: '18px',
+            padding: '20px 16px',
+            border: 'none',
+            outline: 'none',
+            flex: 1,
+            minWidth: 0,
+            fontFamily: 'Satoshi, sans-serif',
+          }}
+        />
 
         <button
           type="submit"
           disabled={!url.trim() || isLoading}
-          className="flex-shrink-0 py-3.5 px-7 bg-accent-blue text-white font-body font-medium hover:brightness-110 disabled:opacity-40 disabled:cursor-not-allowed transition-all duration-200 flex items-center justify-center gap-2 m-2.5 rounded-btn whitespace-nowrap"
+          style={{
+            background: 'rgb(14, 110, 255)',
+            color: 'rgb(255, 255, 255)',
+            fontSize: '16px',
+            padding: '14px 28px',
+            borderRadius: '0px',
+            border: 'none',
+            whiteSpace: 'nowrap' as const,
+            cursor: (!url.trim() || isLoading) ? 'not-allowed' : 'pointer',
+            opacity: (!url.trim() || isLoading) ? 0.4 : 1,
+            fontFamily: 'Satoshi, sans-serif',
+            fontWeight: 500,
+            transition: 'filter 0.2s, opacity 0.2s',
+            alignSelf: 'stretch',
+          }}
+          onMouseEnter={(e) => { if (url.trim() && !isLoading) (e.currentTarget).style.filter = 'brightness(1.1)' }}
+          onMouseLeave={(e) => { (e.currentTarget).style.filter = 'none' }}
         >
-          {isLoading ? 'Bezig...' : 'Scan mijn markt'}
-          {!isLoading && <ArrowRight className="w-4 h-4" />}
+          {isLoading ? 'Bezig...' : 'Scan mijn markt \u2192'}
         </button>
       </div>
 
-      <p className="mt-4 text-sm text-white/50 font-body" style={{ fontWeight: 300 }}>
+      <p style={{ marginTop: '16px', fontSize: '14px', color: 'rgba(255,255,255,0.5)', fontFamily: 'Satoshi, sans-serif', fontWeight: 300 }}>
         Bijvoorbeeld: newfound.agency of www.jouwsite.nl
       </p>
     </form>

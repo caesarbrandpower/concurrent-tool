@@ -139,7 +139,7 @@ export default function ResultsView({ url, result }: ResultsViewProps) {
       </section>
 
       {/* Conclusie */}
-      <section style={{ padding: '24px 0 64px', background: '#0f0f10' }}>
+      <section style={{ padding: '24px 0 32px', background: '#0f0f10' }}>
         <div className="mx-auto px-4 text-center" style={{ maxWidth: '720px' }}>
           <p className="label-style animate-hero-title" style={{ color: '#DDB3FF', marginBottom: '24px' }}>
             Jouw marktscan
@@ -157,13 +157,13 @@ export default function ResultsView({ url, result }: ResultsViewProps) {
               {result.conclusie}
             </p>
           </blockquote>
-          <div className="gradient-line" style={{ marginTop: '48px', opacity: 0.4 }} />
+          <div className="gradient-line" style={{ marginTop: '32px', opacity: 0.4 }} />
         </div>
       </section>
 
       {/* Concurrenten sectie */}
       {result.concurrenten && result.concurrenten.length > 0 && (
-        <section style={{ padding: '64px 0 16px', background: '#0f0f10' }}>
+        <section style={{ padding: '24px 0 16px', background: '#0f0f10' }}>
           <div className="mx-auto px-4" style={{ maxWidth: '680px' }}>
             <h2 style={{
               fontFamily: 'GreedCondensed, sans-serif',
@@ -266,7 +266,7 @@ export default function ResultsView({ url, result }: ResultsViewProps) {
           ) : (
             <div className="text-center">
               <h3 style={{ fontFamily: 'GreedCondensed, sans-serif', fontWeight: 700, textTransform: 'uppercase', fontSize: 'clamp(24px, 3vw, 36px)', color: '#fff', marginBottom: '16px' }}>
-                Bewaar je marktscan
+                Ontvang je marktscan + actieplan
               </h3>
               <p style={{ fontSize: '17px', color: '#fff', fontFamily: 'Satoshi, sans-serif', maxWidth: '560px', margin: '0 auto 8px', lineHeight: '1.6' }}>
                 Ontvang je volledige marktscan als overzicht in je inbox.
