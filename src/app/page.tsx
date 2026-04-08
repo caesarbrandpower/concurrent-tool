@@ -136,10 +136,9 @@ export default function Home() {
               Je klant vergelijkt jou met je concurrent. Weet jij wat hij ziet?
             </h2>
 
-            <div className="text-white/60 mb-12 font-body animate-hero-body" style={{ fontWeight: 300 }}>
-              <p style={{ margin: 0 }}>Voer je URL in.</p>
-              <p style={{ margin: 0 }}>Zie in 60 seconden waar jij staat, waar jij verliest en wat jouw kans is.</p>
-            </div>
+            <p className="text-white/60 mb-8 font-body animate-hero-body" style={{ fontWeight: 300 }}>
+              Voer je URL in en zie in 60 seconden waar jij staat, waar jij verliest en wat jouw kans in de markt is.
+            </p>
 
             <div className="animate-hero-cta">
               <UrlInput onSubmit={handleUrlSubmit} isLoading={isLoading} />
@@ -166,7 +165,7 @@ export default function Home() {
             )}
           </div>
 
-          <div style={{ paddingBottom: '12px', fontSize: '14px', color: 'rgba(255,255,255,0.5)' }} className="animate-hero-footer">
+          <div style={{ paddingBottom: '8px', fontSize: '14px', color: 'rgba(255,255,255,0.5)' }} className="animate-hero-footer">
             Een tool van <a href="https://newfound.agency" target="_blank" rel="noopener noreferrer" className="text-white underline hover:text-accent transition-colors">Newfound</a>
           </div>
         </div>

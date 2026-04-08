@@ -77,7 +77,7 @@ export default function UrlInput({ onSubmit, isLoading }: UrlInputProps) {
           type="submit"
           disabled={!url.trim() || isLoading}
           style={{
-            background: 'rgb(14, 110, 255)',
+            background: '#0E6EFF',
             color: 'rgb(255, 255, 255)',
             fontSize: '16px',
             padding: '14px 28px',
