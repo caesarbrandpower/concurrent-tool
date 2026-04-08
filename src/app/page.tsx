@@ -137,7 +137,7 @@ export default function Home() {
             </h2>
 
             <p className="text-white/60 mb-16 font-body animate-hero-body" style={{ fontWeight: 300 }}>
-              Voer je website in. Ontdek hoe jij overkomt, waar jij opgaat in de massa en waar jouw kans in de markt ligt.
+              Voer je URL in. Zie in 60 seconden waar jij staat, waar jij verliest en wat jouw kans in de markt is.
             </p>
 
             <div className="animate-hero-cta">
@@ -165,13 +165,13 @@ export default function Home() {
             )}
           </div>
 
-          <div className="pb-8 text-sm text-white/50 animate-hero-footer">
+          <div className="pb-3 text-sm text-white/50 animate-hero-footer">
             Een product van <a href="https://newfound.agency" target="_blank" rel="noopener noreferrer" className="text-white underline hover:text-accent transition-colors">Newfound</a>
           </div>
         </div>
       )}
 
-      {/* Loading state — iets hoger dan midden */}
+      {/* Loading state */}
       {isLoading && !result && (
         <div className="min-h-[calc(100vh-72px)] flex items-center justify-center px-4" style={{ paddingBottom: '15vh' }}>
           <LoadingState steps={loadingSteps} currentStep={loadingStep} />
