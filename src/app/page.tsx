@@ -126,7 +126,7 @@ export default function Home() {
       {!result && !isLoading && (!error || showManualInput) && (
         <div className="flex flex-col items-center min-h-[calc(100vh-72px)]">
           <div className="flex-1 flex flex-col justify-center w-full mx-auto text-center px-4" style={{ maxWidth: '680px' }}>
-            <p className="label-style text-accent mb-6 animate-hero-title">Marktscan</p>
+            <p className="animate-hero-title" style={{ fontFamily: 'KansasNew, sans-serif', fontWeight: 500, fontSize: '15px', color: 'rgb(221, 179, 255)', marginBottom: '24px' }}>Marktscan</p>
 
             <h1 className="font-heading text-white mb-5 animate-hero-title">
               Zie je business zoals<br />je klant hem ziet.
@@ -136,7 +136,7 @@ export default function Home() {
               Je klant vergelijkt jou met je concurrent. Weet jij wat hij ziet?
             </h2>
 
-            <div className="text-white/60 mb-16 font-body animate-hero-body" style={{ fontWeight: 300 }}>
+            <div className="text-white/60 mb-12 font-body animate-hero-body" style={{ fontWeight: 300 }}>
               <p style={{ margin: 0 }}>Voer je URL in.</p>
               <p style={{ margin: 0 }}>Zie in 60 seconden waar jij staat, waar jij verliest en wat jouw kans is.</p>
             </div>
@@ -166,7 +166,7 @@ export default function Home() {
             )}
           </div>
 
-          <div className="pb-2 text-sm text-white/50 animate-hero-footer">
+          <div style={{ paddingBottom: '12px', fontSize: '14px', color: 'rgba(255,255,255,0.5)' }} className="animate-hero-footer">
             Een tool van <a href="https://newfound.agency" target="_blank" rel="noopener noreferrer" className="text-white underline hover:text-accent transition-colors">Newfound</a>
           </div>
         </div>
