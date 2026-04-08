@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useRef, useEffect } from 'react'
+import UrlInput from '@/components/UrlInput'
 import LoadingState from '@/components/LoadingState'
 import ResultsView from '@/components/ResultsView'
 import { AnalysisResult } from '@/types'
@@ -114,7 +115,7 @@ export default function Home() {
   return (
     <main className="min-h-screen bg-dark">
       {/* Navbar with gradient background — full bleed */}
-      <nav className="gradient-navbar" style={{ display: 'flex', justifyContent: 'flex-start', alignItems: 'center' }}>
+      <nav className="gradient-navbar" style={{ height: '72px', paddingLeft: '24px', paddingRight: '24px' }}>
         <a href="https://newfound.agency" target="_blank">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src="https://newfound.agency/wp-content/uploads/2025/06/Logo_newfound.svg" alt="Newfound" style={{ height: '18px' }} />
@@ -125,6 +126,8 @@ export default function Home() {
       {!result && !isLoading && (!error || showManualInput) && (
         <div className="flex flex-col items-center min-h-[calc(100vh-72px)]">
           <div className="flex-1 flex flex-col justify-center w-full mx-auto text-center px-4" style={{ maxWidth: '680px' }}>
+            <p className="label-style text-accent mb-6 animate-hero-title">Marktscan</p>
+
             <h1 className="font-heading text-white mb-5 animate-hero-title">
               Zie hoe jij je<br />verhoudt.
             </h1>
@@ -138,31 +141,7 @@ export default function Home() {
             </p>
 
             <div className="animate-hero-cta">
-              <form
-                className="input-row"
-                onSubmit={(e) => {
-                  e.preventDefault()
-                  const val = url.trim()
-                  if (!val) return
-                  handleUrlSubmit(val.startsWith('http') ? val : 'https://' + val)
-                }}
-              >
-                <input
-                  type="text"
-                  className="url-input"
-                  placeholder="jouwwebsite.nl"
-                  value={url}
-                  onChange={(e) => setUrl(e.target.value)}
-                  disabled={isLoading}
-                />
-                <button
-                  type="submit"
-                  className="submit-btn"
-                  disabled={!url.trim() || isLoading}
-                >
-                  {isLoading ? 'Bezig...' : 'Analyseer'}
-                </button>
-              </form>
+              <UrlInput onSubmit={handleUrlSubmit} isLoading={isLoading} />
             </div>
 
             {showManualInput && (
@@ -186,6 +165,9 @@ export default function Home() {
             )}
           </div>
 
+          <div className="pb-8 text-sm text-white/50 animate-hero-footer">
+            Een product van <a href="https://newfound.agency" target="_blank" rel="noopener noreferrer" className="text-white underline hover:text-accent transition-colors">Newfound</a>
+          </div>
         </div>
       )}
 
@@ -226,13 +208,6 @@ export default function Home() {
             url={url}
             result={result}
           />
-        </div>
-      )}
-
-      {/* Footer — altijd zichtbaar */}
-      {!result && (
-        <div className="fixed bottom-0 left-0 right-0 pb-6 text-center text-sm text-white/50" style={{ fontWeight: 300 }}>
-          Een product van <a href="https://newfound.agency" target="_blank" rel="noopener noreferrer" className="text-white underline hover:text-accent transition-colors">Newfound</a>
         </div>
       )}
 

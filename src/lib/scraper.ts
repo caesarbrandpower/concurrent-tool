@@ -2,7 +2,7 @@ import * as cheerio from 'cheerio';
 import FirecrawlApp from '@mendable/firecrawl-js';
 import { ScrapedData } from '@/types';
 
-const MIN_WORDS = 200;
+const MIN_WORDS = 100;
 
 const BROWSER_HEADERS: Record<string, string> = {
   'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
@@ -18,6 +18,64 @@ const BROWSER_HEADERS: Record<string, string> = {
   'Sec-Fetch-User': '?1',
   'Upgrade-Insecure-Requests': '1',
 };
+
+const GATE_PATTERNS = [
+  'ben je 18',
+  '18 jaar',
+  '18+',
+  'ouder dan 18',
+  'leeftijdsverificatie',
+  'leeftijdscontrole',
+  'geboortejaar',
+  'geboortedatum',
+  'age verification',
+  'age gate',
+  'verify your age',
+  'are you 18',
+  'are you of legal',
+  'you must be',
+  'over 18',
+  'legal age',
+  'date of birth',
+  'year of birth',
+  'enter your birth',
+  'verantwoord drinken',
+  'drink responsibly',
+  'cookie-wall',
+  'cookiewall',
+  'accepteer cookies',
+  'accept cookies',
+];
+
+function isGateContent(text: string): boolean {
+  const lower = text.toLowerCase();
+  const wordCount = text.split(/\s+/).filter(w => w.length > 0).length;
+  if (wordCount > 500) return false;
+  return GATE_PATTERNS.some(pattern => lower.includes(pattern));
+}
+
+function countWords(text: string): number {
+  return text.split(/\s+/).filter(w => w.length > 0).length;
+}
+
+function isSubstantialContent(text: string): boolean {
+  const blocks = text.split(/\n\s*\n|\.\s+/);
+  let substantialBlocks = 0;
+  for (const block of blocks) {
+    const words = block.trim().split(/\s+/).filter(w => w.length > 0).length;
+    if (words >= 20) substantialBlocks++;
+    if (substantialBlocks >= 1) return true;
+  }
+  return false;
+}
+
+function isErrorPage(text: string): boolean {
+  const words = countWords(text);
+  if (words > 50) return false;
+  const lower = text.toLowerCase();
+  return lower.includes('404') || lower.includes('not found') || lower.includes('page not found') ||
+    lower.includes('redirect') || lower.includes('moved permanently');
+}
 
 // --- Layer 1: Jina AI (8s per URL) ---
 async function fetchViaJina(pageUrl: string): Promise<string | null> {
@@ -40,6 +98,10 @@ async function fetchViaJina(pageUrl: string): Promise<string | null> {
 // --- Layer 2: Direct HTML + Cheerio (12s) ---
 function parseHtml(html: string, pageUrl: string): string | null {
   if (html.length < 500) return null;
+  if (html.length > 250000) {
+    console.log(`[Scraper] HTML te groot (${Math.round(html.length / 1024)}KB), skip Cheerio voor: ${pageUrl}`);
+    return null;
+  }
 
   const $ = cheerio.load(html);
   $('script, style, nav, footer, header, aside, .cookie-banner, .popup, .modal, .advertisement, .ads, iframe, noscript').remove();
@@ -117,7 +179,6 @@ async function fetchDirectPlain(pageUrl: string): Promise<string | null> {
       .trim()
       .substring(0, 10000);
 
-    if (text.split(/\s+/).length < MIN_WORDS) return null;
     return text;
   } catch {
     return null;
@@ -126,21 +187,56 @@ async function fetchDirectPlain(pageUrl: string): Promise<string | null> {
 
 // --- Layer 4: Firecrawl (voor beveiligde sites) ---
 async function fetchViaFirecrawl(pageUrl: string): Promise<string | null> {
-  if (!process.env.FIRECRAWL_API_KEY) return null;
+  const apiKey = process.env.FIRECRAWL_API_KEY;
+  if (!apiKey) {
+    console.log('[Scraper] Firecrawl: geen FIRECRAWL_API_KEY in environment');
+    return null;
+  }
   try {
-    const app = new FirecrawlApp({ apiKey: process.env.FIRECRAWL_API_KEY });
+    const app = new FirecrawlApp({ apiKey });
     const result = await app.scrapeUrl(pageUrl, { formats: ['markdown'] });
-    if (!result.success) return null;
+    if (!result.success) {
+      console.log(`[Scraper] Firecrawl mislukt: ${JSON.stringify(result).substring(0, 300)}`);
+      return null;
+    }
     const text = result.markdown || '';
-    if (text.split(/\s+/).length < MIN_WORDS) return null;
+    const words = countWords(text);
+    if (words < 10) return null;
     return text;
   } catch (error) {
-    console.error('Firecrawl failed for', pageUrl, error);
+    const msg = error instanceof Error ? error.message : String(error);
+    console.error(`[Scraper] Firecrawl error: ${msg}`);
     return null;
   }
 }
 
-// --- Main scraper: Jina → Cheerio → Googlebot → Firecrawl ---
+function validateContent(text: string, layer: string, url: string): boolean {
+  const words = countWords(text);
+  const gate = isGateContent(text);
+  const error = isErrorPage(text);
+
+  if (gate) {
+    console.log(`[${layer}] gate content voor ${url} (${words} woorden), skip`);
+    return false;
+  }
+  if (error) {
+    console.log(`[${layer}] error page voor ${url}, skip`);
+    return false;
+  }
+  if (words < MIN_WORDS) {
+    console.log(`[${layer}] te weinig content voor ${url} (${words} woorden)`);
+    return false;
+  }
+  if (!isSubstantialContent(text)) {
+    console.log(`[${layer}] geen substantiele content voor ${url} (${words} woorden)`);
+    return false;
+  }
+
+  console.log(`[${layer}] OK voor ${url} (${words} woorden)`);
+  return true;
+}
+
+// --- Main scraper: Jina -> Cheerio -> Googlebot -> Firecrawl ---
 export async function scrapeWebsite(url: string): Promise<ScrapedData> {
   console.log(`scrapeWebsite: ${url}`);
 
@@ -152,47 +248,43 @@ export async function scrapeWebsite(url: string): Promise<ScrapedData> {
       new Promise<null>((resolve) => setTimeout(() => resolve(null), 15000)),
     ]);
   } catch {
-    console.log(`Jina phase failed for ${url}`);
+    console.log(`[1/4] Jina phase failed for ${url}`);
   }
 
-  if (content) {
-    console.log(`scrapeWebsite OK via Jina: ${url}`);
-    const wordCount = content.split(/\s+/).filter(w => w.length > 0).length;
+  if (content && validateContent(content, '1/4 Jina', url)) {
+    const wordCount = countWords(content);
     return { url, content: content.trim(), wordCount };
   }
 
   // Layer 2: Direct HTML + Cheerio
-  console.log(`Jina failed, trying Cheerio for: ${url}`);
+  console.log(`[2/4] Cheerio: start voor ${url}`);
   content = await fetchDirectHtml(url);
 
-  if (content) {
-    console.log(`scrapeWebsite OK via Cheerio: ${url}`);
-    const wordCount = content.split(/\s+/).filter(w => w.length > 0).length;
+  if (content && validateContent(content, '2/4 Cheerio', url)) {
+    const wordCount = countWords(content);
     return { url, content: content.trim(), wordCount };
   }
 
   // Layer 3: Googlebot
-  console.log(`Cheerio failed, trying Googlebot for: ${url}`);
+  console.log(`[3/4] Googlebot: start voor ${url}`);
   content = await fetchDirectPlain(url);
 
-  if (content) {
-    console.log(`scrapeWebsite OK via Googlebot: ${url}`);
-    const wordCount = content.split(/\s+/).filter(w => w.length > 0).length;
+  if (content && validateContent(content, '3/4 Googlebot', url)) {
+    const wordCount = countWords(content);
     return { url, content: content.trim(), wordCount };
   }
 
   // Layer 4: Firecrawl (voor beveiligde sites met age gates, cookiewalls)
-  console.log(`Googlebot failed, trying Firecrawl for: ${url}`);
+  console.log(`[4/4] Firecrawl: start voor ${url}`);
   content = await fetchViaFirecrawl(url);
 
-  if (content) {
-    console.log(`scrapeWebsite OK via Firecrawl: ${url}`);
-    const wordCount = content.split(/\s+/).filter(w => w.length > 0).length;
+  if (content && validateContent(content, '4/4 Firecrawl', url)) {
+    const wordCount = countWords(content);
     return { url, content: content.trim(), wordCount };
   }
 
   // All layers failed
-  console.log(`scrapeWebsite: all layers failed for ${url}`);
+  console.log(`[Scraper] Alle 4 lagen gefaald voor ${url}`);
   return { url, content: '', wordCount: 0 };
 }
 

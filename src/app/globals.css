@@ -93,12 +93,10 @@ h3, h4, h5, h6 {
   .gradient-navbar {
     background: linear-gradient(90deg, #0E6EFF 0%, #7B61FF 35%, #DDB3FF 65%, #E8A0BF 100%);
     margin: 0;
-    padding: 0 24px;
+    padding: 0;
     width: 100%;
-    height: 72px;
     display: flex;
     align-items: center;
-    box-sizing: border-box;
   }
 
   /* Thin gradient line for section dividers */
