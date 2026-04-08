@@ -19,31 +19,23 @@ export async function sendAnalysisEmail(
   result: AnalysisResult
 ): Promise<void> {
   const htmlContent = `
-    <h1>Jouw Concurrent Analyse</h1>
+    <h1>Jouw Marktscan</h1>
     <p>Bedankt voor je interesse in onze analyse voor <strong>${url}</strong>.</p>
 
-    <p>${result.intro}</p>
+    <h2>Conclusie</h2>
+    <p><strong>${result.conclusie}</strong></p>
 
-    <h2>Jouw website: ${result.jouwSite.naam}</h2>
-    <p><strong>Wat goed gaat:</strong></p>
-    <ul>
-      ${result.jouwSite.watGoedGaat.map(item => `<li>${item}</li>`).join('')}
-    </ul>
-    <p>${result.jouwSite.samenvatting}</p>
+    <h2>${result.inzicht1.titel}</h2>
+    <p>${result.inzicht1.tekst}</p>
+    <p><em>Actie: ${result.inzicht1.actie}</em></p>
 
-    <h2>Wat we zagen</h2>
-    <p>${result.vergelijking}</p>
+    <h2>${result.inzicht2.titel}</h2>
+    <p>${result.inzicht2.tekst}</p>
+    <p><em>Actie: ${result.inzicht2.actie}</em></p>
 
-    <h2>Wat beter kan</h2>
-    <ul>
-      ${result.watBeterKan.map(item => `<li>${item}</li>`).join('')}
-    </ul>
-
-    <h2>De kans</h2>
-    <p><em>${result.kans}</em></p>
-
-    <h2>De implicatie</h2>
-    <p><em>${result.implicatie}</em></p>
+    <h2>${result.inzicht3.titel}</h2>
+    <p>${result.inzicht3.tekst}</p>
+    <p><em>Actie: ${result.inzicht3.actie}</em></p>
 
     <hr>
     <p>Samen scherper naar je merk kijken? <a href="mailto:hello@newfound.agency">Mail ons</a></p>
@@ -54,7 +46,7 @@ export async function sendAnalysisEmail(
     await transporter.sendMail({
       from: process.env.SMTP_USER || 'hello@newfound.agency',
       to,
-      subject: `Jouw concurrent analyse voor ${url}`,
+      subject: `Jouw marktscan voor ${url}`,
       html: htmlContent,
     });
   } catch (error) {

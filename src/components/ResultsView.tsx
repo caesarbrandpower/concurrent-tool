@@ -1,13 +1,100 @@
 'use client'
 
 import { useState } from 'react'
-import { AnalysisResult } from '@/types'
+import { AnalysisResult, Inzicht } from '@/types'
 import { saveLead } from '@/lib/airtable'
 import { sendAnalysisEmail } from '@/lib/email'
 
 interface ResultsViewProps {
   url: string
   result: AnalysisResult
+}
+
+function InzichtCard({ inzicht, index }: { inzicht: Inzicht; index: number }) {
+  const isLast = index === 2
+
+  return (
+    <div
+      className="animate-slide-up"
+      style={{
+        background: isLast ? 'rgba(14,110,255,0.06)' : 'rgba(255,255,255,0.04)',
+        border: isLast ? '1px solid rgba(14,110,255,0.25)' : '1px solid rgba(255,255,255,0.08)',
+        borderRadius: '16px',
+        padding: '36px 32px',
+        animationDelay: `${(index + 1) * 0.15}s`,
+      }}
+    >
+      {/* Inzicht nummer */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '20px' }}>
+        <span style={{
+          display: 'inline-flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          width: '28px',
+          height: '28px',
+          borderRadius: '50%',
+          background: isLast ? 'rgba(14,110,255,0.15)' : 'rgba(255,255,255,0.08)',
+          fontSize: '13px',
+          fontWeight: 700,
+          color: isLast ? '#4a9eff' : 'rgba(255,255,255,0.5)',
+          fontFamily: 'Satoshi, sans-serif',
+        }}>
+          {index + 1}
+        </span>
+        <h3 style={{
+          fontFamily: 'GreedCondensed, sans-serif',
+          fontWeight: 700,
+          textTransform: 'uppercase',
+          fontSize: 'clamp(18px, 2.5vw, 24px)',
+          color: '#fff',
+          margin: 0,
+        }}>
+          {inzicht.titel}
+        </h3>
+      </div>
+
+      {/* Tekst */}
+      <p style={{
+        fontSize: '17px',
+        color: 'rgba(255,255,255,0.8)',
+        lineHeight: '1.7',
+        fontFamily: 'Satoshi, sans-serif',
+        margin: '0 0 24px',
+      }}>
+        {inzicht.tekst}
+      </p>
+
+      {/* Actie blok */}
+      <div style={{
+        background: isLast ? 'rgba(14,110,255,0.08)' : 'rgba(255,255,255,0.04)',
+        border: isLast ? '1px solid rgba(14,110,255,0.15)' : '1px solid rgba(255,255,255,0.06)',
+        borderRadius: '10px',
+        padding: '16px 20px',
+      }}>
+        <p style={{
+          fontSize: '11px',
+          fontWeight: 700,
+          textTransform: 'uppercase',
+          letterSpacing: '0.08em',
+          color: isLast ? '#4a9eff' : 'rgba(255,255,255,0.4)',
+          fontFamily: 'Satoshi, sans-serif',
+          marginBottom: '6px',
+        }}>
+          Wat je nu kunt doen:
+        </p>
+        <p style={{
+          fontSize: '15px',
+          color: '#fff',
+          lineHeight: '1.5',
+          fontFamily: 'Satoshi, sans-serif',
+          margin: 0,
+          fontWeight: 400,
+        }}>
+          {inzicht.actie}
+        </p>
+      </div>
+    </div>
+  )
 }
 
 export default function ResultsView({ url, result }: ResultsViewProps) {
@@ -37,260 +124,40 @@ export default function ResultsView({ url, result }: ResultsViewProps) {
 
   return (
     <div className="animate-slide-up">
-      {/* Wijziging 2 — Merknaam bovenin: wit, geen gradient */}
-      <section className="bg-dark" style={{ paddingTop: '64px', paddingBottom: '8px' }}>
-        <div className="mx-auto px-4 text-center" style={{ maxWidth: '680px' }}>
-          <p style={{
-            fontSize: '13px',
-            fontFamily: 'Satoshi, sans-serif',
-            fontWeight: 400,
-            color: 'rgba(255,255,255,0.4)',
-            marginBottom: '10px',
-            textTransform: 'none',
-            letterSpacing: 'normal',
-            fontStyle: 'normal'
-          }}>
+      {/* Conclusie: grote quote bovenaan */}
+      <section style={{ padding: '80px 0 64px', background: '#0f0f10' }}>
+        <div className="mx-auto px-4 text-center" style={{ maxWidth: '720px' }}>
+          <p className="label-style animate-hero-title" style={{ color: '#DDB3FF', marginBottom: '24px' }}>
             Jouw marktscan
           </p>
-          <h1 style={{
-            fontFamily: 'GreedCondensed, sans-serif',
-            fontWeight: 700,
-            textTransform: 'uppercase',
-            fontSize: 'clamp(48px, 8vw, 96px)',
-            color: '#ffffff',
+          <blockquote style={{
             margin: 0,
-            lineHeight: 1
+            padding: 0,
           }}>
-            {result.jouwSite.naam}
-          </h1>
+            <p style={{
+              fontFamily: 'GreedCondensed, sans-serif',
+              fontWeight: 700,
+              textTransform: 'uppercase',
+              fontSize: 'clamp(28px, 5vw, 48px)',
+              lineHeight: 1.1,
+              color: '#ffffff',
+              margin: 0,
+            }}>
+              {result.conclusie}
+            </p>
+          </blockquote>
+          <div className="gradient-line" style={{ marginTop: '48px', opacity: 0.4 }} />
         </div>
       </section>
 
-      {/* Scoreboard: breed vlak voor jou + drie concurrentkaarten eronder */}
-      {result.scoreboard && (
-        <section style={{ padding: '48px 0 64px', background: '#0f0f10' }}>
-          <div className="mx-auto px-4" style={{ maxWidth: '860px' }}>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-
-              {/* Jouw kaart — breed, horizontaal */}
-              <div style={{ background: 'rgba(46,124,246,0.08)', border: '1px solid rgba(46,124,246,0.35)', borderRadius: '12px', padding: '24px 28px' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '20px' }}>
-                  <span style={{ fontSize: '10px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', background: 'rgba(46,124,246,0.2)', color: '#2e7cf6', padding: '3px 8px', borderRadius: '4px', fontFamily: 'Satoshi, sans-serif' }}>Jij</span>
-                  <span style={{ fontSize: '16px', fontWeight: 700, color: '#fff', fontFamily: 'GreedCondensed, sans-serif', textTransform: 'uppercase' }}>{result.jouwSite.naam}</span>
-                </div>
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, minmax(0, 1fr))', gap: '20px' }}>
-                  {[
-                    { label: 'Kernbelofte', value: result.scoreboard.jij.kernbelofte },
-                    { label: 'Aanbod', value: result.scoreboard.jij.aanbod },
-                    { label: 'Toon', value: result.scoreboard.jij.toon, isPill: true },
-                    { label: 'Onderscheid', value: result.scoreboard.jij.onderscheid },
-                  ].map((row, i) => (
-                    <div key={i}>
-                      <p style={{ fontSize: '10px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', color: 'rgba(255,255,255,0.4)', fontFamily: 'Satoshi, sans-serif', marginBottom: '5px' }}>{row.label}</p>
-                      {row.isPill ? (
-                        <span style={{ display: 'inline-block', padding: '3px 10px', borderRadius: '20px', fontSize: '12px', fontFamily: 'Satoshi, sans-serif', background: 'rgba(46,124,246,0.15)', border: '1px solid rgba(46,124,246,0.3)', color: '#fff' }}>{row.value}</span>
-                      ) : (
-                        <p style={{ fontSize: '14px', color: '#fff', fontFamily: 'Satoshi, sans-serif', margin: 0, lineHeight: '1.4', fontWeight: 500 }}>{row.value}</p>
-                      )}
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              {/* Concurrent kaarten — drie naast elkaar */}
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, minmax(0, 1fr))', gap: '10px' }}>
-                {result.scoreboard.concurrenten.map((c, idx) => (
-                  <div key={idx} style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '12px', padding: '20px', display: 'flex', flexDirection: 'column', gap: '14px' }}>
-                    <div>
-                      <p style={{ fontSize: '10px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', color: 'rgba(255,255,255,0.35)', fontFamily: 'Satoshi, sans-serif', marginBottom: '3px' }}>Concurrent</p>
-                      <p style={{ fontSize: '15px', fontWeight: 700, color: '#fff', fontFamily: 'GreedCondensed, sans-serif', textTransform: 'uppercase', margin: 0 }}>{c.naam}</p>
-                    </div>
-                    <div>
-                      <p style={{ fontSize: '10px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'rgba(255,255,255,0.35)', fontFamily: 'Satoshi, sans-serif', marginBottom: '3px' }}>Kernbelofte</p>
-                      <p style={{ fontSize: '13px', color: 'rgba(255,255,255,0.8)', fontFamily: 'Satoshi, sans-serif', margin: 0, lineHeight: '1.4', display: 'flex', alignItems: 'center', gap: '6px' }}>
-                        {c.kernbelofte}
-                        {c.kernbelofteOverlap && <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: 'rgba(255,255,255,0.5)', flexShrink: 0, display: 'inline-block' }} />}
-                      </p>
-                    </div>
-                    <div>
-                      <p style={{ fontSize: '10px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'rgba(255,255,255,0.35)', fontFamily: 'Satoshi, sans-serif', marginBottom: '3px' }}>Aanbod</p>
-                      <p style={{ fontSize: '13px', color: 'rgba(255,255,255,0.8)', fontFamily: 'Satoshi, sans-serif', margin: 0, lineHeight: '1.4', display: 'flex', alignItems: 'center', gap: '6px' }}>
-                        {c.aanbod}
-                        {c.aanbodOverlap && <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: 'rgba(255,255,255,0.5)', flexShrink: 0, display: 'inline-block' }} />}
-                      </p>
-                    </div>
-                    <div>
-                      <p style={{ fontSize: '10px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'rgba(255,255,255,0.35)', fontFamily: 'Satoshi, sans-serif', marginBottom: '5px' }}>Toon</p>
-                      <span style={{ display: 'inline-block', padding: '2px 10px', borderRadius: '20px', fontSize: '12px', fontFamily: 'Satoshi, sans-serif', background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)', color: 'rgba(255,255,255,0.6)' }}>{c.toon}</span>
-                    </div>
-                    <div>
-                      <p style={{ fontSize: '10px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'rgba(255,255,255,0.35)', fontFamily: 'Satoshi, sans-serif', marginBottom: '3px' }}>Onderscheid</p>
-                      <p style={{ fontSize: '13px', color: 'rgba(255,255,255,0.55)', fontFamily: 'Satoshi, sans-serif', margin: 0, lineHeight: '1.4' }}>{c.onderscheid}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-
-              {/* Legenda */}
-              <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginTop: '4px' }}>
-                <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: 'rgba(255,255,255,0.5)', display: 'inline-block', flexShrink: 0 }} />
-                <p style={{ fontSize: '12px', color: 'rgba(255,255,255,0.35)', fontFamily: 'Satoshi, sans-serif', margin: 0 }}>overlapt met jou</p>
-              </div>
-
-            </div>
-          </div>
-        </section>
-      )}
-
-      {/* Intro — na scoreboard, voor Jouw website */}
-      <section style={{ padding: '0 0 48px', background: '#0f0f10' }}>
-        <div className="mx-auto px-4 text-center" style={{ maxWidth: '600px' }}>
-          <p style={{ fontSize: '17px', color: 'rgba(255,255,255,0.65)', fontFamily: 'Satoshi, sans-serif', lineHeight: '1.7', margin: 0 }}>
-            {result.intro}
-          </p>
-        </div>
-      </section>
-
-      {/* Jouw website */}
+      {/* Drie inzichtkaarten */}
       <section className="bg-dark" style={{ padding: '48px 0 64px' }}>
-        <div className="mx-auto px-4" style={{ maxWidth: '680px' }}>
-          <h2 style={{ fontFamily: 'GreedCondensed, sans-serif', fontWeight: 700, textTransform: 'uppercase', fontSize: 'clamp(18px, 2.5vw, 28px)', color: '#fff', marginBottom: '32px' }}>
-            Jouw website
-          </h2>
-          <div style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', padding: '32px' }}>
-            <p style={{ fontSize: '15px', fontWeight: 600, color: '#2e7cf6', fontFamily: 'Satoshi, sans-serif', marginBottom: '16px' }}>
-              {result.jouwSite.naam}
-            </p>
-            <ul style={{ listStyle: 'none', padding: 0, margin: '0 0 20px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
-              {result.jouwSite.watGoedGaat.map((item, index) => (
-                <li key={index} style={{ display: 'flex', alignItems: 'flex-start', gap: '12px' }}>
-                  <svg style={{ width: '16px', height: '16px', flexShrink: 0, marginTop: '4px' }} fill="none" stroke="#4ade80" viewBox="0 0 24 24" strokeWidth={2.5}>
-                    <polyline points="20 6 9 17 4 12" />
-                  </svg>
-                  <span style={{ fontSize: '16px', color: '#fff', fontFamily: 'Satoshi, sans-serif' }}>{item}</span>
-                </li>
-              ))}
-            </ul>
-            <p style={{ fontSize: '16px', color: 'rgba(255,255,255,0.7)', lineHeight: '1.6', fontFamily: 'Satoshi, sans-serif' }}>
-              {result.jouwSite.samenvatting}
-            </p>
-          </div>
+        <div className="mx-auto px-4" style={{ maxWidth: '680px', display: 'flex', flexDirection: 'column', gap: '20px' }}>
+          <InzichtCard inzicht={result.inzicht1} index={0} />
+          <InzichtCard inzicht={result.inzicht2} index={1} />
+          <InzichtCard inzicht={result.inzicht3} index={2} />
         </div>
       </section>
-
-      {/* Wijziging 5 — Concurrenten: labels Satoshi wit, geen gradient, geen cursief */}
-      <section className="bg-dark" style={{ padding: '0 0 64px' }}>
-        <div className="mx-auto px-4" style={{ maxWidth: '680px' }}>
-          <h2 style={{ fontFamily: 'GreedCondensed, sans-serif', fontWeight: 700, textTransform: 'uppercase', fontSize: 'clamp(18px, 2.5vw, 28px)', color: '#fff', marginBottom: '32px' }}>
-            Jouw concurrenten
-          </h2>
-          <div className="space-y-4">
-            {result.concurrenten.map((competitor, index) => (
-              <div key={index} style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', padding: '32px' }}>
-                <p style={{ fontSize: '15px', fontWeight: 600, color: '#2e7cf6', fontFamily: 'Satoshi, sans-serif', marginBottom: '4px' }}>
-                  {competitor.naam}
-                </p>
-                <p style={{ fontSize: '13px', color: 'rgba(255,255,255,0.4)', fontFamily: 'Satoshi, sans-serif', marginBottom: '12px' }}>
-                  {competitor.url}
-                </p>
-                {/* omschrijving */}
-                <p style={{ fontSize: '16px', color: '#ffffff', lineHeight: '1.6', marginBottom: '20px', fontFamily: 'Satoshi, sans-serif' }}>
-                  {competitor.omschrijving}
-                </p>
-
-                {/* overlap */}
-                <div style={{ marginTop: '16px', paddingTop: '16px', borderTop: '1px solid rgba(255,255,255,0.08)' }}>
-                  <p style={{ fontSize: '10px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', color: 'rgba(255,255,255,0.4)', marginBottom: '6px', fontFamily: 'Satoshi, sans-serif' }}>
-                    Overlap met jou
-                  </p>
-                  <p style={{ fontSize: '15px', color: 'rgba(255,255,255,0.8)', lineHeight: '1.5', fontFamily: 'Satoshi, sans-serif' }}>
-                    {competitor.overlap}
-                  </p>
-                </div>
-
-                {/* reden */}
-                {competitor.reden && (
-                  <div style={{ marginTop: '14px' }}>
-                    <p style={{ fontSize: '10px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', color: 'rgba(255,255,255,0.4)', marginBottom: '6px', fontFamily: 'Satoshi, sans-serif' }}>
-                      Waarom concurrent
-                    </p>
-                    <p style={{ fontSize: '15px', color: 'rgba(255,255,255,0.8)', lineHeight: '1.5', fontFamily: 'Satoshi, sans-serif' }}>
-                      {competitor.reden}
-                    </p>
-                  </div>
-                )}
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Wijziging 4 — Conclusie: vaste koptekst + dynamische subtitel */}
-      <section className="bg-dark" style={{ padding: '0 0 64px' }}>
-        <div className="mx-auto px-4" style={{ maxWidth: '680px' }}>
-          <h2 style={{ fontFamily: 'GreedCondensed, sans-serif', fontWeight: 700, textTransform: 'uppercase', fontSize: 'clamp(22px, 3vw, 32px)', color: '#fff', marginBottom: '8px' }}>
-            Conclusie
-          </h2>
-          <p style={{ fontSize: '16px', color: 'rgba(255,255,255,0.5)', fontFamily: 'Satoshi, sans-serif', marginBottom: '24px', fontStyle: 'normal' }}>
-            {result.vergelijkingTitel}
-          </p>
-          <div style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', padding: '32px' }}>
-            <p style={{ fontSize: '17px', color: '#fff', lineHeight: '1.6', fontFamily: 'Satoshi, sans-serif' }}>
-              {result.vergelijking}
-            </p>
-          </div>
-        </div>
-      </section>
-
-      {/* Wijziging 6 — Wat beter kan: rode cirkels, geen cursief */}
-      <section className="bg-dark" style={{ padding: '0 0 64px' }}>
-        <div className="mx-auto px-4" style={{ maxWidth: '680px' }}>
-          <h2 style={{ fontFamily: 'GreedCondensed, sans-serif', fontWeight: 700, textTransform: 'uppercase', fontSize: 'clamp(18px, 2.5vw, 28px)', color: '#fff', marginBottom: '32px' }}>
-            Wat beter kan
-          </h2>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-            {result.watBeterKan.map((item, index) => (
-              <div key={index} style={{ display: 'flex', alignItems: 'flex-start', gap: '16px' }}>
-                <div style={{ flexShrink: 0, width: '24px', height: '24px', borderRadius: '50%', background: 'rgba(248,113,113,0.15)', border: '1px solid rgba(248,113,113,0.4)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginTop: '2px' }}>
-                  <svg width="10" height="10" fill="none" stroke="#f87171" viewBox="0 0 24 24" strokeWidth={3}>
-                    <line x1="18" y1="6" x2="6" y2="18" />
-                    <line x1="6" y1="6" x2="18" y2="18" />
-                  </svg>
-                </div>
-                <p style={{ fontSize: '16px', color: '#ffffff', lineHeight: '1.6', margin: 0, fontFamily: 'Satoshi, sans-serif' }}>
-                  {item}
-                </p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Kans blockquote */}
-      {result.kans && (
-        <section className="bg-dark" style={{ padding: '0 0 80px' }}>
-          <div className="mx-auto px-4" style={{ maxWidth: '680px' }}>
-            <div style={{ borderLeft: '3px solid #8463ff', paddingLeft: '24px' }}>
-              <p style={{ fontSize: '17px', color: 'rgba(255,255,255,0.7)', lineHeight: '1.6', fontFamily: 'Satoshi, sans-serif' }}>
-                {result.kans}
-              </p>
-            </div>
-          </div>
-        </section>
-      )}
-
-      {/* Implicatie */}
-      {result.implicatie && (
-        <section className="bg-dark" style={{ padding: '0 0 64px' }}>
-          <div className="mx-auto px-4" style={{ maxWidth: '680px' }}>
-            <div style={{ borderLeft: '3px solid #2e7cf6', paddingLeft: '24px' }}>
-              <p style={{ fontSize: '17px', color: '#fff', lineHeight: '1.6', fontFamily: 'Satoshi, sans-serif' }}>
-                {result.implicatie}
-              </p>
-            </div>
-          </div>
-        </section>
-      )}
 
       {/* Email lead sectie */}
       <section style={{ padding: '80px 0', background: 'rgba(255,255,255,0.04)' }}>
@@ -310,14 +177,14 @@ export default function ResultsView({ url, result }: ResultsViewProps) {
           ) : (
             <div className="text-center">
               <h3 style={{ fontFamily: 'GreedCondensed, sans-serif', fontWeight: 700, textTransform: 'uppercase', fontSize: 'clamp(24px, 3vw, 36px)', color: '#fff', marginBottom: '16px' }}>
-                Bewaar je analyse
+                Bewaar je marktscan
               </h3>
               <p style={{ fontSize: '17px', color: '#fff', fontFamily: 'Satoshi, sans-serif', maxWidth: '560px', margin: '0 auto 32px', lineHeight: '1.6' }}>
-                Ontvang je volledige concurrentieanalyse als overzicht in je inbox. Gratis, direct.
+                Ontvang je volledige marktscan in je inbox. Gratis, direct.
               </p>
 
               <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '10px', marginBottom: '32px' }}>
-                {['Jouw sterke punten op een rij', 'De kans die jouw concurrenten laten liggen', 'Gratis, direct in je inbox'].map((text, i) => (
+                {['Je conclusie en drie inzichten', 'Concrete acties per inzicht', 'Gratis, direct in je inbox'].map((text, i) => (
                   <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                     <svg style={{ width: '16px', height: '16px', flexShrink: 0 }} fill="none" stroke="#4ade80" viewBox="0 0 24 24" strokeWidth={2.5}>
                       <polyline points="20 6 9 17 4 12" />

@@ -1,39 +1,14 @@
+export interface Inzicht {
+  titel: string;
+  tekst: string;
+  actie: string;
+}
+
 export interface AnalysisResult {
-  intro: string;
-  jouwSite: {
-    naam: string;
-    watGoedGaat: string[];
-    samenvatting: string;
-  };
-  concurrenten: {
-    url: string;
-    naam: string;
-    omschrijving: string;
-    overlap: string;
-    reden: string;
-  }[];
-  scoreboard: {
-    jij: {
-      kernbelofte: string;
-      aanbod: string;
-      toon: string;
-      onderscheid: string;
-    };
-    concurrenten: {
-      naam: string;
-      kernbelofte: string;
-      kernbelofteOverlap: boolean;
-      aanbod: string;
-      aanbodOverlap: boolean;
-      toon: string;
-      onderscheid: string;
-    }[];
-  };
-  vergelijkingTitel: string;
-  vergelijking: string;
-  watBeterKan: string[];
-  kans: string;
-  implicatie: string;
+  conclusie: string;
+  inzicht1: Inzicht;
+  inzicht2: Inzicht;
+  inzicht3: Inzicht;
 }
 
 export interface ScrapedData {
@@ -43,7 +18,7 @@ export interface ScrapedData {
 }
 
 export interface AnalysisState {
-  step: 'input' | 'loading' | 'fallback' | 'layer1' | 'layer2' | 'complete';
+  step: 'input' | 'loading' | 'fallback' | 'complete';
   loadingStep: number;
   userUrl: string;
   userContent: string;

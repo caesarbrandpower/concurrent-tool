@@ -48,78 +48,46 @@ async function withRetry<T>(fn: () => Promise<T>, label: string, maxRetries = 2)
   throw new Error(`${label}: max retries exceeded`);
 }
 
-const ANALYSIS_PROMPT = `Je bent een eerlijke merkadviseur. Je analyseert de website van de gebruiker en drie concurrenten in dezelfde markt.
+const ANALYSIS_PROMPT = `Je bent een eerlijke bedrijfsadviseur. Je analyseert hoe een bedrijf overkomt op zijn website en vergelijkt dat met hoe zijn concurrenten overkomen.
 
-Schrijf altijd vanuit de beleving van de ondernemer. Geen vakjargon. Gewone taal. Geen gedachtestreepjes.
+Je schrijft altijd vanuit de beleving van de ondernemer. Gewone taal. Geen vakjargon. Geen gedachtestreepjes. Geen algemene observaties. Alles wat je schrijft moet alleen voor dit bedrijf kunnen gelden.
 
-BELANGRIJK: Analyseer alleen concurrenten waarvoor je voldoende inhoud hebt ontvangen (minimaal een duidelijke propositie, doelgroep of dienst). Als de content van een concurrent te beperkt is om eerlijk te analyseren, sla die concurrent dan over. Neem alleen concurrenten op in je JSON die je echt kunt onderbouwen.
+ANALYSEER ALTIJD ALS VOLGT:
+- Lees de site als iemand die het bedrijf voor het eerst ziet.
+- Kijk naar: aanbod, tone of voice, wat ze beloven, wie ze aanspreken.
+- Kijk wat de site claimt maar niet bewijst.
+- Generieke observaties zijn verboden. Elk punt moet alleen voor deze ondernemer kunnen gelden.
 
-Genereer uitsluitend de volgende JSON structuur, geen uitleg of opmaak eromheen:
+Je geeft eerst een conclusie in een zin. Dan drie inzichten. Bij elk inzicht een concrete actie.
 
-{
-  "intro": "Drie tot vier zinnen die kort en direct beschrijven wat de gebruiker gaat zien. Stel de toon in: eerlijk, zonder oordeel, nieuwsgierig makend. Benoem kort wat je hebt onderzocht en wat de rode draad is die je alvast ziet.",
+CONCLUSIE
+Een zin die direct samenvat wat de ondernemer moet weten. Prikkelend genoeg om verder te lezen.
 
-  "jouwSite": {
-    "naam": "Naam van het bedrijf, afgeleid uit de website",
-    "watGoedGaat": [
-      "Eerste sterke punt -- concreet en complimenteus, één zin. Noem iets specifieks van de site.",
-      "Tweede sterke punt -- ook concreet, niet generiek."
-    ],
-    "samenvatting": "Hoe de website overkomt op een nieuwe bezoeker. Eerlijk, twee zinnen. Geen oordeel over wat beter kan."
-  },
+INZICHT 1: ZO STA JIJ ERVOOR
+Wat ziet een klant als hij op deze website landt? Twee zinnen. Begin eerlijk maar niet hard. Dit is de spiegel.
+Actie: Een concrete actie. Een zin. Specifiek voor dit bedrijf.
 
-  "concurrenten": [
-    {
-      "url": "URL van de concurrent",
-      "naam": "Naam van het bedrijf, afgeleid uit de content",
-      "omschrijving": "Hoe deze concurrent overkomt op een nieuwe bezoeker. Twee zinnen.",
-      "overlap": "Waar deze concurrent hetzelfde zegt of belooft als de gebruiker. Één zin.",
-      "reden": "Waarom dit een relevante concurrent is. Zelfde markt, zelfde doelgroep, zelfde dienst. Één zin."
-    }
-  ],
+INZICHT 2: HIER VAL JE NIET OP
+Waar zegt dit bedrijf hetzelfde als zijn concurrenten? Wees direct. Twee zinnen. Concreet.
+Actie: Een concrete actie om zich te onderscheiden. Een zin. Specifiek voor dit bedrijf.
 
-  "scoreboard": {
-    "jij": {
-      "kernbelofte": "Wat jij claimt in max 6 woorden",
-      "aanbod": "Wat je concreet verkoopt, max 6 woorden",
-      "toon": "Één woord dat je toon typeert",
-      "onderscheid": "Wat jij doet dat anderen niet claimen. Één zin."
-    },
-    "concurrenten": [
-      {
-        "naam": "Naam concurrent",
-        "kernbelofte": "Wat zij claimen in max 6 woorden",
-        "kernbelofteOverlap": true,
-        "aanbod": "Wat zij concreet verkopen, max 6 woorden",
-        "aanbodOverlap": false,
-        "toon": "Één woord dat hun toon typeert",
-        "onderscheid": "Wat zij doen dat anderen niet claimen. Één zin."
-      }
-    ]
-  },
-
-  "vergelijkingTitel": "Een pakkende subtitel van 3-6 woorden die de kern samenvat. Concreet en scherp. Bijv: 'Iedereen belooft hetzelfde' of 'De markt klinkt als één stem'.",
-
-  "vergelijking": "Twee tot drie zinnen over wat alle partijen gemeen hebben. De rode draad die laat zien dat ze in een gelijkvormige markt opereren.",
-
-  "watBeterKan": [
-    "Eerste verbeterpunt: begin altijd met wat er op de eigen site van de gebruiker ontbreekt of onduidelijk is. Concreet, gebaseerd op wat je op die site ziet. Één zin.",
-    "Tweede verbeterpunt: gebaseerd op wat een of meerdere concurrenten wél doen of claimen dat de gebruiker mist. Noem de concurrent bij naam. Één zin."
-  ],
-
-  "kans": "Één concrete kans die alle concurrenten laten liggen. Specifiek genoeg om te raken, prikkelend genoeg om nieuwsgierig te maken.",
-
-  "implicatie": "Wat het de ondernemer kost als dit niet verandert. Één of twee zinnen. Direct, geen jargon."
-}
+INZICHT 3: JOUW KANS IN DE MARKT
+Wat zegt niemand in deze markt maar wat klanten wel willen horen? Twee zinnen. Specifiek genoeg om te raken.
+Actie: Een concrete actie om deze kans te pakken. Een zin. Specifiek voor dit bedrijf.
 
 Regels:
-- Neem een concurrent alleen op als je zijn propositie, dienst of doelgroep kunt benoemen op basis van de ontvangen content. Bij twijfel: weglaten.
-- kernbelofteOverlap: true als de kernbelofte van de concurrent inhoudelijk overlapt met die van de gebruiker. Anders false.
-- aanbodOverlap: true als het aanbod van de concurrent inhoudelijk overlapt met dat van de gebruiker. Anders false.
-- watBeterKan: eerste punt altijd over de eigen site, tweede punt altijd met naam van concurrent. Nooit generiek.
-- Geef uitsluitend JSON terug. Geen uitleg, geen markdown, geen code-blokken.
+- Geen gedachtestreepjes.
+- Geen vakjargon.
+- Geen algemene observaties.
+- Uitsluitend JSON terug. Geen uitleg, geen markdown, geen code-blokken.
 - Taal: Nederlands, tenzij de website volledig in het Engels is.
-- Geen gedachtestreepjes in de output.`;
+
+{
+  "conclusie": "Een zin die direct de kern raakt.",
+  "inzicht1": { "titel": "Zo sta jij ervoor", "tekst": "...", "actie": "..." },
+  "inzicht2": { "titel": "Hier val je niet op", "tekst": "...", "actie": "..." },
+  "inzicht3": { "titel": "Jouw kans in de markt", "tekst": "...", "actie": "..." }
+}`;
 
 export async function identifyIndustry(content: string): Promise<string> {
   console.log('identifyIndustry: start, content length:', content.length);
@@ -141,8 +109,7 @@ export async function identifyIndustry(content: string): Promise<string> {
 export async function findCompetitors(industry: string): Promise<string[]> {
   console.log('findCompetitors: industry:', industry);
 
-  // Eén brede query i.p.v. drie — bespaart API calls en voorkomt rate limits
-  const query = `Zoek vijf concurrenten in de ${industry} markt in Nederland. Geef alleen de website URLs terug, één per regel. Alleen commerciële bedrijven met een toegankelijke website (geen cookiewalls, geen login-vereiste). Geen magazines, directories of nieuwssites.`;
+  const query = `Zoek vijf concurrenten in de ${industry} markt in Nederland. Geef alleen de website URLs terug, een per regel. Alleen commerciele bedrijven met een toegankelijke website (geen cookiewalls, geen login-vereiste). Geen magazines, directories of nieuwssites.`;
 
   const allUrls = new Set<string>();
 
@@ -201,7 +168,7 @@ export async function analyzeWebsites(
   return withRetry(async () => {
     const response = await anthropic.messages.create({
       model: 'claude-sonnet-4-5',
-      max_tokens: 3000,
+      max_tokens: 2000,
       messages: [{
         role: 'user',
         content: fullPrompt

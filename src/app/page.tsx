@@ -114,7 +114,7 @@ export default function Home() {
 
   return (
     <main className="min-h-screen bg-dark">
-      {/* Navbar with gradient background — full bleed */}
+      {/* Navbar with gradient background */}
       <nav className="gradient-navbar" style={{ height: '72px', paddingLeft: '24px', paddingRight: '24px' }}>
         <a href="https://newfound.agency" target="_blank">
           {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -129,15 +129,15 @@ export default function Home() {
             <p className="label-style text-accent mb-6 animate-hero-title">Marktscan</p>
 
             <h1 className="font-heading text-white mb-5 animate-hero-title">
-              Zie hoe jij je<br />verhoudt.
+              Zie je business zoals<br />je klant hem ziet.
             </h1>
 
             <h2 className="text-white mb-3 animate-hero-subtitle">
-              Ontdek waar jij en je concurrenten hetzelfde zeggen.
+              Je klant vergelijkt jou met je concurrent. Weet jij wat hij ziet?
             </h2>
 
             <p className="text-white/60 mb-16 font-body animate-hero-body" style={{ fontWeight: 300 }}>
-              Vul je website in en krijg een analyse in 60 seconden.
+              Voer je website in. Ontdek hoe jij overkomt, waar jij opgaat in de massa en waar jouw kans in de markt ligt.
             </p>
 
             <div className="animate-hero-cta">
@@ -159,7 +159,7 @@ export default function Home() {
                   disabled={!manualInput.trim() || isLoading}
                   className="mt-4 w-full py-3 px-6 bg-accent-blue text-white rounded-btn font-body font-medium hover:brightness-110 disabled:opacity-40 disabled:cursor-not-allowed transition-all"
                 >
-                  Analyseer mijn merk
+                  Scan mijn markt
                 </button>
               </div>
             )}
