@@ -121,8 +121,25 @@ export default function ResultsView({ url, result }: ResultsViewProps) {
 
   return (
     <div className="animate-slide-up">
+      {/* Merknaam */}
+      <section style={{ padding: '80px 0 24px', background: '#0f0f10' }}>
+        <div className="mx-auto px-4 text-center" style={{ maxWidth: '720px' }}>
+          <h1 style={{
+            fontFamily: 'GreedCondensed, sans-serif',
+            fontWeight: 700,
+            textTransform: 'uppercase',
+            fontSize: 'clamp(40px, 6vw, 72px)',
+            color: '#fff',
+            margin: 0,
+            lineHeight: 1,
+          }}>
+            {result.merknaam}
+          </h1>
+        </div>
+      </section>
+
       {/* Conclusie */}
-      <section style={{ padding: '80px 0 64px', background: '#0f0f10' }}>
+      <section style={{ padding: '24px 0 64px', background: '#0f0f10' }}>
         <div className="mx-auto px-4 text-center" style={{ maxWidth: '720px' }}>
           <p className="label-style animate-hero-title" style={{ color: '#DDB3FF', marginBottom: '24px' }}>
             Jouw marktscan
@@ -146,7 +163,7 @@ export default function ResultsView({ url, result }: ResultsViewProps) {
 
       {/* Concurrenten sectie */}
       {result.concurrenten && result.concurrenten.length > 0 && (
-        <section style={{ padding: '48px 0 16px', background: '#0f0f10' }}>
+        <section style={{ padding: '64px 0 16px', background: '#0f0f10' }}>
           <div className="mx-auto px-4" style={{ maxWidth: '680px' }}>
             <h2 style={{
               fontFamily: 'GreedCondensed, sans-serif',
@@ -201,9 +218,19 @@ export default function ResultsView({ url, result }: ResultsViewProps) {
                     color: 'rgba(255,255,255,0.6)',
                     lineHeight: '1.5',
                     fontFamily: 'Satoshi, sans-serif',
-                    margin: 0,
+                    margin: '0 0 8px',
                   }}>
                     {c.omschrijving}
+                  </p>
+                  <p style={{
+                    fontSize: '14px',
+                    color: 'rgba(221,179,255,0.7)',
+                    lineHeight: '1.5',
+                    fontFamily: 'Satoshi, sans-serif',
+                    margin: 0,
+                    fontStyle: 'italic',
+                  }}>
+                    {c.reden}
                   </p>
                 </div>
               ))}
@@ -233,7 +260,7 @@ export default function ResultsView({ url, result }: ResultsViewProps) {
               </div>
               <h3 style={{ fontFamily: 'GreedCondensed, sans-serif', fontWeight: 700, textTransform: 'uppercase', fontSize: 'clamp(24px, 3vw, 36px)', color: '#fff', marginBottom: '8px' }}>Verstuurd!</h3>
               <p style={{ fontSize: '17px', color: '#fff', fontFamily: 'Satoshi, sans-serif' }}>
-                Je analyse is onderweg. Check je inbox.
+                Je marktscan is onderweg. Check je inbox.
               </p>
             </div>
           ) : (
@@ -241,12 +268,20 @@ export default function ResultsView({ url, result }: ResultsViewProps) {
               <h3 style={{ fontFamily: 'GreedCondensed, sans-serif', fontWeight: 700, textTransform: 'uppercase', fontSize: 'clamp(24px, 3vw, 36px)', color: '#fff', marginBottom: '16px' }}>
                 Bewaar je marktscan
               </h3>
-              <p style={{ fontSize: '17px', color: '#fff', fontFamily: 'Satoshi, sans-serif', maxWidth: '560px', margin: '0 auto 32px', lineHeight: '1.6' }}>
-                Ontvang je volledige marktscan in je inbox. Gratis, direct.
+              <p style={{ fontSize: '17px', color: '#fff', fontFamily: 'Satoshi, sans-serif', maxWidth: '560px', margin: '0 auto 8px', lineHeight: '1.6' }}>
+                Ontvang je volledige marktscan als overzicht in je inbox.
+              </p>
+              <p style={{ fontSize: '17px', color: 'rgba(255,255,255,0.6)', fontFamily: 'Satoshi, sans-serif', maxWidth: '560px', margin: '0 auto 32px', lineHeight: '1.6' }}>
+                Inclusief geprioriteerd actieplan en uitgebreide concurrentiekaart.
               </p>
 
               <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '10px', marginBottom: '32px' }}>
-                {['Je conclusie en drie inzichten', 'Concrete acties per inzicht', 'Gratis, direct in je inbox'].map((text, i) => (
+                {[
+                  'Je conclusie en drie inzichten',
+                  'Geprioriteerd actieplan: wat doe je eerst, dan, dan',
+                  'Uitgebreide concurrentiekaart: wat zegt elke concurrent precies',
+                  'Gratis, direct in je inbox',
+                ].map((text, i) => (
                   <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                     <svg style={{ width: '16px', height: '16px', flexShrink: 0 }} fill="none" stroke="#4ade80" viewBox="0 0 24 24" strokeWidth={2.5}>
                       <polyline points="20 6 9 17 4 12" />
@@ -283,20 +318,31 @@ export default function ResultsView({ url, result }: ResultsViewProps) {
         </div>
       </section>
 
-      {/* CTA */}
+      {/* Kom in contact */}
       <section className="bg-dark" style={{ padding: '96px 0' }}>
         <div className="mx-auto px-4 text-center" style={{ maxWidth: '680px' }}>
-          <p style={{ fontSize: '17px', color: '#fff', lineHeight: '1.6', fontFamily: 'Satoshi, sans-serif', marginBottom: '16px' }}>
+          <h3 style={{
+            fontFamily: 'GreedCondensed, sans-serif',
+            fontWeight: 700,
+            textTransform: 'uppercase',
+            fontSize: 'clamp(24px, 3vw, 36px)',
+            color: '#fff',
+            marginBottom: '16px',
+          }}>
+            Kom in contact
+          </h3>
+          <p style={{ fontSize: '17px', color: '#fff', lineHeight: '1.6', fontFamily: 'Satoshi, sans-serif', maxWidth: '520px', margin: '0 auto 24px' }}>
             Je onderscheid is er, maar het is nog niet zichtbaar voor de mensen die jij wil bereiken. Precies daar helpen wij bij.
           </p>
           <a
-            href="https://newfound.agency"
-            target="_blank"
-            rel="noopener noreferrer"
+            href="mailto:hello@newfound.agency"
             className="submit-btn"
-            style={{ display: 'inline-block', textDecoration: 'none' }}
+            style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', textDecoration: 'none' }}
           >
             Plan een gesprek
+            <svg style={{ width: '16px', height: '16px' }} fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+              <path d="M5 12h14M12 5l7 7-7 7" />
+            </svg>
           </a>
         </div>
       </section>

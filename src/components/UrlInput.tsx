@@ -35,25 +35,27 @@ export default function UrlInput({ onSubmit, isLoading }: UrlInputProps) {
           }
         `}
       >
-        <div className="pl-5 flex-shrink-0">
-          <Globe className={`w-5 h-5 transition-colors duration-300 ${isFocused ? 'text-accent' : 'text-white/50'}`} />
-        </div>
+        <div className="flex items-center flex-1 min-w-0">
+          <div className="pl-5 flex-shrink-0">
+            <Globe className={`w-5 h-5 transition-colors duration-300 ${isFocused ? 'text-accent' : 'text-white/50'}`} />
+          </div>
 
-        <input
-          type="text"
-          value={url}
-          onChange={(e) => setUrl(e.target.value)}
-          onFocus={() => setIsFocused(true)}
-          onBlur={() => setIsFocused(false)}
-          placeholder="jouwwebsite.nl"
-          className="flex-1 min-w-0 py-5 px-4 text-lg bg-transparent border-none outline-none text-white placeholder:text-white/50 font-body"
-          disabled={isLoading}
-        />
+          <input
+            type="text"
+            value={url}
+            onChange={(e) => setUrl(e.target.value)}
+            onFocus={() => setIsFocused(true)}
+            onBlur={() => setIsFocused(false)}
+            placeholder="jouwwebsite.nl"
+            className="flex-1 min-w-0 py-5 px-4 text-lg bg-transparent border-none outline-none text-white placeholder:text-white/50 font-body"
+            disabled={isLoading}
+          />
+        </div>
 
         <button
           type="submit"
           disabled={!url.trim() || isLoading}
-          className="flex-shrink-0 py-3.5 px-7 bg-accent-blue text-white font-body font-medium hover:brightness-110 disabled:opacity-40 disabled:cursor-not-allowed transition-all duration-200 flex items-center gap-2 m-2.5 rounded-btn whitespace-nowrap"
+          className="flex-shrink-0 py-3.5 px-7 bg-accent-blue text-white font-body font-medium hover:brightness-110 disabled:opacity-40 disabled:cursor-not-allowed transition-all duration-200 flex items-center justify-center gap-2 m-2.5 rounded-btn whitespace-nowrap"
         >
           {isLoading ? 'Bezig...' : 'Scan mijn markt'}
           {!isLoading && <ArrowRight className="w-4 h-4" />}

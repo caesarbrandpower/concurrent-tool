@@ -51,19 +51,25 @@ const ANALYSIS_PROMPT = `Je bent een eerlijke bedrijfsadviseur. Je analyseert ho
 
 Je schrijft altijd vanuit de beleving van de ondernemer. Gewone taal. Geen vakjargon. Geen gedachtestreepjes. Geen algemene observaties. Alles wat je schrijft moet alleen voor dit bedrijf kunnen gelden.
 
+Toonzetting: eerlijk en direct, maar nooit bot. Schrijf zoals een goede adviseur die je de waarheid vertelt maar je daarna ook verder helpt. Begin positief waar het klopt, wees concreet over wat beter kan, maar doe het met respect. Geen sugarcoating, geen pappen en nathouden, maar ook geen klap in het gezicht. De ondernemer moet knikken, niet schrikken.
+
 ANALYSEER ALTIJD ALS VOLGT:
 - Lees de site als iemand die het bedrijf voor het eerst ziet.
 - Kijk naar: aanbod, tone of voice, wat ze beloven, wie ze aanspreken.
 - Kijk wat de site claimt maar niet bewijst.
 - Generieke observaties zijn verboden. Elk punt moet alleen voor deze ondernemer kunnen gelden.
 
-Je geeft eerst een conclusie, dan de concurrenten, dan drie inzichten. Bij elk inzicht een concrete actie.
+Je geeft eerst de merknaam, dan een conclusie, dan de concurrenten, dan drie inzichten, dan een actieplan. Bij elk inzicht een concrete actie.
+
+MERKNAAM
+De naam van het bedrijf, afgeleid uit de website.
 
 CONCLUSIE
 Een zin van maximaal 12 woorden die direct de kern raakt. Prikkelend genoeg om verder te lezen.
 
 CONCURRENTEN
-Geef per concurrent de naam, URL en een omschrijving van een zin over hoe zij overkomen op een nieuwe bezoeker.
+Geef per concurrent de naam, URL, een omschrijving van een zin over hoe zij overkomen op een nieuwe bezoeker, en een reden.
+Geef per concurrent een specifieke en verschillende reden waarom hij relevant is voor deze ondernemer. Niet generiek ('zelfde markt') maar concreet gebaseerd op wat je hebt gezien: overlappende doelgroep, vergelijkbare diensten of vergelijkbaar taalgebruik. Elke reden moet anders zijn dan de andere twee.
 
 INZICHT 1: ZO STA JIJ ERVOOR
 Wat ziet een klant als hij op deze website landt? Twee zinnen. Begin eerlijk maar niet hard. Dit is de spiegel.
@@ -77,6 +83,9 @@ INZICHT 3: JOUW KANS IN DE MARKT
 Wat zegt niemand in deze markt maar wat klanten wel willen horen? Twee zinnen. Specifiek genoeg om te raken.
 Actie: Een concrete actie om deze kans te pakken. Een zin. Specifiek voor dit bedrijf.
 
+ACTIEPLAN
+Drie stappen, geprioriteerd van meest directe impact naar langere termijn. Elke stap is concreet en specifiek voor dit bedrijf. De eerste stap heeft de meeste directe impact, de tweede bouwt voort op de eerste, de derde is langere termijn maar belangrijk.
+
 Regels:
 - Geen gedachtestreepjes.
 - Geen vakjargon.
@@ -86,17 +95,24 @@ Regels:
 - Taal: Nederlands, tenzij de website volledig in het Engels is.
 
 {
+  "merknaam": "Naam van het bedrijf, afgeleid uit de website",
   "conclusie": "Maximaal 12 woorden die direct de kern raken.",
   "concurrenten": [
     {
       "naam": "Naam van het bedrijf",
       "url": "URL van de concurrent",
-      "omschrijving": "Een zin hoe zij overkomen op een nieuwe bezoeker."
+      "omschrijving": "Een zin hoe zij overkomen op een nieuwe bezoeker.",
+      "reden": "Een specifieke zin waarom deze concurrent relevant is voor deze ondernemer."
     }
   ],
   "inzicht1": { "titel": "Zo sta jij ervoor", "tekst": "...", "actie": "..." },
   "inzicht2": { "titel": "Hier val je niet op", "tekst": "...", "actie": "..." },
-  "inzicht3": { "titel": "Jouw kans in de markt", "tekst": "...", "actie": "..." }
+  "inzicht3": { "titel": "Jouw kans in de markt", "tekst": "...", "actie": "..." },
+  "actieplan": [
+    "Eerste stap: meest directe impact.",
+    "Tweede stap: bouwt voort op de eerste.",
+    "Derde stap: langere termijn maar belangrijk."
+  ]
 }`;
 
 export async function identifyIndustry(content: string): Promise<string> {
@@ -178,7 +194,7 @@ export async function analyzeWebsites(
   return withRetry(async () => {
     const response = await anthropic.messages.create({
       model: 'claude-sonnet-4-5',
-      max_tokens: 2500,
+      max_tokens: 3000,
       messages: [{
         role: 'user',
         content: fullPrompt

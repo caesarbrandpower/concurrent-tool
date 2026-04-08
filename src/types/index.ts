@@ -8,14 +8,17 @@ export interface Concurrent {
   naam: string;
   url: string;
   omschrijving: string;
+  reden: string;
 }
 
 export interface AnalysisResult {
+  merknaam: string;
   conclusie: string;
   concurrenten: Concurrent[];
   inzicht1: Inzicht;
   inzicht2: Inzicht;
   inzicht3: Inzicht;
+  actieplan: string[];
 }
 
 export interface ScrapedData {
