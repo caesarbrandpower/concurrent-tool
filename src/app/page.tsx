@@ -133,7 +133,7 @@ export default function Home() {
             </h1>
 
             <h2 className="text-white mb-3 animate-hero-subtitle">
-              Zie hoe jij scoort ten opzichte van je concurrent. En waar jouw kans ligt.
+              Zie hoe jij scoort ten opzichte van je concurrent.<br />En waar jouw kans ligt.
             </h2>
 
             <p className="text-white/60 mb-8 font-body animate-hero-body" style={{ fontWeight: 300, maxWidth: '520px', margin: '0 auto', marginBottom: '32px' }}>
