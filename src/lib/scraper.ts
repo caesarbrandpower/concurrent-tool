@@ -369,7 +369,6 @@ export async function scrapeWebsite(url: string): Promise<ScrapedData> {
     `=== ${p.title} (${p.url}) ===\n${p.content}`
   ).join('\n\n');
 
-  // Trim tot 500 woorden zodat API calls binnen rate limits blijven
   const trimmedContent = trimToWords(combinedContent, MAX_WORDS);
   const wordCount = countWords(trimmedContent);
   console.log(`[Scraper] Succes: ${wordCount} woorden (getrimd van ${countWords(combinedContent)}) van ${scrapedPages.length} pagina's voor ${url}`);
@@ -381,15 +380,8 @@ export function isValidScrape(data: ScrapedData): boolean {
   return data.wordCount >= MIN_WORDS && data.content.length > 0;
 }
 
-// --- Sequential scraper with delay between URLs ---
+// --- Parallel scraper for multiple URLs ---
 export async function scrapeMultipleUrls(urls: string[]): Promise<ScrapedData[]> {
-  const results: ScrapedData[] = [];
-  for (let i = 0; i < urls.length; i++) {
-    if (i > 0) {
-      console.log(`[Scraper] 2s delay voor concurrent ${i + 1}/${urls.length}...`);
-      await delay(2000);
-    }
-    results.push(await scrapeWebsite(urls[i]));
-  }
+  const results = await Promise.all(urls.map(url => scrapeWebsite(url)));
   return results;
 }

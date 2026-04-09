@@ -60,16 +60,14 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    // Step 2: Identify industry
+    // Step 2: Identify industry + find competitors (1.5s delay tussen API calls)
     const industry = await identifyIndustry(userScraped.content);
-    await delay(3000);
+    await delay(1500);
 
-    // Step 3: Find competitors
     const competitorUrls = await findCompetitors(industry);
-    await delay(3000);
 
-    // Step 4: Scrape competitor URLs sequentially with delay
-    console.log(`Scraping ${competitorUrls.length} competitor URLs sequentieel...`);
+    // Step 3: Scrape competitor URLs parallel (geen API calls, alleen HTTP fetches)
+    console.log(`Scraping ${competitorUrls.length} competitor URLs parallel...`);
     const allScraped = await scrapeMultipleUrls(competitorUrls);
     const competitorData = allScraped.filter(s => {
       const valid = s.wordCount >= 50 && s.content.length > 0;
@@ -85,20 +83,20 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Step 5: API Call 1 - Analyseer gebruiker zijn site
-    await delay(3000);
-    console.log('API Call 1: analyseUserSite...');
+    // Step 4: API Call 1 - Analyseer gebruiker zijn site (1.5s delay na scraping)
+    await delay(1500);
+    console.log('API Call 1: analyzeUserSite...');
     const call1 = await withTimeout(
       () => analyzeUserSite(userScraped.content),
-      45000,
+      30000,
       'analyzeUserSite'
     );
     console.log(`API Call 1 klaar: merknaam=${call1.merknaam}`);
 
-    // 3 seconden wachten tussen call 1 en call 2
+    // 3 seconden wachten tussen call 1 en call 2 (token reset)
     await delay(3000);
 
-    // Step 6: API Call 2 - Vergelijk met concurrenten
+    // Step 5: API Call 2 - Vergelijk met concurrenten
     console.log('API Call 2: analyzeCompetitors...');
     const call2 = await withTimeout(
       () => analyzeCompetitors(
@@ -106,7 +104,7 @@ export async function POST(request: NextRequest) {
         userScraped.content,
         competitorData.map(c => ({ url: c.url, content: c.content }))
       ),
-      60000,
+      45000,
       'analyzeCompetitors'
     );
     console.log('API Call 2 klaar');
@@ -131,9 +129,14 @@ export async function POST(request: NextRequest) {
 
   } catch (error) {
     console.error('Analyze error:', error);
+    const message = error instanceof Error ? error.message : 'Unknown error';
+    const isTimeout = message.includes('timeout');
     return NextResponse.json(
-      { error: 'Analysis failed', message: error instanceof Error ? error.message : 'Unknown error' },
-      { status: 500 }
+      { 
+        error: isTimeout ? 'De analyse duurde te lang. Probeer het opnieuw.' : 'Analyse mislukt', 
+        message 
+      },
+      { status: isTimeout ? 504 : 500 }
     );
   }
 }
