@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { scrapeWebsite, scrapeMultipleUrls, isValidScrape } from '@/lib/scraper';
-import { identifyIndustry, findCompetitors, analyzeWebsites, withTimeout } from '@/lib/anthropic';
+import { identifyIndustry, findCompetitors, analyzeUserSite, analyzeCompetitors, withTimeout } from '@/lib/anthropic';
 import { ScrapedData } from '@/types';
 
 export const maxDuration = 120;
@@ -62,18 +62,14 @@ export async function POST(request: NextRequest) {
 
     // Step 2: Identify industry
     const industry = await identifyIndustry(userScraped.content);
-
-    // 2s delay tussen API calls om rate limits te voorkomen
-    await delay(2000);
+    await delay(3000);
 
     // Step 3: Find competitors
     const competitorUrls = await findCompetitors(industry);
+    await delay(3000);
 
-    // 2s delay voor volgende fase
-    await delay(2000);
-
-    // Step 4: Scrape all competitor URLs in parallel, take first 3 valid
-    console.log(`Scraping ${competitorUrls.length} competitor URLs in parallel...`);
+    // Step 4: Scrape competitor URLs sequentially with delay
+    console.log(`Scraping ${competitorUrls.length} competitor URLs sequentieel...`);
     const allScraped = await scrapeMultipleUrls(competitorUrls);
     const competitorData = allScraped.filter(s => {
       const valid = s.wordCount >= 50 && s.content.length > 0;
@@ -89,21 +85,48 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // 2s delay voor de analyse call
-    await delay(2000);
-
-    // Step 5: Analyze all websites
-    const analysis = await withTimeout(
-      () => analyzeWebsites(userScraped.content, competitorData.map(c => ({ url: c.url, content: c.content }))),
-      90000,
-      'analyzeWebsites'
+    // Step 5: API Call 1 - Analyseer gebruiker zijn site
+    await delay(3000);
+    console.log('API Call 1: analyseUserSite...');
+    const call1 = await withTimeout(
+      () => analyzeUserSite(userScraped.content),
+      45000,
+      'analyzeUserSite'
     );
+    console.log(`API Call 1 klaar: merknaam=${call1.merknaam}`);
+
+    // 3 seconden wachten tussen call 1 en call 2
+    await delay(3000);
+
+    // Step 6: API Call 2 - Vergelijk met concurrenten
+    console.log('API Call 2: analyzeCompetitors...');
+    const call2 = await withTimeout(
+      () => analyzeCompetitors(
+        call1.merknaam,
+        userScraped.content,
+        competitorData.map(c => ({ url: c.url, content: c.content }))
+      ),
+      60000,
+      'analyzeCompetitors'
+    );
+    console.log('API Call 2 klaar');
+
+    // Combineer resultaten
+    const result = {
+      merknaam: call1.merknaam,
+      conclusie: call2.conclusie,
+      concurrenten: call2.concurrenten,
+      inzicht1: call1.inzicht1,
+      inzicht2: call2.inzicht2,
+      inzicht3: call2.inzicht3,
+      actieplan: call2.actieplan,
+    };
 
     return NextResponse.json({
       success: true,
       industry,
       competitors: competitorData.map(c => ({ url: c.url, content: c.content.substring(0, 500) })),
-      result: analysis,
+      result,
     });
 
   } catch (error) {

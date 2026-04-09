@@ -3,7 +3,7 @@ import FirecrawlApp from '@mendable/firecrawl-js';
 import { ScrapedData } from '@/types';
 
 const MIN_WORDS = 100;
-const MAX_WORDS = 800;
+const MAX_WORDS = 500;
 
 const BROWSER_HEADERS: Record<string, string> = {
   'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
@@ -369,7 +369,7 @@ export async function scrapeWebsite(url: string): Promise<ScrapedData> {
     `=== ${p.title} (${p.url}) ===\n${p.content}`
   ).join('\n\n');
 
-  // Trim tot 800 woorden zodat API calls binnen rate limits blijven
+  // Trim tot 500 woorden zodat API calls binnen rate limits blijven
   const trimmedContent = trimToWords(combinedContent, MAX_WORDS);
   const wordCount = countWords(trimmedContent);
   console.log(`[Scraper] Succes: ${wordCount} woorden (getrimd van ${countWords(combinedContent)}) van ${scrapedPages.length} pagina's voor ${url}`);

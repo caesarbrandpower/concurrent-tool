@@ -14,7 +14,7 @@ export async function withTimeout<T>(fn: () => Promise<T>, ms: number, label: st
   return Promise.race([fn(), timeout]);
 }
 
-async function withRetry<T>(fn: () => Promise<T>, label: string, maxRetries = 3): Promise<T> {
+async function withRetry<T>(fn: () => Promise<T>, label: string, maxRetries = 2): Promise<T> {
   for (let attempt = 0; attempt <= maxRetries; attempt++) {
     try {
       return await fn();
@@ -38,8 +38,8 @@ async function withRetry<T>(fn: () => Promise<T>, label: string, maxRetries = 3)
       const is429 = err?.status === 429 || isTokenLimit;
 
       if ((isRetryable || isTokenLimit) && attempt < maxRetries) {
-        // Exponential backoff: 5s, 10s, 20s voor 429/token limits
-        const wait = is429 ? 5000 * Math.pow(2, attempt) : Math.pow(2, attempt) * 3000;
+        // 429: wacht 10s, dan 20s
+        const wait = is429 ? 10000 * Math.pow(2, attempt) : Math.pow(2, attempt) * 3000;
         console.log(`${label}: fout (${err?.status || err?.message}), wacht ${wait/1000}s (poging ${attempt + 1}/${maxRetries})...`);
         await new Promise(resolve => setTimeout(resolve, wait));
         continue;
@@ -50,88 +50,69 @@ async function withRetry<T>(fn: () => Promise<T>, label: string, maxRetries = 3)
   throw new Error(`${label}: max retries exceeded`);
 }
 
-const ANALYSIS_PROMPT = `BELANGRIJK — SCHRIJF ALLEEN OP BASIS VAN WAT JE HEBT GELEZEN:
-- Gebruik alleen informatie die je daadwerkelijk hebt gezien in de gescrapete content van de website en de concurrenten.
-- Als je iets niet kunt bevestigen vanuit de content, laat het weg.
-- Verzin geen eigenschappen, claims of positionering die je niet hebt gezien.
-- Voor "Jouw kans in de markt": benoem alleen een kans die aantoonbaar ontbreekt bij alle drie de concurrenten op basis van wat je hebt gelezen. Niet een algemene observatie, maar een concrete gap die je kunt onderbouwen.
-- "Jouw kans in de markt" is altijd het meest impactvolle inzicht: de grootste, meest concrete kans in de markt die niemand claimt.
+function delay(ms: number): Promise<void> {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
 
-VERBODEN:
-- Verwijs nooit naar specifieke elementen op de website (video's, pagina's, secties, tools) die je niet met zekerheid hebt gezien in de gescrapete content. Als je een element noemt, moet je het letterlijk hebben gelezen.
-- Schrijf nooit "zoals jullie dat doen in jullie video" of vergelijkbare zinnen tenzij je de video-content daadwerkelijk hebt gescraped en gelezen.
+const BASE_RULES = `BELANGRIJK:
+- Gebruik alleen informatie uit de gescrapete content. Verzin niets.
+- Verwijs nooit naar website-elementen (video's, pagina's, tools) die je niet letterlijk hebt gelezen.
 - Als je iets niet kunt bevestigen: laat het weg.
 
-Je bent een eerlijke bedrijfsadviseur. Je analyseert hoe een bedrijf overkomt op zijn website en vergelijkt dat met hoe zijn concurrenten overkomen.
+Je bent een eerlijke bedrijfsadviseur. Gewone taal. Geen vakjargon. Geen gedachtestreepjes. Geen algemene observaties. Alles wat je schrijft moet alleen voor dit bedrijf kunnen gelden.
 
-Je schrijft altijd vanuit de beleving van de ondernemer. Gewone taal. Geen vakjargon. Geen gedachtestreepjes. Geen algemene observaties. Alles wat je schrijft moet alleen voor dit bedrijf kunnen gelden.
+Toonzetting: eerlijk en direct, maar nooit bot. De ondernemer moet knikken, niet schrikken.`;
 
-Toonzetting: eerlijk en direct, maar nooit bot. Schrijf zoals een goede adviseur die je de waarheid vertelt maar je daarna ook verder helpt. Begin positief waar het klopt, wees concreet over wat beter kan, maar doe het met respect. Geen sugarcoating, geen pappen en nathouden, maar ook geen klap in het gezicht. De ondernemer moet knikken, niet schrikken.
+const CALL1_PROMPT = `${BASE_RULES}
 
-ANALYSEER ALTIJD ALS VOLGT:
-- Lees de site als iemand die het bedrijf voor het eerst ziet.
-- Kijk naar: aanbod, tone of voice, wat ze beloven, wie ze aanspreken.
-- Kijk wat de site claimt maar niet bewijst.
-- Generieke observaties zijn verboden. Elk punt moet alleen voor deze ondernemer kunnen gelden.
+Analyseer deze website als iemand die het bedrijf voor het eerst ziet. Kijk naar: aanbod, tone of voice, wat ze beloven, wie ze aanspreken. Kijk wat de site claimt maar niet bewijst.
 
-Je geeft eerst de merknaam, dan een conclusie, dan de concurrenten, dan drie inzichten, dan een actieplan. Bij elk inzicht een concrete actie.
-
-MERKNAAM
-De naam van het bedrijf, afgeleid uit de website.
-
-CONCLUSIE
-Een zin van maximaal 12 woorden die direct de kern raakt. Prikkelend genoeg om verder te lezen.
-
-CONCURRENTEN
-Geef per concurrent de naam, URL, een omschrijving van een zin over hoe zij overkomen op een nieuwe bezoeker, en een reden.
-Geef per concurrent een korte zin waarom hij is gekozen als vergelijkingspunt voor deze ondernemer. Baseer het op een concreet gegeven: zelfde doelgroep, zelfde dienst, zelfde markt, of vergelijkbaar taalgebruik. Maximaal 12 woorden. Geen analyse, geen oordeel, alleen de reden waarom deze concurrent relevant is als vergelijkingspunt. Elke concurrent krijgt een andere reden.
-Voorbeelden:
-"Gekozen omdat ze dezelfde groeigerichte MKB-klanten aanspreken."
-"Gekozen omdat ze vergelijkbare merkstrategie-diensten aanbieden."
-"Gekozen omdat ze dezelfde combinatie van strategie en creativiteit claimen."
-
-INZICHT 1: ZO STA JIJ ERVOOR
-Wat ziet een klant als hij op deze website landt? Twee zinnen. Begin eerlijk maar niet hard. Dit is de spiegel.
-Actie: Een concrete actie. Een zin. Specifiek voor dit bedrijf.
-
-INZICHT 2: HIER VAL JE NIET OP
-Waar zegt dit bedrijf hetzelfde als zijn concurrenten? Wees direct. Twee zinnen. Concreet.
-Actie: Een concrete actie om zich te onderscheiden. Een zin. Specifiek voor dit bedrijf.
-
-INZICHT 3: JOUW KANS IN DE MARKT
-Wat zegt niemand in deze markt maar wat klanten wel willen horen? Twee zinnen. Specifiek genoeg om te raken.
-Actie: Een concrete actie om deze kans te pakken. Een zin. Specifiek voor dit bedrijf.
-
-ACTIEPLAN
-Drie stappen, geprioriteerd van meest directe impact naar langere termijn. Elke stap is concreet en specifiek voor dit bedrijf. De eerste stap heeft de meeste directe impact, de tweede bouwt voort op de eerste, de derde is langere termijn maar belangrijk.
+Geef terug:
+1. MERKNAAM: De naam van het bedrijf, afgeleid uit de website.
+2. INZICHT 1 - ZO STA JIJ ERVOOR: Wat ziet een klant als hij op deze website landt? Twee zinnen. Begin eerlijk maar niet hard.
+3. ACTIE: Een concrete actie. Een zin. Specifiek voor dit bedrijf.
 
 Regels:
 - Geen gedachtestreepjes.
-- Geen vakjargon.
-- Geen algemene observaties.
-- Conclusie maximaal 12 woorden.
-- Uitsluitend JSON terug. Geen uitleg, geen markdown, geen code-blokken.
+- Uitsluitend JSON terug. Geen uitleg, geen markdown.
 - Taal: Nederlands, tenzij de website volledig in het Engels is.
 
 {
-  "merknaam": "Naam van het bedrijf, afgeleid uit de website",
-  "conclusie": "Maximaal 12 woorden die direct de kern raken.",
+  "merknaam": "Naam",
+  "inzicht1": { "titel": "Zo sta jij ervoor", "tekst": "...", "actie": "..." }
+}`;
+
+const CALL2_PROMPT = `${BASE_RULES}
+
+Je vergelijkt een bedrijf met drie concurrenten. Analyseer alleen op basis van de aangeleverde content.
+
+CONCLUSIE: Een zin van maximaal 12 woorden die direct de kern raakt.
+
+CONCURRENTEN: Per concurrent: naam, URL, omschrijving (een zin), reden waarom gekozen (max 12 woorden).
+Voorbeelden reden: "Gekozen omdat ze dezelfde groeigerichte MKB-klanten aanspreken." / "Gekozen omdat ze vergelijkbare merkstrategie-diensten aanbieden."
+
+INZICHT 2 - HIER VAL JE NIET OP: Waar zegt dit bedrijf hetzelfde als concurrenten? Twee zinnen. Concreet.
+Actie: Een concrete actie om zich te onderscheiden.
+
+INZICHT 3 - JOUW KANS IN DE MARKT: Wat zegt niemand maar willen klanten wel horen? Twee zinnen. Specifiek.
+Actie: Een concrete actie om deze kans te pakken.
+
+ACTIEPLAN: Drie stappen, geprioriteerd. Concreet en specifiek.
+
+Regels:
+- Geen gedachtestreepjes, geen vakjargon, geen algemene observaties.
+- Conclusie maximaal 12 woorden.
+- Uitsluitend JSON terug.
+- Taal: Nederlands, tenzij de website volledig in het Engels is.
+
+{
+  "conclusie": "Max 12 woorden.",
   "concurrenten": [
-    {
-      "naam": "Naam van het bedrijf",
-      "url": "URL van de concurrent",
-      "omschrijving": "Een zin hoe zij overkomen op een nieuwe bezoeker.",
-      "reden": "Maximaal 12 woorden waarom deze concurrent relevant is als vergelijkingspunt."
-    }
+    { "naam": "...", "url": "...", "omschrijving": "...", "reden": "..." }
   ],
-  "inzicht1": { "titel": "Zo sta jij ervoor", "tekst": "...", "actie": "..." },
   "inzicht2": { "titel": "Hier val je niet op", "tekst": "...", "actie": "..." },
   "inzicht3": { "titel": "Jouw kans in de markt", "tekst": "...", "actie": "..." },
-  "actieplan": [
-    "Eerste stap: meest directe impact.",
-    "Tweede stap: bouwt voort op de eerste.",
-    "Derde stap: langere termijn maar belangrijk."
-  ]
+  "actieplan": ["Stap 1", "Stap 2", "Stap 3"]
 }`;
 
 export async function identifyIndustry(content: string): Promise<string> {
@@ -142,7 +123,7 @@ export async function identifyIndustry(content: string): Promise<string> {
       max_tokens: 100,
       messages: [{
         role: 'user',
-        content: `Identificeer in max 5 woorden de branche/markt van deze website. Alleen de branche naam:\n\n${content.substring(0, 1500)}`
+        content: `Identificeer in max 5 woorden de branche/markt van deze website. Alleen de branche naam:\n\n${content.substring(0, 1000)}`
       }],
     });
 
@@ -156,11 +137,9 @@ export async function findCompetitors(industry: string): Promise<string[]> {
 
   const query = `Zoek vijf concurrenten in de ${industry} markt in Nederland. Geef alleen de website URLs terug, een per regel. Alleen commerciele bedrijven met een toegankelijke website (geen cookiewalls, geen login-vereiste). Geen magazines, directories of nieuwssites.
 
-Kies alleen concurrenten die daadwerkelijk in dezelfde markt opereren als het ingevoerde bedrijf. Zelfde type dienst, zelfde doelgroep, zelfde prijsniveau. Kies NOOIT: overheidsinstanties, onderwijsinstellingen, medische praktijken, e-commerce winkels, of andere sectoren die niet direct concurreren met het ingevoerde bedrijf.`;
+Kies alleen concurrenten die daadwerkelijk in dezelfde markt opereren: zelfde type dienst, zelfde doelgroep, zelfde sector. NOOIT: overheidsinstanties, onderwijsinstellingen, medische praktijken, e-commerce winkels, of andere sectoren.`;
 
   const allUrls = new Set<string>();
-
-  console.log('findCompetitors: start, query:', query.substring(0, 80));
 
   try {
     const response = await withRetry(async () => {
@@ -175,8 +154,6 @@ Kies alleen concurrenten die daadwerkelijk in dezelfde markt opereren als het in
         }],
       });
     }, 'findCompetitors');
-
-    console.log('findCompetitors: stop_reason:', response.stop_reason);
 
     const textBlocks = response.content.filter(b => b.type === 'text').map(b => b.type === 'text' ? b.text : '');
     const fullText = textBlocks.join('\n');
@@ -202,33 +179,60 @@ Kies alleen concurrenten die daadwerkelijk in dezelfde markt opereren als het in
   return result;
 }
 
-export async function analyzeWebsites(
-  userContent: string,
-  competitors: { url: string; content: string }[]
-): Promise<AnalysisResult> {
-  const competitorTexts = competitors.map((c, i) =>
-    `Concurrent ${i + 1} (${c.url}):\n${c.content.substring(0, 1500)}`
-  ).join('\n\n---\n\n');
-
-  const fullPrompt = `${ANALYSIS_PROMPT}\n\nWebsite van gebruiker:\n${userContent.substring(0, 2000)}\n\n---\n\n${competitorTexts}`;
+// --- Call 1: Analyseer alleen de gebruiker zijn site ---
+export async function analyzeUserSite(
+  userContent: string
+): Promise<{ merknaam: string; inzicht1: { titel: string; tekst: string; actie: string } }> {
+  console.log('analyzeUserSite: start');
 
   return withRetry(async () => {
     const response = await anthropic.messages.create({
       model: 'claude-sonnet-4-6',
-      max_tokens: 2000,
+      max_tokens: 800,
       messages: [{
         role: 'user',
-        content: fullPrompt
+        content: `${CALL1_PROMPT}\n\nWebsite content:\n${userContent}`
       }],
     });
 
     const text = response.content[0].type === 'text' ? response.content[0].text : '';
-
     const jsonMatch = text.match(/\{[\s\S]*\}/);
-    if (!jsonMatch) {
-      throw new Error('Invalid JSON response from Claude');
-    }
+    if (!jsonMatch) throw new Error('Invalid JSON response from Claude (call 1)');
+    return JSON.parse(jsonMatch[0]);
+  }, 'analyzeUserSite');
+}
 
-    return JSON.parse(jsonMatch[0]) as AnalysisResult;
-  }, 'analyzeWebsites');
+// --- Call 2: Vergelijk met concurrenten ---
+export async function analyzeCompetitors(
+  merknaam: string,
+  userContent: string,
+  competitors: { url: string; content: string }[]
+): Promise<{
+  conclusie: string;
+  concurrenten: { naam: string; url: string; omschrijving: string; reden: string }[];
+  inzicht2: { titel: string; tekst: string; actie: string };
+  inzicht3: { titel: string; tekst: string; actie: string };
+  actieplan: string[];
+}> {
+  console.log('analyzeCompetitors: start');
+
+  const competitorTexts = competitors.map((c, i) =>
+    `Concurrent ${i + 1} (${c.url}):\n${c.content}`
+  ).join('\n\n---\n\n');
+
+  return withRetry(async () => {
+    const response = await anthropic.messages.create({
+      model: 'claude-sonnet-4-6',
+      max_tokens: 1500,
+      messages: [{
+        role: 'user',
+        content: `${CALL2_PROMPT}\n\nBedrijf: ${merknaam}\nWebsite samenvatting:\n${userContent}\n\n---\n\n${competitorTexts}`
+      }],
+    });
+
+    const text = response.content[0].type === 'text' ? response.content[0].text : '';
+    const jsonMatch = text.match(/\{[\s\S]*\}/);
+    if (!jsonMatch) throw new Error('Invalid JSON response from Claude (call 2)');
+    return JSON.parse(jsonMatch[0]);
+  }, 'analyzeCompetitors');
 }
