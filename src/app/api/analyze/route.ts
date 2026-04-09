@@ -88,7 +88,7 @@ export async function POST(request: NextRequest) {
     console.log('API Call 1: analyzeUserSite...');
     const call1 = await withTimeout(
       () => analyzeUserSite(userScraped.content),
-      30000,
+      50000,
       'analyzeUserSite'
     );
     console.log(`API Call 1 klaar: merknaam=${call1.merknaam}`);
@@ -104,7 +104,7 @@ export async function POST(request: NextRequest) {
         userScraped.content,
         competitorData.map(c => ({ url: c.url, content: c.content }))
       ),
-      45000,
+      50000,
       'analyzeCompetitors'
     );
     console.log('API Call 2 klaar');
