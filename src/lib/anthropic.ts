@@ -14,7 +14,7 @@ export async function withTimeout<T>(fn: () => Promise<T>, ms: number, label: st
   return Promise.race([fn(), timeout]);
 }
 
-async function withRetry<T>(fn: () => Promise<T>, label: string, maxRetries = 2): Promise<T> {
+async function withRetry<T>(fn: () => Promise<T>, label: string, maxRetries = 3): Promise<T> {
   for (let attempt = 0; attempt <= maxRetries; attempt++) {
     try {
       return await fn();
@@ -35,8 +35,11 @@ async function withRetry<T>(fn: () => Promise<T>, label: string, maxRetries = 2)
         err?.message?.includes('fetch failed');
 
       const isTokenLimit = err?.message?.includes('input tokens per minute');
+      const is429 = err?.status === 429 || isTokenLimit;
+
       if ((isRetryable || isTokenLimit) && attempt < maxRetries) {
-        const wait = isTokenLimit ? 10000 : Math.pow(2, attempt) * 3000;
+        // Exponential backoff: 5s, 10s, 20s voor 429/token limits
+        const wait = is429 ? 5000 * Math.pow(2, attempt) : Math.pow(2, attempt) * 3000;
         console.log(`${label}: fout (${err?.status || err?.message}), wacht ${wait/1000}s (poging ${attempt + 1}/${maxRetries})...`);
         await new Promise(resolve => setTimeout(resolve, wait));
         continue;
@@ -212,7 +215,7 @@ export async function analyzeWebsites(
   return withRetry(async () => {
     const response = await anthropic.messages.create({
       model: 'claude-sonnet-4-6',
-      max_tokens: 3000,
+      max_tokens: 2000,
       messages: [{
         role: 'user',
         content: fullPrompt
