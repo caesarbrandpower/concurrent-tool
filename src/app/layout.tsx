@@ -2,8 +2,16 @@ import type { Metadata } from 'next'
 import './globals.css'
 
 export const metadata: Metadata = {
-  title: 'Marktscan | Newfound',
-  description: 'Ontdek hoe jouw merk zich verhoudt tot concurrenten. Een eerlijke analyse in gewone taal.',
+  title: 'Marktscan — Zie je business zoals je klant hem ziet.',
+  description: 'Zie hoe jij scoort ten opzichte van je concurrent. En waar jouw kans ligt.',
+  openGraph: {
+    title: 'Marktscan — Zie je business zoals je klant hem ziet.',
+    description: 'Zie hoe jij scoort ten opzichte van je concurrent. En waar jouw kans ligt. Voer je URL in en zie in 60 seconden waar jij staat, verliest en wint.',
+    url: 'https://marktscan.newfound.agency',
+    siteName: 'Marktscan',
+    type: 'website',
+    locale: 'nl_NL',
+  },
 }
 
 export default function RootLayout({
