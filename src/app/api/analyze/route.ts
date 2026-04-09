@@ -1,9 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { scrapeWebsite, scrapeMultipleUrls, isValidScrape } from '@/lib/scraper';
 import { identifyIndustry, findCompetitors, analyzeWebsites, withTimeout } from '@/lib/anthropic';
-import { ScrapedData, AnalysisResult } from '@/types';
+import { ScrapedData } from '@/types';
 
 export const maxDuration = 120;
+
+function delay(ms: number): Promise<void> {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
 
 export async function POST(request: NextRequest) {
   try {
@@ -59,11 +63,16 @@ export async function POST(request: NextRequest) {
     // Step 2: Identify industry
     const industry = await identifyIndustry(userScraped.content);
 
+    // 2s delay tussen API calls om rate limits te voorkomen
+    await delay(2000);
+
     // Step 3: Find competitors
     const competitorUrls = await findCompetitors(industry);
 
+    // 2s delay voor volgende fase
+    await delay(2000);
+
     // Step 4: Scrape all competitor URLs in parallel, take first 3 valid
-    // Lagere drempel voor concurrenten: 50 woorden is genoeg voor analyse
     console.log(`Scraping ${competitorUrls.length} competitor URLs in parallel...`);
     const allScraped = await scrapeMultipleUrls(competitorUrls);
     const competitorData = allScraped.filter(s => {
@@ -79,6 +88,9 @@ export async function POST(request: NextRequest) {
         { status: 500 }
       );
     }
+
+    // 2s delay voor de analyse call
+    await delay(2000);
 
     // Step 5: Analyze all websites
     const analysis = await withTimeout(

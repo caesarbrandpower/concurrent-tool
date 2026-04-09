@@ -3,6 +3,7 @@ import FirecrawlApp from '@mendable/firecrawl-js';
 import { ScrapedData } from '@/types';
 
 const MIN_WORDS = 100;
+const MAX_WORDS = 2000;
 
 const BROWSER_HEADERS: Record<string, string> = {
   'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
@@ -62,6 +63,12 @@ function isGateContent(text: string): boolean {
 
 function countWords(text: string): number {
   return text.split(/\s+/).filter(w => w.length > 0).length;
+}
+
+function trimToWords(text: string, maxWords: number): string {
+  const words = text.split(/\s+/).filter(w => w.length > 0);
+  if (words.length <= maxWords) return text;
+  return words.slice(0, maxWords).join(' ');
 }
 
 function isSubstantialContent(text: string): boolean {
@@ -352,7 +359,7 @@ export async function scrapeWebsite(url: string): Promise<ScrapedData> {
     }
   }
 
-  // Resultaat: combineer alle pagina's
+  // Resultaat: combineer alle pagina's, trim tot MAX_WORDS
   if (scrapedPages.length === 0) {
     console.log(`[Scraper] Alle 4 lagen gefaald voor ${url}`);
     return { url, content: '', wordCount: 0 };
@@ -362,10 +369,12 @@ export async function scrapeWebsite(url: string): Promise<ScrapedData> {
     `=== ${p.title} (${p.url}) ===\n${p.content}`
   ).join('\n\n');
 
-  const wordCount = countWords(combinedContent);
-  console.log(`[Scraper] Succes: ${wordCount} woorden van ${scrapedPages.length} pagina's voor ${url}`);
+  // Trim tot 2000 woorden zodat API calls binnen rate limits blijven
+  const trimmedContent = trimToWords(combinedContent, MAX_WORDS);
+  const wordCount = countWords(trimmedContent);
+  console.log(`[Scraper] Succes: ${wordCount} woorden (getrimd van ${countWords(combinedContent)}) van ${scrapedPages.length} pagina's voor ${url}`);
 
-  return { url, content: combinedContent.trim(), wordCount };
+  return { url, content: trimmedContent.trim(), wordCount };
 }
 
 export function isValidScrape(data: ScrapedData): boolean {
