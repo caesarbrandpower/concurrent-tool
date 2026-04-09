@@ -3,7 +3,7 @@ import FirecrawlApp from '@mendable/firecrawl-js';
 import { ScrapedData } from '@/types';
 
 const MIN_WORDS = 100;
-const MAX_WORDS = 2000;
+const MAX_WORDS = 1500;
 
 const BROWSER_HEADERS: Record<string, string> = {
   'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
@@ -369,7 +369,7 @@ export async function scrapeWebsite(url: string): Promise<ScrapedData> {
     `=== ${p.title} (${p.url}) ===\n${p.content}`
   ).join('\n\n');
 
-  // Trim tot 2000 woorden zodat API calls binnen rate limits blijven
+  // Trim tot 1500 woorden zodat API calls binnen rate limits blijven
   const trimmedContent = trimToWords(combinedContent, MAX_WORDS);
   const wordCount = countWords(trimmedContent);
   console.log(`[Scraper] Succes: ${wordCount} woorden (getrimd van ${countWords(combinedContent)}) van ${scrapedPages.length} pagina's voor ${url}`);
@@ -381,8 +381,15 @@ export function isValidScrape(data: ScrapedData): boolean {
   return data.wordCount >= MIN_WORDS && data.content.length > 0;
 }
 
-// --- Parallel scraper for multiple URLs ---
+// --- Sequential scraper with delay between URLs ---
 export async function scrapeMultipleUrls(urls: string[]): Promise<ScrapedData[]> {
-  const results = await Promise.all(urls.map(url => scrapeWebsite(url)));
+  const results: ScrapedData[] = [];
+  for (let i = 0; i < urls.length; i++) {
+    if (i > 0) {
+      console.log(`[Scraper] 1.5s delay voor concurrent ${i + 1}/${urls.length}...`);
+      await delay(1500);
+    }
+    results.push(await scrapeWebsite(urls[i]));
+  }
   return results;
 }

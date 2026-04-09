@@ -151,7 +151,9 @@ export async function identifyIndustry(content: string): Promise<string> {
 export async function findCompetitors(industry: string): Promise<string[]> {
   console.log('findCompetitors: industry:', industry);
 
-  const query = `Zoek vijf concurrenten in de ${industry} markt in Nederland. Geef alleen de website URLs terug, een per regel. Alleen commerciele bedrijven met een toegankelijke website (geen cookiewalls, geen login-vereiste). Geen magazines, directories of nieuwssites.`;
+  const query = `Zoek vijf concurrenten in de ${industry} markt in Nederland. Geef alleen de website URLs terug, een per regel. Alleen commerciele bedrijven met een toegankelijke website (geen cookiewalls, geen login-vereiste). Geen magazines, directories of nieuwssites.
+
+Kies alleen concurrenten die daadwerkelijk in dezelfde markt opereren als het ingevoerde bedrijf. Zelfde type dienst, zelfde doelgroep, zelfde prijsniveau. Kies NOOIT: overheidsinstanties, onderwijsinstellingen, medische praktijken, e-commerce winkels, of andere sectoren die niet direct concurreren met het ingevoerde bedrijf.`;
 
   const allUrls = new Set<string>();
 
