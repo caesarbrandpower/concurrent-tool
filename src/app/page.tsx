@@ -129,7 +129,7 @@ export default function Home() {
       {!result && !isLoading && (!error || showManualInput) && (
         <div className="flex flex-col items-center min-h-[calc(100vh-72px)]">
           <div className="flex-1 flex flex-col justify-center w-full mx-auto text-center px-4" style={{ maxWidth: '680px' }}>
-            <p className="label-style animate-hero-title" style={{ marginBottom: '8px', color: '#b08cfc' }}>Marktscan</p>
+            <p className="label-style animate-hero-title" style={{ marginTop: '12px', marginBottom: '8px', color: '#DDB3FF' }}>Marktscan</p>
 
             <h1 className="font-heading text-white animate-hero-title" style={{ marginBottom: '12px' }}>
               Zie je business zoals<br />je klant hem ziet.
@@ -140,7 +140,7 @@ export default function Home() {
               En waar jouw kansen liggen.
             </h2>
 
-            <p className="font-body animate-hero-body" style={{ fontWeight: 300, fontSize: '14px', color: 'rgba(255, 255, 255, 0.45)', marginBottom: '28px' }}>
+            <p className="font-body animate-hero-body" style={{ fontWeight: 300, fontSize: '16px', color: 'rgba(255, 255, 255, 0.55)', marginBottom: '28px' }}>
               Vul je website in en krijg in 60 seconden jouw marktscan.
             </p>
 
