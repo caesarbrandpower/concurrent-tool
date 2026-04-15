@@ -118,13 +118,12 @@ Regels:
 export async function identifyIndustry(content: string): Promise<string> {
   console.log('identifyIndustry: start, content length:', content.length);
   return withRetry(async () => {
+    const messages = [{ role: 'user', content: `Identificeer in max 5 woorden de branche/markt van deze website. Alleen de branche naam:\n\n${content.substring(0, 1000)}` }];
+    console.log('[DEBUG] identifyIndustry input:', JSON.stringify(messages).length, 'chars');
     const response = await anthropic.messages.create({
       model: 'claude-sonnet-4-6',
       max_tokens: 100,
-      messages: [{
-        role: 'user',
-        content: `Identificeer in max 5 woorden de branche/markt van deze website. Alleen de branche naam:\n\n${content.substring(0, 1000)}`
-      }],
+      messages: messages as { role: 'user'; content: string }[],
     });
 
     const text = response.content[0].type === 'text' ? response.content[0].text : '';
@@ -142,18 +141,18 @@ Kies alleen concurrenten die daadwerkelijk in dezelfde markt opereren: zelfde ty
   const allUrls = new Set<string>();
 
   try {
+    const fcMessages = [{ role: 'user', content: query }];
+    console.log('[DEBUG] findCompetitors input:', JSON.stringify(fcMessages).length, 'chars');
     const response = await withRetry(async () => {
       return await anthropic.messages.create({
         model: 'claude-sonnet-4-6',
         max_tokens: 300,
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         tools: [{ type: 'web_search_20250305', name: 'web_search' } as any],
-        messages: [{
-          role: 'user',
-          content: query,
-        }],
+        messages: fcMessages as { role: 'user'; content: string }[],
       });
     }, 'findCompetitors');
+    console.log('[DEBUG] findCompetitors response stop_reason:', response.stop_reason, 'content blocks:', response.content.length, 'types:', response.content.map(b => b.type));
 
     const textBlocks = response.content.filter(b => b.type === 'text').map(b => b.type === 'text' ? b.text : '');
     const fullText = textBlocks.join('\n');
@@ -186,13 +185,12 @@ export async function analyzeUserSite(
   console.log('analyzeUserSite: start');
 
   return withRetry(async () => {
+    const messages = [{ role: 'user', content: `${CALL1_PROMPT}\n\nWebsite content:\n${userContent}` }];
+    console.log('[DEBUG] analyzeUserSite input:', JSON.stringify(messages).length, 'chars');
     const response = await anthropic.messages.create({
       model: 'claude-sonnet-4-6',
       max_tokens: 800,
-      messages: [{
-        role: 'user',
-        content: `${CALL1_PROMPT}\n\nWebsite content:\n${userContent}`
-      }],
+      messages: messages as { role: 'user'; content: string }[],
     });
 
     const text = response.content[0].type === 'text' ? response.content[0].text : '';
@@ -221,13 +219,12 @@ export async function analyzeCompetitors(
   ).join('\n\n---\n\n');
 
   return withRetry(async () => {
+    const messages = [{ role: 'user', content: `${CALL2_PROMPT}\n\nBedrijf: ${merknaam}\nWebsite samenvatting:\n${userContent}\n\n---\n\n${competitorTexts}` }];
+    console.log('[DEBUG] analyzeCompetitors input:', JSON.stringify(messages).length, 'chars');
     const response = await anthropic.messages.create({
       model: 'claude-sonnet-4-6',
       max_tokens: 1500,
-      messages: [{
-        role: 'user',
-        content: `${CALL2_PROMPT}\n\nBedrijf: ${merknaam}\nWebsite samenvatting:\n${userContent}\n\n---\n\n${competitorTexts}`
-      }],
+      messages: messages as { role: 'user'; content: string }[],
     });
 
     const text = response.content[0].type === 'text' ? response.content[0].text : '';
