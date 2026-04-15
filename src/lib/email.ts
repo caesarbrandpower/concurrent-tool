@@ -24,7 +24,7 @@ export async function sendAnalysisEmail(
          <div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:8px;padding:16px 20px;margin-bottom:10px;">
            <p style="margin:0 0 4px;font-weight:600;color:#fff;">${c.naam} <a href="${c.url}" style="font-weight:400;color:rgba(255,255,255,0.4);font-size:13px;text-decoration:none;">${c.url.replace(/^https?:\/\//, '').replace(/\/$/, '')}</a></p>
            <p style="margin:0 0 6px;color:rgba(255,255,255,0.7);font-size:15px;">${c.omschrijving}</p>
-           <p style="margin:0;color:#DDB3FF;font-size:14px;font-style:italic;">${c.reden}</p>
+           <p style="margin:0;color:#c4a3f5;font-size:14px;font-style:italic;">${c.reden}</p>
          </div>
        `).join('')}`
     : '';
@@ -32,14 +32,13 @@ export async function sendAnalysisEmail(
   const actieplanHtml = result.actieplan && result.actieplan.length > 0
     ? `<h2 style="font-size:20px;color:#fff;margin:32px 0 16px;">Jouw actieplan</h2>
        <ol style="padding-left:20px;margin:0;">
-         ${result.actieplan.map((stap, i) => `<li style="color:rgba(255,255,255,0.8);font-size:15px;margin-bottom:10px;line-height:1.6;"><strong style="color:#fff;">Stap ${i + 1}:</strong> ${stap}</li>`).join('')}
+         ${result.actieplan.map((stap) => `<li style="color:rgba(255,255,255,0.8);font-size:15px;margin-bottom:10px;line-height:1.6;">${stap}</li>`).join('')}
        </ol>`
     : '';
 
   const htmlContent = `
     <div style="background:#1a1a1a;padding:40px 24px;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;">
       <div style="max-width:600px;margin:0 auto;">
-        <div style="margin-bottom:24px;"><span style="font-size:13px;color:#666666;letter-spacing:2px;text-transform:uppercase;">Een tool van</span><span style="font-size:13px;color:#999999;letter-spacing:2px;text-transform:uppercase;margin-left:6px;font-weight:600;">Newfound</span></div>
         <h1 style="font-size:32px;color:#fff;margin:0 0 8px;text-transform:uppercase;">${result.merknaam || url}</h1>
         <p style="color:rgba(255,255,255,0.5);font-size:14px;margin:0 0 32px;">Marktscan voor ${url}</p>
 
@@ -50,15 +49,15 @@ export async function sendAnalysisEmail(
 
         <h2 style="font-size:20px;color:#fff;margin:32px 0 16px;">${result.inzicht1.titel}</h2>
         <p style="color:rgba(255,255,255,0.8);font-size:15px;line-height:1.6;margin:0 0 8px;">${result.inzicht1.tekst}</p>
-        <p style="color:#DDB3FF;font-size:14px;font-style:italic;margin:0 0 24px;">Actie: ${result.inzicht1.actie}</p>
+        <p style="color:#c4a3f5;font-size:14px;font-style:italic;margin:0 0 24px;">Actie: ${result.inzicht1.actie}</p>
 
         <h2 style="font-size:20px;color:#fff;margin:32px 0 16px;">${result.inzicht2.titel}</h2>
         <p style="color:rgba(255,255,255,0.8);font-size:15px;line-height:1.6;margin:0 0 8px;">${result.inzicht2.tekst}</p>
-        <p style="color:#DDB3FF;font-size:14px;font-style:italic;margin:0 0 24px;">Actie: ${result.inzicht2.actie}</p>
+        <p style="color:#c4a3f5;font-size:14px;font-style:italic;margin:0 0 24px;">Actie: ${result.inzicht2.actie}</p>
 
         <h2 style="font-size:20px;color:#fff;margin:32px 0 16px;">${result.inzicht3.titel}</h2>
         <p style="color:rgba(255,255,255,0.8);font-size:15px;line-height:1.6;margin:0 0 8px;">${result.inzicht3.tekst}</p>
-        <p style="color:#DDB3FF;font-size:14px;font-style:italic;margin:0 0 24px;">Actie: ${result.inzicht3.actie}</p>
+        <p style="color:#c4a3f5;font-size:14px;font-style:italic;margin:0 0 24px;">Actie: ${result.inzicht3.actie}</p>
 
         ${actieplanHtml}
 
