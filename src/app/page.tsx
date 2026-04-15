@@ -135,8 +135,9 @@ export default function Home() {
               Zie je business zoals<br />je klant hem ziet.
             </h1>
 
-            <h2 className="text-white animate-hero-subtitle" style={{ marginBottom: '8px' }}>
-              Ontdek waar jij en je concurrenten hetzelfde zeggen en waar jouw kansen liggen.
+            <h2 className="text-white animate-hero-subtitle" style={{ fontSize: 'clamp(16px, 4vw, 22px)', textAlign: 'center', lineHeight: '1.4', marginBottom: '8px', fontFamily: 'GreedCondensed, sans-serif', fontWeight: 700, textTransform: 'uppercase' }}>
+              Ontdek waar jij en je concurrenten hetzelfde zeggen.<br />
+              En waar jouw kansen liggen.
             </h2>
 
             <p className="font-body animate-hero-body" style={{ fontWeight: 300, fontSize: '16px', color: 'rgba(255, 255, 255, 0.55)', marginBottom: '28px' }}>
