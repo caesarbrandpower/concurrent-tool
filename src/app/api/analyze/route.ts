@@ -12,11 +12,12 @@ function delay(ms: number): Promise<void> {
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { url, manualContent } = body;
+    const { url, manualContent, competitorUrls: manualCompetitorUrls } = body;
 
     console.log('API key aanwezig:', !!process.env.ANTHROPIC_API_KEY);
     console.log('URL ontvangen:', url);
     console.log('Manual content aanwezig:', !!manualContent);
+    console.log('Handmatige competitor URLs:', manualCompetitorUrls?.length || 0);
 
     if (!url) {
       return NextResponse.json(
@@ -60,11 +61,17 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    // Step 2: Identify industry + find competitors (1.5s delay tussen API calls)
+    // Step 2: Identify industry + find competitors
     const industry = await identifyIndustry(userScraped.content);
-    await delay(1500);
 
-    const competitorUrls = await findCompetitors(industry);
+    let competitorUrls: string[];
+    if (manualCompetitorUrls && Array.isArray(manualCompetitorUrls) && manualCompetitorUrls.length > 0) {
+      competitorUrls = manualCompetitorUrls.filter((u: string) => typeof u === 'string' && u.trim().length > 0);
+      console.log(`Handmatige competitor URLs gebruikt: ${competitorUrls.length}`);
+    } else {
+      await delay(1500);
+      competitorUrls = await findCompetitors(industry);
+    }
 
     // Step 3: Scrape competitor URLs parallel (geen API calls, alleen HTTP fetches)
     console.log(`Scraping ${competitorUrls.length} competitor URLs parallel...`);

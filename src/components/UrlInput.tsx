@@ -4,13 +4,15 @@ import { useState } from 'react'
 import { Globe } from 'lucide-react'
 
 interface UrlInputProps {
-  onSubmit: (url: string) => void
+  onSubmit: (url: string, competitorUrls: string[]) => void
   isLoading: boolean
 }
 
 export default function UrlInput({ onSubmit, isLoading }: UrlInputProps) {
   const [url, setUrl] = useState('')
   const [isFocused, setIsFocused] = useState(false)
+  const [competitors, setCompetitors] = useState(['', '', ''])
+  const [showCompetitors, setShowCompetitors] = useState(false)
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
@@ -21,7 +23,12 @@ export default function UrlInput({ onSubmit, isLoading }: UrlInputProps) {
       normalizedUrl = 'https://' + normalizedUrl
     }
 
-    onSubmit(normalizedUrl)
+    const competitorUrls = competitors
+      .map(c => c.trim())
+      .filter(c => c.length > 0)
+      .map(c => c.startsWith('http') ? c : 'https://' + c)
+
+    onSubmit(normalizedUrl, competitorUrls)
   }
 
   return (
@@ -101,6 +108,83 @@ export default function UrlInput({ onSubmit, isLoading }: UrlInputProps) {
       <p style={{ marginTop: '16px', fontSize: '14px', color: 'rgba(255,255,255,0.5)', fontFamily: 'Satoshi, sans-serif', fontWeight: 300 }}>
         Bijvoorbeeld: newfound.agency of www.jouwsite.nl
       </p>
+
+      {/* Toggle concurrent-invoer */}
+      <button
+        type="button"
+        onClick={() => setShowCompetitors(!showCompetitors)}
+        style={{
+          marginTop: '20px',
+          background: 'none',
+          border: 'none',
+          color: 'rgba(255,255,255,0.5)',
+          fontSize: '14px',
+          fontFamily: 'Satoshi, sans-serif',
+          fontWeight: 400,
+          cursor: 'pointer',
+          padding: 0,
+          transition: 'color 0.2s',
+        }}
+        onMouseEnter={(e) => { e.currentTarget.style.color = 'rgba(255,255,255,0.8)' }}
+        onMouseLeave={(e) => { e.currentTarget.style.color = 'rgba(255,255,255,0.5)' }}
+      >
+        {showCompetitors ? 'Concurrenten verbergen \u2191' : 'Ken je je concurrenten? Vul ze in \u2193'}
+      </button>
+
+      {/* Concurrent URL velden */}
+      {showCompetitors && (
+        <div style={{
+          marginTop: '16px',
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '10px',
+          animation: 'fadeInUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) both',
+        }}>
+          {competitors.map((comp, i) => (
+            <div key={i}>
+              <label style={{
+                display: 'block',
+                fontSize: '13px',
+                color: 'rgba(255,255,255,0.4)',
+                fontFamily: 'Satoshi, sans-serif',
+                fontWeight: 400,
+                marginBottom: '4px',
+                textAlign: 'left',
+              }}>
+                Concurrent {i + 1}
+              </label>
+              <input
+                type="text"
+                value={comp}
+                onChange={(e) => {
+                  const updated = [...competitors]
+                  updated[i] = e.target.value
+                  setCompetitors(updated)
+                }}
+                placeholder={`https://concurrent${i + 1}.nl`}
+                disabled={isLoading}
+                style={{
+                  width: '100%',
+                  background: 'rgb(42, 42, 42)',
+                  color: 'rgb(255, 255, 255)',
+                  fontSize: '16px',
+                  padding: '14px 18px',
+                  border: '0.9px solid rgba(255, 255, 255, 0.15)',
+                  borderRadius: '6px',
+                  outline: 'none',
+                  fontFamily: 'Satoshi, sans-serif',
+                  transition: 'border-color 0.2s',
+                }}
+                onFocus={(e) => { e.currentTarget.style.borderColor = 'rgba(255,255,255,0.4)' }}
+                onBlur={(e) => { e.currentTarget.style.borderColor = 'rgba(255,255,255,0.15)' }}
+              />
+            </div>
+          ))}
+          <p style={{ fontSize: '13px', color: 'rgba(255,255,255,0.35)', fontFamily: 'Satoshi, sans-serif', fontWeight: 300, textAlign: 'left' }}>
+            Niet verplicht. Laat leeg en we zoeken ze automatisch.
+          </p>
+        </div>
+      )}
     </form>
   )
 }

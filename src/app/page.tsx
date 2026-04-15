@@ -14,11 +14,12 @@ export default function Home() {
   const [result, setResult] = useState<AnalysisResult | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [showManualInput, setShowManualInput] = useState(false)
+  const [competitorUrls, setCompetitorUrls] = useState<string[]>([])
   const resultRef = useRef<HTMLDivElement>(null)
 
   const loadingSteps = [
     'We lezen jouw website...',
-    'We zoeken drie concurrenten in jouw markt...',
+    competitorUrls.length > 0 ? 'We lezen je concurrenten...' : 'We zoeken drie concurrenten in jouw markt...',
     'We vergelijken hoe jullie overkomen...',
   ]
 
@@ -31,8 +32,9 @@ export default function Home() {
     }
   }, [isLoading, loadingStep])
 
-  const handleUrlSubmit = async (submittedUrl: string) => {
+  const handleUrlSubmit = async (submittedUrl: string, competitorUrls: string[] = []) => {
     setUrl(submittedUrl)
+    setCompetitorUrls(competitorUrls)
     setIsLoading(true)
     setLoadingStep(0)
     setError(null)
@@ -43,7 +45,7 @@ export default function Home() {
       const response = await fetch('/api/analyze', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ url: submittedUrl }),
+        body: JSON.stringify({ url: submittedUrl, competitorUrls: competitorUrls.length > 0 ? competitorUrls : undefined }),
       })
 
       if (response.status === 422) {
@@ -89,6 +91,7 @@ export default function Home() {
         body: JSON.stringify({
           url: url,
           manualContent: manualInput,
+          competitorUrls: competitorUrls.length > 0 ? competitorUrls : undefined,
         }),
       })
 
@@ -114,7 +117,7 @@ export default function Home() {
 
   return (
     <main className="min-h-screen bg-dark">
-      {/* Navbar with gradient background */}
+      {/* Navbar with gradient background — full bleed */}
       <nav className="gradient-navbar" style={{ height: '72px', paddingLeft: '24px', paddingRight: '24px' }}>
         <a href="https://newfound.agency" target="_blank">
           {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -126,18 +129,18 @@ export default function Home() {
       {!result && !isLoading && (!error || showManualInput) && (
         <div className="flex flex-col items-center min-h-[calc(100vh-72px)]">
           <div className="flex-1 flex flex-col justify-center w-full mx-auto text-center px-4" style={{ maxWidth: '680px' }}>
-            <p className="animate-hero-title" style={{ fontFamily: 'KansasNew, sans-serif', fontWeight: 500, fontSize: '15px', color: 'rgb(221, 179, 255)', marginBottom: '24px' }}>Marktscan</p>
+            <p className="label-style text-accent mb-6 animate-hero-title">Marktscan</p>
 
             <h1 className="font-heading text-white mb-5 animate-hero-title">
-              Zie je business zoals<br />je klant hem ziet.
+              Zie hoe jij je<br />verhoudt.
             </h1>
 
             <h2 className="text-white mb-3 animate-hero-subtitle">
-              Zie hoe jij scoort ten opzichte van je concurrent.<br />En waar jouw kans ligt.
+              Ontdek waar jij en je concurrenten hetzelfde zeggen.
             </h2>
 
-            <p className="text-white/60 mb-8 font-body animate-hero-body" style={{ fontWeight: 300, maxWidth: '520px', margin: '0 auto', marginBottom: '32px' }}>
-              Voer je URL in. Zie in 60 seconden waar jij staat, verliest en wint.
+            <p className="text-white/60 mb-16 font-body animate-hero-body" style={{ fontWeight: 300 }}>
+              Vul je website in en krijg een analyse in 60 seconden.
             </p>
 
             <div className="animate-hero-cta">
@@ -159,21 +162,21 @@ export default function Home() {
                   disabled={!manualInput.trim() || isLoading}
                   className="mt-4 w-full py-3 px-6 bg-accent-blue text-white rounded-btn font-body font-medium hover:brightness-110 disabled:opacity-40 disabled:cursor-not-allowed transition-all"
                 >
-                  Scan mijn markt
+                  Analyseer mijn merk
                 </button>
               </div>
             )}
           </div>
 
-          <div style={{ paddingBottom: '8px', fontSize: '14px', color: 'rgba(255,255,255,0.5)' }} className="animate-hero-footer">
-            Een tool van <a href="https://newfound.agency" target="_blank" rel="noopener noreferrer" className="text-white underline hover:text-accent transition-colors">Newfound</a>
+          <div className="pb-8 text-sm text-white/50 animate-hero-footer">
+            Een product van <a href="https://newfound.agency" target="_blank" rel="noopener noreferrer" className="text-white underline hover:text-accent transition-colors">Newfound</a>
           </div>
         </div>
       )}
 
       {/* Loading state */}
       {isLoading && !result && (
-        <div className="min-h-[calc(100vh-72px)] flex items-center justify-center px-4" style={{ paddingBottom: '15vh' }}>
+        <div className="min-h-[calc(100vh-72px)] flex items-center justify-center px-4">
           <LoadingState steps={loadingSteps} currentStep={loadingStep} />
         </div>
       )}
