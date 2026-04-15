@@ -9,6 +9,23 @@ function delay(ms: number): Promise<void> {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
+async function withRateLimit<T>(fn: () => Promise<T>, retries = 3): Promise<T> {
+  for (let i = 0; i < retries; i++) {
+    try {
+      return await fn();
+    } catch (e: unknown) {
+      const err = e as { status?: number };
+      if (err?.status === 429 && i < retries - 1) {
+        console.log(`429 rate limit, wacht 65s (poging ${i + 1}/${retries})...`);
+        await new Promise(r => setTimeout(r, 65000));
+        continue;
+      }
+      throw e;
+    }
+  }
+  throw new Error('Rate limit bereikt na meerdere pogingen');
+}
+
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
@@ -62,7 +79,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Step 2: Identify industry + find competitors
-    const industry = await identifyIndustry(userScraped.content);
+    const industry = await withRateLimit(() => identifyIndustry(userScraped.content));
 
     let competitorUrls: string[];
     if (manualCompetitorUrls && Array.isArray(manualCompetitorUrls) && manualCompetitorUrls.length > 0) {
@@ -70,7 +87,7 @@ export async function POST(request: NextRequest) {
       console.log(`Handmatige competitor URLs gebruikt: ${competitorUrls.length}`);
     } else {
       await delay(1500);
-      competitorUrls = await findCompetitors(industry);
+      competitorUrls = await withRateLimit(() => findCompetitors(industry));
     }
 
     // Step 3: Scrape competitor URLs parallel (geen API calls, alleen HTTP fetches)
@@ -93,11 +110,11 @@ export async function POST(request: NextRequest) {
     // Step 4: API Call 1 - Analyseer gebruiker zijn site (1.5s delay na scraping)
     await delay(1500);
     console.log('API Call 1: analyzeUserSite...');
-    const call1 = await withTimeout(
+    const call1 = await withRateLimit(() => withTimeout(
       () => analyzeUserSite(userScraped.content),
       50000,
       'analyzeUserSite'
-    );
+    ));
     console.log(`API Call 1 klaar: merknaam=${call1.merknaam}`);
 
     // 3 seconden wachten tussen call 1 en call 2 (token reset)
@@ -105,7 +122,7 @@ export async function POST(request: NextRequest) {
 
     // Step 5: API Call 2 - Vergelijk met concurrenten
     console.log('API Call 2: analyzeCompetitors...');
-    const call2 = await withTimeout(
+    const call2 = await withRateLimit(() => withTimeout(
       () => analyzeCompetitors(
         call1.merknaam,
         userScraped.content,
@@ -113,7 +130,7 @@ export async function POST(request: NextRequest) {
       ),
       50000,
       'analyzeCompetitors'
-    );
+    ));
     console.log('API Call 2 klaar');
 
     // Combineer resultaten
