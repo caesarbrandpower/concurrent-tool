@@ -43,6 +43,7 @@
 html, body {
   margin: 0;
   padding: 0;
+  overflow-x: hidden;
 }
 
 /* Base typography — dark theme */
@@ -238,40 +239,37 @@ h3, h4, h5, h6 {
   cursor: not-allowed;
 }
 
-/* Mobiel: knop onder het inputveld */
-@media (max-width: 480px) {
+/* Mobiel responsive */
+@media (max-width: 640px) {
+  /* Homepage inputveld: knop full-width onder input */
   .submit-btn-responsive {
     width: 100%;
     border-radius: 0 0 6px 6px !important;
   }
-}
 
-/* Mobiel: kaarten, e-mail sectie en containers */
-@media (max-width: 640px) {
-  .results-container {
-    padding-left: 16px;
-    padding-right: 16px;
-  }
-
+  /* Inzichtkaarten: minder padding */
   .inzicht-card {
     padding: 20px 16px !important;
   }
 
-  .email-input-row {
-    flex-direction: column;
+  /* Concurrentenkaarten: minder padding */
+  .concurrent-card {
+    padding: 16px !important;
   }
 
-  .email-input-row input {
+  /* E-mail form: input en knop onder elkaar */
+  .email-input-row {
+    flex-direction: column;
+    gap: 0 !important;
+  }
+
+  .email-input-row .url-input {
     width: 100%;
     border-radius: 6px 6px 0 0;
   }
 
-  .email-input-row button {
+  .email-input-row .submit-btn {
     width: 100%;
     border-radius: 0 0 6px 6px;
-  }
-
-  .concurrent-card {
-    padding: 16px !important;
   }
 }

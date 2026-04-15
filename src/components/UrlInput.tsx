@@ -32,7 +32,7 @@ export default function UrlInput({ onSubmit, isLoading }: UrlInputProps) {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="w-full" style={{ paddingLeft: '16px', paddingRight: '16px', boxSizing: 'border-box' as const }}>
+    <form onSubmit={handleSubmit} className="w-full">
       <div
         style={{
           background: 'rgb(42, 42, 42)',
@@ -43,9 +43,6 @@ export default function UrlInput({ onSubmit, isLoading }: UrlInputProps) {
           flexWrap: 'wrap' as const,
           alignItems: 'center',
           overflow: 'hidden',
-          width: '100%',
-          maxWidth: '100%',
-          boxSizing: 'border-box' as const,
           boxShadow: isFocused
             ? '0 0 0 1px rgba(255,255,255,0.2), 0 4px 24px rgba(0,0,0,0.3)'
             : '0 2px 12px rgba(0,0,0,0.2)',
