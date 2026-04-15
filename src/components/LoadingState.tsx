@@ -28,7 +28,7 @@ export default function LoadingState({ steps, currentStep }: LoadingStateProps) 
   return (
     <div className="text-center max-w-sm">
       {/* Progress dots: ● — ● — ● */}
-      <div className="flex items-center justify-center gap-0 mb-12" style={{ fontSize: '14px' }}>
+      <div className="flex items-center justify-center gap-0" style={{ fontSize: '14px', marginBottom: '32px' }}>
         {steps.map((_, index) => (
           <span key={index} className="flex items-center">
             <span
@@ -37,7 +37,7 @@ export default function LoadingState({ steps, currentStep }: LoadingStateProps) 
                 width: '10px',
                 height: '10px',
                 borderRadius: '50%',
-                background: index <= currentStep ? '#DDB3FF' : 'rgba(255,255,255,0.2)',
+                background: index === currentStep ? '#DDB3FF' : index < currentStep ? 'rgba(255,255,255,0.4)' : 'rgba(255,255,255,0.2)',
                 transition: 'background 0.5s',
               }}
               className={index === currentStep ? 'progress-dot' : ''}
@@ -49,7 +49,7 @@ export default function LoadingState({ steps, currentStep }: LoadingStateProps) 
                   width: '32px',
                   height: '2px',
                   margin: '0 8px',
-                  background: index < currentStep ? '#DDB3FF' : 'rgba(255,255,255,0.2)',
+                  background: index < currentStep ? 'rgba(255,255,255,0.3)' : 'rgba(255,255,255,0.15)',
                   transition: 'background 0.5s',
                 }}
               />
@@ -64,7 +64,7 @@ export default function LoadingState({ steps, currentStep }: LoadingStateProps) 
       </p>
 
       {/* Step counter */}
-      <p className="mt-10 text-sm text-white/50 font-body" style={{ fontWeight: 300 }}>
+      <p className="text-sm text-white/50 font-body" style={{ fontWeight: 300, marginTop: '16px' }}>
         Stap {currentStep + 1} van {steps.length}
       </p>
     </div>
