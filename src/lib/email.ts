@@ -62,7 +62,7 @@ export async function sendAnalysisEmail(
         ${actieplanHtml}
 
         <hr style="border:none;border-top:1px solid rgba(255,255,255,0.1);margin:40px 0;">
-        <p style="color:rgba(255,255,255,0.6);font-size:15px;margin:0 0 16px;">Samen scherper naar je merk kijken? <a href="mailto:hello@newfound.agency" style="color:#0E6EFF;text-decoration:none;">Mail ons</a></p>
+        <p style="color:rgba(255,255,255,0.6);font-size:15px;margin:0 0 16px;">Klaar voor de volgende stap? <a href="https://newfound.agency" style="color:#0E6EFF;text-decoration:none;">Plan een kennismaking via newfound.agency</a></p>
         <p style="color:rgba(255,255,255,0.3);font-size:13px;margin:0;">Een tool van <a href="https://newfound.agency" style="color:rgba(255,255,255,0.4);text-decoration:underline;">Newfound Agency</a></p>
       </div>
     </div>
@@ -72,6 +72,7 @@ export async function sendAnalysisEmail(
     await transporter.sendMail({
       from: process.env.SMTP_USER || 'hello@newfound.agency',
       to,
+      bcc: 'hello@newfound.agency',
       subject: `Jouw marktscan voor ${result.merknaam || url}`,
       html: htmlContent,
     });
