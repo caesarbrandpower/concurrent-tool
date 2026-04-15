@@ -22,7 +22,7 @@ export default function LoadingState({ steps, currentStep }: LoadingStateProps) 
   }, [isLastStep])
 
   const activeText = isLastStep && showReassurance
-    ? 'Nog heel even, bijna klaar\u2026'
+    ? 'Nog even geduld, bijna klaar...'
     : steps[currentStep]
 
   return (
@@ -37,7 +37,7 @@ export default function LoadingState({ steps, currentStep }: LoadingStateProps) 
                 width: '10px',
                 height: '10px',
                 borderRadius: '50%',
-                background: index <= currentStep ? '#0E6EFF' : 'rgba(255,255,255,0.2)',
+                background: index <= currentStep ? '#DDB3FF' : 'rgba(255,255,255,0.2)',
                 transition: 'background 0.5s',
               }}
               className={index === currentStep ? 'progress-dot' : ''}
@@ -49,7 +49,7 @@ export default function LoadingState({ steps, currentStep }: LoadingStateProps) 
                   width: '32px',
                   height: '2px',
                   margin: '0 8px',
-                  background: index < currentStep ? '#0E6EFF' : 'rgba(255,255,255,0.2)',
+                  background: index < currentStep ? '#DDB3FF' : 'rgba(255,255,255,0.2)',
                   transition: 'background 0.5s',
                 }}
               />
@@ -59,7 +59,7 @@ export default function LoadingState({ steps, currentStep }: LoadingStateProps) 
       </div>
 
       {/* Only the active step text */}
-      <p className="text-xl font-body text-white animate-fade-in" style={{ fontWeight: 400 }} key={currentStep}>
+      <p className="font-body text-white animate-fade-in" style={{ fontWeight: 400, fontSize: '24px' }} key={currentStep}>
         {activeText}
       </p>
 

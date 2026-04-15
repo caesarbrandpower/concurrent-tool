@@ -18,9 +18,9 @@ export default function Home() {
   const resultRef = useRef<HTMLDivElement>(null)
 
   const loadingSteps = [
-    'We lezen jouw website...',
-    competitorUrls.length > 0 ? 'We lezen je concurrenten...' : 'We zoeken drie concurrenten in jouw markt...',
-    'We vergelijken hoe jullie overkomen...',
+    'Je website wordt geanalyseerd...',
+    'We zoeken je concurrenten op...',
+    'Je marktscan wordt opgebouwd...',
   ]
 
   useEffect(() => {
