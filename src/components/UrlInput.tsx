@@ -115,7 +115,6 @@ export default function UrlInput({ onSubmit, isLoading }: UrlInputProps) {
       {/* Concurrent URL velden — verborgen, code blijft beschikbaar */}
       {showCompetitors && (
         <div style={{
-          display: 'none',
           marginTop: '16px',
           display: 'flex',
           flexDirection: 'column',
