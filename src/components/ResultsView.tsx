@@ -272,14 +272,14 @@ export default function ResultsView({ url, result }: ResultsViewProps) {
                 Ontvang je marktscan in je inbox
               </h3>
               <p style={{ fontSize: '17px', color: 'rgba(255,255,255,0.6)', fontFamily: 'Satoshi, sans-serif', maxWidth: '560px', margin: '0 auto 32px', lineHeight: '1.6' }}>
-                Handig om later terug te kijken en mee aan de slag te gaan.
+                Ontvang je volledige scan in je inbox en ga er direct mee aan de slag.
               </p>
 
               <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '10px', marginBottom: '32px' }}>
                 {[
                   'Je drie inzichten inclusief concrete acties',
                   'Overzicht van je concurrenten',
-                  'Handig om later terug te kijken',
+                  'Zodat je er direct mee aan de slag kunt',
                   'Gratis, direct in je inbox',
                 ].map((text, i) => (
                   <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
@@ -334,11 +334,8 @@ export default function ResultsView({ url, result }: ResultsViewProps) {
           }}>
             Kom in contact
           </h3>
-          <p style={{ fontSize: '17px', color: 'rgba(255,255,255,0.6)', lineHeight: '1.6', fontFamily: 'Satoshi, sans-serif', maxWidth: '520px', margin: '0 auto 16px' }}>
-            Je onderscheid is er, maar het is nog niet zichtbaar voor de mensen die je wil bereiken.
-          </p>
           <p style={{ fontSize: '17px', color: 'rgba(255,255,255,0.6)', lineHeight: '1.6', fontFamily: 'Satoshi, sans-serif', maxWidth: '520px', margin: '0 auto 24px' }}>
-            We kijken hands-on mee waar de mogelijkheden liggen, denken met je mee en komen met gerichte oplossingen. Geen groot traject nodig — gewoon direct aan de slag met wat werkt.
+            We denken hands-on met je mee, kijken waar de mogelijkheden liggen en komen met gerichte oplossingen. Geen groot traject nodig.
           </p>
           <a
             href="mailto:hello@newfound.agency"
