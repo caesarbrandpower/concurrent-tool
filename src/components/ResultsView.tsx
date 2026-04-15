@@ -332,9 +332,9 @@ export default function ResultsView({ url, result }: ResultsViewProps) {
             color: '#fff',
             marginBottom: '16px',
           }}>
-            Kom in contact
+            Klaar voor de volgende stap?
           </h3>
-          <p style={{ fontSize: '20px', color: 'rgba(255,255,255,0.85)', lineHeight: '1.5', fontFamily: 'Satoshi, sans-serif', maxWidth: '560px', margin: '0 auto 16px' }}>
+          <p style={{ fontSize: '20px', color: 'rgba(255,255,255,0.85)', lineHeight: '1.7', fontFamily: 'Satoshi, sans-serif', maxWidth: '640px', margin: '0 auto 16px' }}>
             Je onderscheid is er, maar het is nog niet zichtbaar voor de mensen die je wil bereiken.
           </p>
           <p style={{ fontSize: '18px', color: 'rgba(255,255,255,0.8)', lineHeight: '1.6', fontFamily: 'Satoshi, sans-serif', maxWidth: '520px', margin: '0 auto 24px' }}>
