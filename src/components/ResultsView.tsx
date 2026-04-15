@@ -334,7 +334,7 @@ export default function ResultsView({ url, result }: ResultsViewProps) {
           }}>
             Kom in contact
           </h3>
-          <p style={{ fontSize: '17px', color: 'rgba(255,255,255,0.6)', lineHeight: '1.6', fontFamily: 'Satoshi, sans-serif', maxWidth: '520px', margin: '0 auto 24px' }}>
+          <p style={{ fontSize: '18px', color: 'rgba(255,255,255,0.8)', lineHeight: '1.6', fontFamily: 'Satoshi, sans-serif', maxWidth: '520px', margin: '0 auto 24px' }}>
             We denken hands-on met je mee, kijken waar de mogelijkheden liggen en komen met gerichte oplossingen. Geen groot traject nodig.
           </p>
           <a
@@ -352,19 +352,19 @@ export default function ResultsView({ url, result }: ResultsViewProps) {
 
       {/* Footer */}
       <footer style={{
-        backgroundColor: 'rgba(255, 255, 255, 0.04)',
-        padding: '24px',
+        backgroundColor: 'rgba(255,255,255,0.04)',
+        padding: '20px 24px',
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
-        gap: '12px',
+        gap: '10px',
         marginTop: '48px',
       }}>
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img src="https://newfound.agency/wp-content/uploads/2025/06/Logo_newfound.svg" alt="Newfound" style={{ height: '16px', opacity: 0.5 }} />
         <a href="/" style={{
-          color: 'rgba(255,255,255,0.5)',
-          fontSize: '14px',
+          color: 'rgba(255,255,255,0.45)',
+          fontSize: '13px',
           textDecoration: 'none',
           fontFamily: 'Satoshi, sans-serif',
         }}>
