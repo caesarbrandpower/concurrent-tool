@@ -278,37 +278,46 @@ export default function ResultsView({ url, result }: ResultsViewProps) {
               <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '10px', marginBottom: '32px' }}>
                 {[
                   'Je conclusie en drie inzichten',
-                  'Geprioriteerd actieplan: wat doe je eerst, dan, dan',
-                  'Uitgebreide concurrentiekaart: wat zegt elke concurrent precies',
+                  'Concreet actieplan per inzicht',
+                  'Overzicht van je drie concurrenten',
                   'Gratis, direct in je inbox',
                 ].map((text, i) => (
                   <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                    <svg style={{ width: '16px', height: '16px', flexShrink: 0 }} fill="none" stroke="#4ade80" viewBox="0 0 24 24" strokeWidth={2.5}>
+                    <svg style={{ width: '16px', height: '16px', flexShrink: 0 }} fill="none" stroke="#DDB3FF" viewBox="0 0 24 24" strokeWidth={2.5}>
                       <polyline points="20 6 9 17 4 12" />
                     </svg>
-                    <span style={{ fontSize: '15px', color: '#fff', fontFamily: 'Satoshi, sans-serif' }}>{text}</span>
+                    <span style={{ fontSize: '14px', color: 'rgba(255,255,255,0.75)', fontFamily: 'Satoshi, sans-serif' }}>{text}</span>
                   </div>
                 ))}
               </div>
 
-              <form onSubmit={handleEmailSubmit} className="input-row" style={{ maxWidth: '520px', margin: '0 auto' }}>
-                <input
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="jouw@emailadres.nl"
-                  className="url-input"
-                  required
-                />
-                <button
-                  type="submit"
-                  disabled={!email.trim() || isSubmitting}
-                  className="submit-btn"
-                  style={{ opacity: (!email.trim() || isSubmitting) ? 0.4 : 1 }}
-                >
-                  {isSubmitting ? 'Bezig...' : 'Verstuur'}
-                </button>
-              </form>
+              <div style={{
+                background: 'linear-gradient(135deg, #6366f1, #a855f7, #ec4899)',
+                padding: '1px',
+                borderRadius: '6px',
+                maxWidth: '520px',
+                margin: '0 auto',
+              }}>
+                <form onSubmit={handleEmailSubmit} className="input-row" style={{ margin: 0, background: '#202020', borderRadius: '5px' }}>
+                  <input
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="jouw@emailadres.nl"
+                    className="url-input"
+                    required
+                    style={{ background: 'transparent' }}
+                  />
+                  <button
+                    type="submit"
+                    disabled={!email.trim() || isSubmitting}
+                    className="submit-btn"
+                    style={{ opacity: (!email.trim() || isSubmitting) ? 0.4 : 1 }}
+                  >
+                    {isSubmitting ? 'Bezig...' : 'Verstuur'}
+                  </button>
+                </form>
+              </div>
 
               {emailError && (
                 <p className="mt-3 text-sm" style={{ color: '#f87171', fontFamily: 'Satoshi, sans-serif' }}>{emailError}</p>
