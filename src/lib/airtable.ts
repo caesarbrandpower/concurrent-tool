@@ -13,7 +13,7 @@ export async function saveLead(email: string, url: string): Promise<void> {
         fields: {
           Email: email,
           URL: url,
-          Timestamp: new Date().toISOString(),
+          Datum: new Date().toISOString(),
         },
       },
     ]);
