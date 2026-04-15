@@ -334,10 +334,10 @@ export default function ResultsView({ url, result }: ResultsViewProps) {
           }}>
             Klaar voor de volgende stap?
           </h3>
-          <p style={{ fontSize: '20px', color: 'rgba(255,255,255,0.85)', lineHeight: '1.8', fontFamily: 'Satoshi, sans-serif', maxWidth: '700px', margin: '0 auto 16px' }}>
+          <p style={{ fontSize: '18px', color: 'rgba(255,255,255,0.8)', lineHeight: '1.7', fontFamily: 'Satoshi, sans-serif', maxWidth: '640px', margin: '0 auto 16px', textAlign: 'center' }}>
             Je onderscheid is er, maar het is nog niet zichtbaar voor de mensen die je wil bereiken.
           </p>
-          <p style={{ fontSize: '18px', color: 'rgba(255,255,255,0.8)', lineHeight: '1.8', fontFamily: 'Satoshi, sans-serif', maxWidth: '700px', margin: '0 auto 24px' }}>
+          <p style={{ fontSize: '18px', color: 'rgba(255,255,255,0.8)', lineHeight: '1.7', fontFamily: 'Satoshi, sans-serif', maxWidth: '640px', margin: '0 auto 24px', textAlign: 'center' }}>
             We denken hands-on met je mee, kijken waar de mogelijkheden liggen en komen met gerichte oplossingen. Geen groot traject nodig.
           </p>
           <a
