@@ -28,17 +28,17 @@ export default function LoadingState({ steps, currentStep }: LoadingStateProps) 
   return (
     <div className="text-center max-w-sm">
       {/* Progress dots: ● — ● — ● */}
-      <div className="flex items-center justify-center gap-0" style={{ fontSize: '14px', marginBottom: '32px' }}>
+      <div className="flex items-center justify-center gap-0" style={{ fontSize: '14px', marginBottom: '48px' }}>
         {steps.map((_, index) => {
           const isActive = index === currentStep
           const isCompleted = index < currentStep
           const dotColor = isActive
-            ? '#DDB3FF'
+            ? '#0E6EFF'
             : isCompleted
-            ? 'rgba(255, 255, 255, 0.35)'
+            ? '#DDB3FF'
             : 'rgba(255, 255, 255, 0.2)'
           const lineColor = isCompleted
-            ? 'rgba(255, 255, 255, 0.25)'
+            ? 'rgba(255, 255, 255, 0.3)'
             : 'rgba(255, 255, 255, 0.1)'
           return (
           <span key={index} className="flex items-center">
@@ -76,7 +76,7 @@ export default function LoadingState({ steps, currentStep }: LoadingStateProps) 
       </p>
 
       {/* Step counter */}
-      <p className="text-sm text-white/50 font-body" style={{ fontWeight: 300, marginTop: '16px' }}>
+      <p className="text-sm text-white/50 font-body" style={{ fontWeight: 300, marginTop: '40px' }}>
         Stap {currentStep + 1} van {steps.length}
       </p>
     </div>
