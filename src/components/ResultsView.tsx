@@ -268,7 +268,7 @@ export default function ResultsView({ url, result }: ResultsViewProps) {
               <h3 style={{ fontFamily: 'GreedCondensed, sans-serif', fontWeight: 700, textTransform: 'uppercase', fontSize: 'clamp(24px, 3vw, 36px)', color: '#fff', marginBottom: '16px' }}>
                 Ontvang je marktscan + actieplan
               </h3>
-              <p style={{ fontSize: '17px', color: '#fff', fontFamily: 'Satoshi, sans-serif', maxWidth: '560px', margin: '0 auto 8px', lineHeight: '1.6' }}>
+              <p style={{ fontSize: '17px', color: 'rgba(255,255,255,0.6)', fontFamily: 'Satoshi, sans-serif', maxWidth: '560px', margin: '0 auto 8px', lineHeight: '1.6' }}>
                 Ontvang je volledige marktscan als overzicht in je inbox.
               </p>
               <p style={{ fontSize: '17px', color: 'rgba(255,255,255,0.6)', fontFamily: 'Satoshi, sans-serif', maxWidth: '560px', margin: '0 auto 32px', lineHeight: '1.6' }}>
@@ -286,7 +286,7 @@ export default function ResultsView({ url, result }: ResultsViewProps) {
                     <svg style={{ width: '16px', height: '16px', flexShrink: 0 }} fill="none" stroke="#DDB3FF" viewBox="0 0 24 24" strokeWidth={2.5}>
                       <polyline points="20 6 9 17 4 12" />
                     </svg>
-                    <span style={{ fontSize: '14px', color: 'rgba(255,255,255,0.75)', fontFamily: 'Satoshi, sans-serif' }}>{text}</span>
+                    <span style={{ fontSize: '16px', color: 'rgba(255,255,255,0.75)', fontFamily: 'Satoshi, sans-serif' }}>{text}</span>
                   </div>
                 ))}
               </div>
