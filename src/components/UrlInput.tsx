@@ -50,7 +50,6 @@ export default function UrlInput({ onSubmit, isLoading }: UrlInputProps) {
             ? '0 0 0 1px rgba(255,255,255,0.2), 0 4px 24px rgba(0,0,0,0.3)'
             : '0 2px 12px rgba(0,0,0,0.2)',
           transition: 'all 0.3s',
-          maxWidth: '100%',
         }}
       >
         <div style={{ paddingLeft: '16px', flexShrink: 0, display: 'flex', alignItems: 'center' }}>
