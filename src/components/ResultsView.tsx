@@ -256,7 +256,7 @@ export default function ResultsView({ url, result }: ResultsViewProps) {
 
       {/* Email lead sectie */}
       <section style={{ padding: '80px 0', background: 'rgba(255,255,255,0.04)' }}>
-        <div className="mx-auto px-4" style={{ maxWidth: '680px' }}>
+        <div className="mx-auto px-4 mobile-padding" style={{ maxWidth: '680px' }}>
           {emailCaptured ? (
             <div className="text-center animate-fade-in">
               <div style={{ width: '48px', height: '48px', borderRadius: '50%', background: 'rgba(14,110,255,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 16px' }}>

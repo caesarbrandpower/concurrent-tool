@@ -257,6 +257,12 @@ h3, h4, h5, h6 {
     padding: 16px !important;
   }
 
+  /* Inputveld wrappers: iets meer ademruimte */
+  .mobile-padding {
+    padding-left: 20px !important;
+    padding-right: 20px !important;
+  }
+
   /* E-mail form: input en knop onder elkaar */
   .email-input-row {
     flex-direction: column;

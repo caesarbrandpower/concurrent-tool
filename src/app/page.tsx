@@ -128,16 +128,15 @@ export default function Home() {
       {/* Hero sectie */}
       {!result && !isLoading && (!error || showManualInput) && (
         <div className="flex flex-col items-center min-h-[calc(100vh-72px)]">
-          <div className="flex-1 flex flex-col justify-center w-full mx-auto text-center px-4" style={{ maxWidth: '680px' }}>
+          <div className="flex-1 flex flex-col justify-center w-full mx-auto text-center px-4 mobile-padding" style={{ maxWidth: '680px' }}>
             <p className="label-style animate-hero-title" style={{ marginTop: '12px', marginBottom: '8px', color: '#DDB3FF' }}>Marktscan</p>
 
             <h1 className="font-heading text-white animate-hero-title" style={{ marginBottom: '12px' }}>
               Zie je business zoals<br />je klant hem ziet.
             </h1>
 
-            <h2 className="text-white animate-hero-subtitle" style={{ maxWidth: '440px', marginLeft: 'auto', marginRight: 'auto', marginBottom: '8px' }}>
-              Ontdek waar jij en je concurrenten hetzelfde zeggen.<br />
-              En waar jouw kansen liggen.
+            <h2 className="text-white animate-hero-subtitle" style={{ marginBottom: '8px' }}>
+              Ontdek waar jij en je concurrenten hetzelfde zeggen en waar jouw kansen liggen.
             </h2>
 
             <p className="font-body animate-hero-body" style={{ fontWeight: 300, fontSize: '16px', color: 'rgba(255, 255, 255, 0.55)', marginBottom: '28px' }}>
