@@ -39,6 +39,7 @@ export async function sendAnalysisEmail(
   const htmlContent = `
     <div style="background:#1a1a1a;padding:40px 24px;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;">
       <div style="max-width:600px;margin:0 auto;">
+        <div style="margin-bottom:24px;"><span style="font-size:13px;color:#666666;letter-spacing:2px;text-transform:uppercase;">Een tool van</span><span style="font-size:13px;color:#999999;letter-spacing:2px;text-transform:uppercase;margin-left:6px;font-weight:600;">Newfound</span></div>
         <h1 style="font-size:32px;color:#fff;margin:0 0 8px;text-transform:uppercase;">${result.merknaam || url}</h1>
         <p style="color:rgba(255,255,255,0.5);font-size:14px;margin:0 0 32px;">Marktscan voor ${url}</p>
 
@@ -49,21 +50,21 @@ export async function sendAnalysisEmail(
 
         <h2 style="font-size:20px;color:#fff;margin:32px 0 16px;">${result.inzicht1.titel}</h2>
         <p style="color:rgba(255,255,255,0.8);font-size:15px;line-height:1.6;margin:0 0 8px;">${result.inzicht1.tekst}</p>
-        <p style="color:#DDB3FF;font-size:14px;margin:0 0 24px;"><em>Actie: ${result.inzicht1.actie}</em></p>
+        <p style="color:#DDB3FF;font-size:14px;font-style:italic;margin:0 0 24px;">Actie: ${result.inzicht1.actie}</p>
 
         <h2 style="font-size:20px;color:#fff;margin:32px 0 16px;">${result.inzicht2.titel}</h2>
         <p style="color:rgba(255,255,255,0.8);font-size:15px;line-height:1.6;margin:0 0 8px;">${result.inzicht2.tekst}</p>
-        <p style="color:#DDB3FF;font-size:14px;margin:0 0 24px;"><em>Actie: ${result.inzicht2.actie}</em></p>
+        <p style="color:#DDB3FF;font-size:14px;font-style:italic;margin:0 0 24px;">Actie: ${result.inzicht2.actie}</p>
 
         <h2 style="font-size:20px;color:#fff;margin:32px 0 16px;">${result.inzicht3.titel}</h2>
         <p style="color:rgba(255,255,255,0.8);font-size:15px;line-height:1.6;margin:0 0 8px;">${result.inzicht3.tekst}</p>
-        <p style="color:#DDB3FF;font-size:14px;margin:0 0 24px;"><em>Actie: ${result.inzicht3.actie}</em></p>
+        <p style="color:#DDB3FF;font-size:14px;font-style:italic;margin:0 0 24px;">Actie: ${result.inzicht3.actie}</p>
 
         ${actieplanHtml}
 
         <hr style="border:none;border-top:1px solid rgba(255,255,255,0.1);margin:40px 0;">
         <p style="color:rgba(255,255,255,0.6);font-size:15px;margin:0 0 16px;">Klaar voor de volgende stap? <a href="https://newfound.agency" style="color:#0E6EFF;text-decoration:none;">Plan een kennismaking via newfound.agency</a></p>
-        <p style="color:rgba(255,255,255,0.3);font-size:13px;margin:0;">Een tool van <a href="https://newfound.agency" style="color:rgba(255,255,255,0.4);text-decoration:underline;">Newfound Agency</a></p>
+        <div style="margin-top:16px;"><span style="font-size:13px;color:#666666;letter-spacing:2px;text-transform:uppercase;">Een tool van</span><span style="font-size:13px;color:#999999;letter-spacing:2px;text-transform:uppercase;margin-left:6px;font-weight:600;">Newfound</span></div>
       </div>
     </div>
   `;
