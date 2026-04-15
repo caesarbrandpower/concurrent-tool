@@ -129,7 +129,7 @@ export default function Home() {
       {!result && !isLoading && (!error || showManualInput) && (
         <div className="flex flex-col items-center min-h-[calc(100vh-72px)]">
           <div className="flex-1 flex flex-col justify-center w-full mx-auto text-center px-4" style={{ maxWidth: '680px' }}>
-            <p className="label-style text-accent animate-hero-title" style={{ marginBottom: '8px' }}>Marktscan</p>
+            <p className="label-style animate-hero-title" style={{ marginBottom: '8px', color: '#b08cfc' }}>Marktscan</p>
 
             <h1 className="font-heading text-white animate-hero-title" style={{ marginBottom: '12px' }}>
               Zie je business zoals<br />je klant hem ziet.
@@ -141,7 +141,7 @@ export default function Home() {
             </h2>
 
             <p className="font-body animate-hero-body" style={{ fontWeight: 300, fontSize: '14px', color: 'rgba(255, 255, 255, 0.45)', marginBottom: '28px' }}>
-              Voer je website in. Ontdek hoe jij overkomt, waar jij opgaat in de massa en waar jouw kans in de markt ligt.
+              Vul je website in en krijg in 60 seconden jouw marktscan.
             </p>
 
             <div className="animate-hero-cta">
@@ -169,7 +169,7 @@ export default function Home() {
             )}
           </div>
 
-          <div className="pb-4 text-sm animate-hero-footer" style={{ color: 'rgba(255, 255, 255, 0.4)' }}>
+          <div className="text-sm animate-hero-footer" style={{ color: 'rgba(255, 255, 255, 0.4)', paddingBottom: '32px' }}>
             Een tool van <a href="https://newfound.agency" target="_blank" rel="noopener noreferrer" style={{ color: 'rgba(255, 255, 255, 0.75)', textDecoration: 'none' }}>Newfound</a>
           </div>
         </div>
