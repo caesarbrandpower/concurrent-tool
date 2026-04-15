@@ -120,7 +120,7 @@ export default function ResultsView({ url, result }: ResultsViewProps) {
   }
 
   return (
-    <div className="animate-slide-up">
+    <div className="animate-slide-up results-container">
       {/* Merknaam */}
       <section style={{ padding: '80px 0 24px', background: '#0f0f10' }}>
         <div className="mx-auto px-4 text-center" style={{ maxWidth: '720px' }}>
@@ -153,6 +153,9 @@ export default function ResultsView({ url, result }: ResultsViewProps) {
               lineHeight: 1.1,
               color: '#ffffff',
               margin: 0,
+              wordWrap: 'break-word',
+              overflowWrap: 'break-word',
+              hyphens: 'auto',
             }}>
               {result.conclusie}
             </p>

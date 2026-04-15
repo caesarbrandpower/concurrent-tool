@@ -246,8 +246,13 @@ h3, h4, h5, h6 {
   }
 }
 
-/* Mobiel: kaarten en e-mail sectie */
+/* Mobiel: kaarten, e-mail sectie en containers */
 @media (max-width: 640px) {
+  .results-container {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+
   .inzicht-card {
     padding: 20px 16px !important;
   }
