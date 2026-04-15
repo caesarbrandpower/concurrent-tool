@@ -167,7 +167,7 @@ export default function ResultsView({ url, result }: ResultsViewProps) {
       {/* Concurrenten sectie */}
       {result.concurrenten && result.concurrenten.length > 0 && (
         <section style={{ padding: '24px 0 16px', background: '#0f0f10' }}>
-          <div className="mx-auto px-4" style={{ maxWidth: '680px' }}>
+          <div className="mx-auto px-4" style={{ maxWidth: '680px', width: '100%', boxSizing: 'border-box' as const }}>
             <h2 style={{
               fontFamily: 'GreedCondensed, sans-serif',
               fontWeight: 700,
@@ -244,7 +244,7 @@ export default function ResultsView({ url, result }: ResultsViewProps) {
 
       {/* Drie inzichtkaarten */}
       <section className="bg-dark" style={{ padding: '48px 0 64px' }}>
-        <div className="mx-auto px-4" style={{ maxWidth: '680px', display: 'flex', flexDirection: 'column', gap: '20px' }}>
+        <div className="mx-auto px-4" style={{ maxWidth: '680px', width: '100%', boxSizing: 'border-box' as const, display: 'flex', flexDirection: 'column', gap: '20px' }}>
           <InzichtCard inzicht={result.inzicht1} index={0} />
           <InzichtCard inzicht={result.inzicht2} index={1} />
           <InzichtCard inzicht={result.inzicht3} index={2} />
@@ -256,7 +256,7 @@ export default function ResultsView({ url, result }: ResultsViewProps) {
 
       {/* Email lead sectie */}
       <section style={{ padding: '80px 0', background: 'rgba(255,255,255,0.04)' }}>
-        <div className="mx-auto px-4" style={{ maxWidth: '680px' }}>
+        <div className="mx-auto px-4" style={{ maxWidth: '680px', width: '100%', boxSizing: 'border-box' as const }}>
           {emailCaptured ? (
             <div className="text-center animate-fade-in">
               <div style={{ width: '48px', height: '48px', borderRadius: '50%', background: 'rgba(14,110,255,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 16px' }}>
@@ -357,7 +357,7 @@ export default function ResultsView({ url, result }: ResultsViewProps) {
       </section>
 
       {/* Footer — logo in lichtere balk */}
-      <section style={{ padding: '48px 0', background: 'rgba(255,255,255,0.04)' }}>
+      <section style={{ padding: '48px 0', background: 'rgba(255,255,255,0.04)', width: '100%', boxSizing: 'border-box' as const }}>
         <div className="mx-auto px-4 text-center">
           <a href="https://newfound.agency" target="_blank" rel="noopener noreferrer">
             {/* eslint-disable-next-line @next/next/no-img-element */}

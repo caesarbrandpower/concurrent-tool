@@ -135,7 +135,7 @@ export default function Home() {
               Zie je business zoals<br />je klant hem ziet.
             </h1>
 
-            <h2 className="text-white animate-hero-subtitle" style={{ marginBottom: '8px' }}>
+            <h2 className="text-white animate-hero-subtitle" style={{ marginBottom: '8px', maxWidth: '340px', margin: '0 auto 8px' }}>
               Ontdek waar jij en je concurrenten hetzelfde zeggen.<br />
               En waar jouw kansen liggen.
             </h2>
