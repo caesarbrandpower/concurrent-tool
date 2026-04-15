@@ -29,7 +29,18 @@ export default function LoadingState({ steps, currentStep }: LoadingStateProps) 
     <div className="text-center max-w-sm">
       {/* Progress dots: ● — ● — ● */}
       <div className="flex items-center justify-center gap-0" style={{ fontSize: '14px', marginBottom: '32px' }}>
-        {steps.map((_, index) => (
+        {steps.map((_, index) => {
+          const isActive = index === currentStep
+          const isCompleted = index < currentStep
+          const dotColor = isActive
+            ? '#DDB3FF'
+            : isCompleted
+            ? 'rgba(255, 255, 255, 0.35)'
+            : 'rgba(255, 255, 255, 0.2)'
+          const lineColor = isCompleted
+            ? 'rgba(255, 255, 255, 0.25)'
+            : 'rgba(255, 255, 255, 0.1)'
+          return (
           <span key={index} className="flex items-center">
             <span
               style={{
@@ -37,10 +48,10 @@ export default function LoadingState({ steps, currentStep }: LoadingStateProps) 
                 width: '10px',
                 height: '10px',
                 borderRadius: '50%',
-                background: index === currentStep ? '#DDB3FF' : index < currentStep ? 'rgba(255,255,255,0.4)' : 'rgba(255,255,255,0.2)',
+                background: dotColor,
                 transition: 'background 0.5s',
               }}
-              className={index === currentStep ? 'progress-dot' : ''}
+              className={isActive ? 'progress-dot' : ''}
             />
             {index < steps.length - 1 && (
               <span
@@ -49,13 +60,14 @@ export default function LoadingState({ steps, currentStep }: LoadingStateProps) 
                   width: '32px',
                   height: '2px',
                   margin: '0 8px',
-                  background: index < currentStep ? 'rgba(255,255,255,0.3)' : 'rgba(255,255,255,0.15)',
+                  background: lineColor,
                   transition: 'background 0.5s',
                 }}
               />
             )}
           </span>
-        ))}
+          )
+        })}
       </div>
 
       {/* Only the active step text */}
