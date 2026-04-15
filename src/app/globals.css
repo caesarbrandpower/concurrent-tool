@@ -245,3 +245,28 @@ h3, h4, h5, h6 {
     border-radius: 0 0 6px 6px !important;
   }
 }
+
+/* Mobiel: kaarten en e-mail sectie */
+@media (max-width: 640px) {
+  .inzicht-card {
+    padding: 20px 16px !important;
+  }
+
+  .email-input-row {
+    flex-direction: column;
+  }
+
+  .email-input-row input {
+    width: 100%;
+    border-radius: 6px 6px 0 0;
+  }
+
+  .email-input-row button {
+    width: 100%;
+    border-radius: 0 0 6px 6px;
+  }
+
+  .concurrent-card {
+    padding: 16px !important;
+  }
+}

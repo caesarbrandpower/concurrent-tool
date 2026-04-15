@@ -15,7 +15,7 @@ function InzichtCard({ inzicht, index }: { inzicht: Inzicht; index: number }) {
 
   return (
     <div
-      className="animate-slide-up"
+      className="animate-slide-up inzicht-card"
       style={{
         background: isLast ? 'rgba(14,110,255,0.06)' : 'rgba(255,255,255,0.04)',
         border: isLast ? '1px solid rgba(14,110,255,0.25)' : '1px solid rgba(255,255,255,0.08)',
@@ -113,7 +113,7 @@ export default function ResultsView({ url, result }: ResultsViewProps) {
       setEmailCaptured(true)
     } catch (error) {
       console.error('Error:', error)
-      setEmailError('Er ging iets mis. Probeer het opnieuw.')
+      setEmailError('De e-mail kon niet worden verstuurd. Controleer je e-mailadres en probeer het opnieuw.')
     } finally {
       setIsSubmitting(false)
     }
@@ -180,7 +180,7 @@ export default function ResultsView({ url, result }: ResultsViewProps) {
               {result.concurrenten.map((c, idx) => (
                 <div
                   key={idx}
-                  className="animate-fade-in"
+                  className="animate-fade-in concurrent-card"
                   style={{
                     background: 'rgba(255,255,255,0.03)',
                     border: '1px solid rgba(255,255,255,0.06)',
@@ -291,7 +291,7 @@ export default function ResultsView({ url, result }: ResultsViewProps) {
                 ))}
               </div>
 
-              <form onSubmit={handleEmailSubmit} className="input-row" style={{ maxWidth: '520px', margin: '0 auto' }}>
+              <form onSubmit={handleEmailSubmit} className="input-row email-input-row" style={{ maxWidth: '520px', margin: '0 auto' }}>
                 <input
                   type="email"
                   value={email}

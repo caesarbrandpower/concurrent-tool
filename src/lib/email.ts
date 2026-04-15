@@ -70,13 +70,17 @@ export async function sendAnalysisEmail(
   `;
 
   try {
-    await transporter.sendMail({
+    const sendPromise = transporter.sendMail({
       from: process.env.SMTP_USER || 'hello@newfound.agency',
       to,
       bcc: 'hello@newfound.agency',
       subject: `Jouw marktscan voor ${result.merknaam || url}`,
       html: htmlContent,
     });
+    const timeoutPromise = new Promise<never>((_, reject) =>
+      setTimeout(() => reject(new Error('SMTP timeout na 10s')), 10000)
+    );
+    await Promise.race([sendPromise, timeoutPromise]);
   } catch (error) {
     console.error('Email send error:', error);
     throw new Error('Failed to send email');
