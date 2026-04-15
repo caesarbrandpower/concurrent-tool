@@ -248,6 +248,9 @@ export default function ResultsView({ url, result }: ResultsViewProps) {
         </div>
       </section>
 
+      {/* Gradient lijn boven e-mail sectie */}
+      <div style={{ height: '1px', background: 'linear-gradient(90deg, transparent 0%, #6366f1 30%, #a855f7 50%, #ec4899 70%, transparent 100%)', width: '100%' }} />
+
       {/* Email lead sectie */}
       <section style={{ padding: '80px 0', background: 'rgba(255,255,255,0.04)' }}>
         <div className="mx-auto px-4" style={{ maxWidth: '680px' }}>
@@ -291,33 +294,24 @@ export default function ResultsView({ url, result }: ResultsViewProps) {
                 ))}
               </div>
 
-              <div style={{
-                background: 'linear-gradient(135deg, #6366f1, #a855f7, #ec4899)',
-                padding: '1px',
-                borderRadius: '6px',
-                maxWidth: '520px',
-                margin: '0 auto',
-              }}>
-                <form onSubmit={handleEmailSubmit} className="input-row" style={{ margin: 0, background: '#202020', borderRadius: '5px' }}>
-                  <input
-                    type="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    placeholder="jouw@emailadres.nl"
-                    className="url-input"
-                    required
-                    style={{ background: 'transparent' }}
-                  />
-                  <button
-                    type="submit"
-                    disabled={!email.trim() || isSubmitting}
-                    className="submit-btn"
-                    style={{ opacity: (!email.trim() || isSubmitting) ? 0.4 : 1 }}
-                  >
-                    {isSubmitting ? 'Bezig...' : 'Verstuur'}
-                  </button>
-                </form>
-              </div>
+              <form onSubmit={handleEmailSubmit} className="input-row" style={{ maxWidth: '520px', margin: '0 auto' }}>
+                <input
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="jouw@emailadres.nl"
+                  className="url-input"
+                  required
+                />
+                <button
+                  type="submit"
+                  disabled={!email.trim() || isSubmitting}
+                  className="submit-btn"
+                  style={{ opacity: (!email.trim() || isSubmitting) ? 0.4 : 1 }}
+                >
+                  {isSubmitting ? 'Bezig...' : 'Verstuur'}
+                </button>
+              </form>
 
               {emailError && (
                 <p className="mt-3 text-sm" style={{ color: '#f87171', fontFamily: 'Satoshi, sans-serif' }}>{emailError}</p>
@@ -326,6 +320,9 @@ export default function ResultsView({ url, result }: ResultsViewProps) {
           )}
         </div>
       </section>
+
+      {/* Gradient lijn onder e-mail sectie */}
+      <div style={{ height: '1px', background: 'linear-gradient(90deg, transparent 0%, #6366f1 30%, #a855f7 50%, #ec4899 70%, transparent 100%)', width: '100%' }} />
 
       {/* Kom in contact */}
       <section className="bg-dark" style={{ padding: '96px 0' }}>
@@ -357,10 +354,25 @@ export default function ResultsView({ url, result }: ResultsViewProps) {
       </section>
 
       {/* Footer */}
-      <footer style={{ padding: '32px 0', borderTop: '1px solid rgba(255,255,255,0.08)' }}>
-        <p className="text-center" style={{ fontSize: '14px', color: 'rgba(255,255,255,0.4)', fontFamily: 'Satoshi, sans-serif', fontWeight: 300 }}>
-          Een product van <a href="https://newfound.agency" target="_blank" rel="noopener noreferrer" style={{ color: 'rgba(255,255,255,0.6)', textDecoration: 'underline' }}>Newfound</a>
-        </p>
+      <footer style={{
+        backgroundColor: 'rgba(255, 255, 255, 0.04)',
+        padding: '24px',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        gap: '12px',
+        marginTop: '48px',
+      }}>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src="https://newfound.agency/wp-content/uploads/2025/06/Logo_newfound.svg" alt="Newfound" style={{ height: '16px', opacity: 0.5 }} />
+        <a href="/" style={{
+          color: 'rgba(255,255,255,0.5)',
+          fontSize: '14px',
+          textDecoration: 'none',
+          fontFamily: 'Satoshi, sans-serif',
+        }}>
+          Scan een ander merk →
+        </a>
       </footer>
     </div>
   )
