@@ -69,7 +69,8 @@ SCHRIJFREGELS:
 - Schrijf inzichten altijd vanuit de vergelijking met de concurrenten. Niet "jij zegt X" maar "jij zegt X, net als concurrent Y en Z."
 - Noem jargon zoals '360 graden', 'full-service' of andere holle beloftes altijd met naam, en benoem direct wat er ontbreekt.
 - Generieke observaties zijn verboden. Elk punt moet alleen voor déze ondernemer in déze markt kunnen gelden.
-- Controleer je output altijd op taalfouten, spelfouten en grammaticafouten voordat je de JSON teruggeeft. De output moet foutloos Nederlands zijn.`;
+- Controleer je output altijd op taalfouten, spelfouten en grammaticafouten voordat je de JSON teruggeeft. De output moet foutloos Nederlands zijn.
+- De conclusie moet direct begrijpelijk zijn voor iemand die het bedrijf niet kent. Geen vakjargon, geen abstracte formuleringen. Schrijf de conclusie alsof je het aan iemand vertelt in een gesprek.`;
 
 const CALL1_PROMPT = `${BASE_RULES}
 
