@@ -40,15 +40,17 @@ export default function UrlInput({ onSubmit, isLoading }: UrlInputProps) {
           borderRadius: '6px',
           display: 'flex',
           flexDirection: 'row' as const,
+          flexWrap: 'wrap' as const,
           alignItems: 'center',
           overflow: 'hidden',
           boxShadow: isFocused
             ? '0 0 0 1px rgba(255,255,255,0.2), 0 4px 24px rgba(0,0,0,0.3)'
             : '0 2px 12px rgba(0,0,0,0.2)',
           transition: 'all 0.3s',
+          maxWidth: '100%',
         }}
       >
-        <div style={{ paddingLeft: '20px', flexShrink: 0, display: 'flex', alignItems: 'center' }}>
+        <div style={{ paddingLeft: '16px', flexShrink: 0, display: 'flex', alignItems: 'center' }}>
           <Globe
             style={{
               width: '20px',
@@ -71,7 +73,7 @@ export default function UrlInput({ onSubmit, isLoading }: UrlInputProps) {
             background: 'transparent',
             color: 'rgb(255, 255, 255)',
             fontSize: '18px',
-            padding: '20px 16px',
+            padding: '20px 12px',
             border: 'none',
             outline: 'none',
             flex: 1,
@@ -83,6 +85,7 @@ export default function UrlInput({ onSubmit, isLoading }: UrlInputProps) {
         <button
           type="submit"
           disabled={!url.trim() || isLoading}
+          className="submit-btn-responsive"
           style={{
             background: '#0E6EFF',
             color: 'rgb(255, 255, 255)',
@@ -109,31 +112,10 @@ export default function UrlInput({ onSubmit, isLoading }: UrlInputProps) {
         Bijvoorbeeld: newfound.agency of www.jouwsite.nl
       </p>
 
-      {/* Toggle concurrent-invoer */}
-      <button
-        type="button"
-        onClick={() => setShowCompetitors(!showCompetitors)}
-        style={{
-          marginTop: '20px',
-          background: 'none',
-          border: 'none',
-          color: 'rgba(255,255,255,0.5)',
-          fontSize: '14px',
-          fontFamily: 'Satoshi, sans-serif',
-          fontWeight: 400,
-          cursor: 'pointer',
-          padding: 0,
-          transition: 'color 0.2s',
-        }}
-        onMouseEnter={(e) => { e.currentTarget.style.color = 'rgba(255,255,255,0.8)' }}
-        onMouseLeave={(e) => { e.currentTarget.style.color = 'rgba(255,255,255,0.5)' }}
-      >
-        {showCompetitors ? 'Concurrenten verbergen \u2191' : 'Ken je je concurrenten? Vul ze in \u2193'}
-      </button>
-
-      {/* Concurrent URL velden */}
+      {/* Concurrent URL velden — verborgen, code blijft beschikbaar */}
       {showCompetitors && (
         <div style={{
+          display: 'none',
           marginTop: '16px',
           display: 'flex',
           flexDirection: 'column',

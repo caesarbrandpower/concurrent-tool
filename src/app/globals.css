@@ -237,3 +237,11 @@ h3, h4, h5, h6 {
   opacity: 0.4;
   cursor: not-allowed;
 }
+
+/* Mobiel: knop onder het inputveld */
+@media (max-width: 480px) {
+  .submit-btn-responsive {
+    width: 100%;
+    border-radius: 0 0 6px 6px !important;
+  }
+}

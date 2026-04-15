@@ -15,7 +15,6 @@ export default function Home() {
   const [error, setError] = useState<string | null>(null)
   const [showManualInput, setShowManualInput] = useState(false)
   const [competitorUrls, setCompetitorUrls] = useState<string[]>([])
-  const [slowServer, setSlowServer] = useState(false)
   const resultRef = useRef<HTMLDivElement>(null)
 
   const loadingSteps = [
@@ -33,16 +32,6 @@ export default function Home() {
     }
   }, [isLoading, loadingStep])
 
-  useEffect(() => {
-    if (isLoading) {
-      setSlowServer(false)
-      const timer = setTimeout(() => setSlowServer(true), 15000)
-      return () => clearTimeout(timer)
-    } else {
-      setSlowServer(false)
-    }
-  }, [isLoading])
-
   const handleUrlSubmit = async (submittedUrl: string, competitorUrls: string[] = []) => {
     setUrl(submittedUrl)
     setCompetitorUrls(competitorUrls)
@@ -51,7 +40,6 @@ export default function Home() {
     setError(null)
     setResult(null)
     setShowManualInput(false)
-    setSlowServer(false)
 
     try {
       const response = await fetch('/api/analyze', {
@@ -144,15 +132,16 @@ export default function Home() {
             <p className="label-style text-accent mb-6 animate-hero-title">Marktscan</p>
 
             <h1 className="font-heading text-white mb-5 animate-hero-title">
-              Zie hoe jij je<br />verhoudt.
+              Zie je business zoals<br />je klant hem ziet.
             </h1>
 
             <h2 className="text-white mb-3 animate-hero-subtitle">
-              Ontdek waar jij en je concurrenten hetzelfde zeggen.
+              Ontdek waar jij en je concurrenten hetzelfde zeggen.<br />
+              En waar jouw kansen liggen.
             </h2>
 
             <p className="text-white/60 mb-16 font-body animate-hero-body" style={{ fontWeight: 300 }}>
-              Vul je website in en krijg een analyse in 60 seconden.
+              Voer je website in. Ontdek hoe jij overkomt, waar jij opgaat in de massa en waar jouw kans in de markt ligt.
             </p>
 
             <div className="animate-hero-cta">
@@ -189,14 +178,7 @@ export default function Home() {
       {/* Loading state */}
       {isLoading && !result && (
         <div className="min-h-[calc(100vh-72px)] flex items-center justify-center px-4">
-          <div className="text-center">
-            <LoadingState steps={loadingSteps} currentStep={loadingStep} />
-            {slowServer && (
-              <p className="mt-6 text-white/50 font-body animate-fade-in" style={{ fontSize: '14px', fontWeight: 300 }}>
-                Even geduld, drukke server. We proberen het opnieuw.
-              </p>
-            )}
-          </div>
+          <LoadingState steps={loadingSteps} currentStep={loadingStep} />
         </div>
       )}
 
