@@ -269,20 +269,17 @@ export default function ResultsView({ url, result }: ResultsViewProps) {
           ) : (
             <div className="text-center">
               <h3 style={{ fontFamily: 'GreedCondensed, sans-serif', fontWeight: 700, textTransform: 'uppercase', fontSize: 'clamp(24px, 3vw, 36px)', color: '#fff', marginBottom: '16px' }}>
-                Ontvang je marktscan + actieplan
+                Ontvang je marktscan in je inbox
               </h3>
-              <p style={{ fontSize: '17px', color: 'rgba(255,255,255,0.6)', fontFamily: 'Satoshi, sans-serif', maxWidth: '560px', margin: '0 auto 8px', lineHeight: '1.6' }}>
-                Ontvang je volledige marktscan als overzicht in je inbox.
-              </p>
               <p style={{ fontSize: '17px', color: 'rgba(255,255,255,0.6)', fontFamily: 'Satoshi, sans-serif', maxWidth: '560px', margin: '0 auto 32px', lineHeight: '1.6' }}>
-                Inclusief geprioriteerd actieplan en uitgebreide concurrentiekaart.
+                Handig om later terug te kijken en mee aan de slag te gaan.
               </p>
 
               <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '10px', marginBottom: '32px' }}>
                 {[
-                  'Je conclusie en drie inzichten',
-                  'Concreet actieplan per inzicht',
-                  'Overzicht van je drie concurrenten',
+                  'Je drie inzichten inclusief concrete acties',
+                  'Overzicht van je concurrenten',
+                  'Handig om later terug te kijken',
                   'Gratis, direct in je inbox',
                 ].map((text, i) => (
                   <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
@@ -337,8 +334,11 @@ export default function ResultsView({ url, result }: ResultsViewProps) {
           }}>
             Kom in contact
           </h3>
-          <p style={{ fontSize: '17px', color: '#fff', lineHeight: '1.6', fontFamily: 'Satoshi, sans-serif', maxWidth: '520px', margin: '0 auto 24px' }}>
-            Je onderscheid is er, maar het is nog niet zichtbaar voor de mensen die jij wil bereiken. Precies daar helpen wij bij.
+          <p style={{ fontSize: '17px', color: 'rgba(255,255,255,0.6)', lineHeight: '1.6', fontFamily: 'Satoshi, sans-serif', maxWidth: '520px', margin: '0 auto 16px' }}>
+            Je onderscheid is er, maar het is nog niet zichtbaar voor de mensen die je wil bereiken.
+          </p>
+          <p style={{ fontSize: '17px', color: 'rgba(255,255,255,0.6)', lineHeight: '1.6', fontFamily: 'Satoshi, sans-serif', maxWidth: '520px', margin: '0 auto 24px' }}>
+            We kijken hands-on mee waar de mogelijkheden liggen, denken met je mee en komen met gerichte oplossingen. Geen groot traject nodig — gewoon direct aan de slag met wat werkt.
           </p>
           <a
             href="mailto:hello@newfound.agency"
