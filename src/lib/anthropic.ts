@@ -145,14 +145,12 @@ export async function findCompetitors(industry: string): Promise<string[]> {
   const query = `Je bent een marktkenner. Zoek drie directe concurrenten voor dit bedrijf in de ${industry} markt.
 
 Regels:
-- Kies alleen bedrijven die écht in dezelfde markt zitten. Niet groter, niet kleiner, maar gelijkwaardig of net iets groter — zodat de vergelijking relevant voelt.
-- Kies bedrijven die de gebruiker kent of zou moeten kennen. Geen obscure of kleine spelers.
-- Kies bedrijven die actief zijn in hetzelfde land of dezelfde regio als het ingevoerde bedrijf.
-- Als je twijfelt tussen een bekende en een onbekende speler, kies altijd de bekende.
-- Geef alleen bedrijven terug waarvan je zeker weet dat ze bestaan en actief zijn.
+- Kies bedrijven die actief zijn in dezelfde markt en hetzelfde type dienst of product aanbieden.
+- Kies bij voorkeur bekende, gelijkwaardige of iets grotere spelers die de gebruiker zou herkennen.
+- Kies bedrijven uit hetzelfde land of dezelfde regio als het ingevoerde bedrijf.
+- Geef altijd drie concurrenten terug. Als je geen perfecte match vindt, kies dan de meest relevante optie.
 - Geen taalfouten in namen of URLs.
-
-Geef alleen de website URLs terug, een per regel. Alleen commerciele bedrijven met een toegankelijke website. Geen magazines, directories of nieuwssites.`;
+- Geef de output terug als JSON array met voor elk concurrent: naam, url, omschrijving (max 15 woorden), reden (max 12 woorden).`;
 
   const allUrls = new Set<string>();
 
