@@ -334,6 +334,9 @@ export default function ResultsView({ url, result }: ResultsViewProps) {
           }}>
             Kom in contact
           </h3>
+          <p style={{ fontSize: '20px', color: 'rgba(255,255,255,0.85)', lineHeight: '1.5', fontFamily: 'Satoshi, sans-serif', maxWidth: '560px', margin: '0 auto 16px' }}>
+            Je onderscheid is er, maar het is nog niet zichtbaar voor de mensen die je wil bereiken.
+          </p>
           <p style={{ fontSize: '18px', color: 'rgba(255,255,255,0.8)', lineHeight: '1.6', fontFamily: 'Satoshi, sans-serif', maxWidth: '520px', margin: '0 auto 24px' }}>
             We denken hands-on met je mee, kijken waar de mogelijkheden liggen en komen met gerichte oplossingen. Geen groot traject nodig.
           </p>
@@ -357,8 +360,7 @@ export default function ResultsView({ url, result }: ResultsViewProps) {
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
-        gap: '10px',
-        marginTop: '48px',
+        gap: '12px',
       }}>
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img src="https://newfound.agency/wp-content/uploads/2025/06/Logo_newfound.svg" alt="Newfound" style={{ height: '16px', opacity: 0.5 }} />
