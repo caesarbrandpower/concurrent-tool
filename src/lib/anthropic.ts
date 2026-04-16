@@ -149,7 +149,7 @@ async function searchCompetitorsViaTavily(
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
       api_key: process.env.TAVILY_API_KEY,
-      query: `concurrenten van ${companyName} ${industry} Nederland`,
+      query: `${industry} bureau Nederland concurrenten`,
       max_results: 5,
       search_depth: 'basic'
     })
