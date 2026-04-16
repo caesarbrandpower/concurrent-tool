@@ -87,7 +87,14 @@ export async function POST(request: NextRequest) {
       console.log(`Handmatige competitor URLs gebruikt: ${competitorUrls.length}`);
     } else {
       await delay(1500);
-      competitorUrls = await withRateLimit(() => findCompetitors(industry));
+      const companyName = (() => {
+        try {
+          return new URL(userScraped.url).hostname.replace(/^www\./, '').split('.')[0];
+        } catch {
+          return '';
+        }
+      })();
+      competitorUrls = await withRateLimit(() => findCompetitors(industry, companyName));
     }
 
     // Step 3: Scrape competitor URLs parallel (geen API calls, alleen HTTP fetches)

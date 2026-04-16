@@ -140,8 +140,41 @@ export async function identifyIndustry(content: string): Promise<string> {
   }, 'identifyIndustry');
 }
 
-export async function findCompetitors(industry: string): Promise<string[]> {
-  console.log('findCompetitors: industry:', industry);
+async function searchCompetitorsViaTavily(
+  companyName: string,
+  industry: string
+): Promise<string> {
+  const response = await fetch('https://api.tavily.com/search', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      api_key: process.env.TAVILY_API_KEY,
+      query: `concurrenten van ${companyName} ${industry} Nederland`,
+      max_results: 5,
+      search_depth: 'basic'
+    })
+  });
+  const data = await response.json();
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  return data.results
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    .map((r: any) => `${r.title}: ${r.url} - ${r.content?.slice(0, 150)}`)
+    .join('\n');
+}
+
+export async function findCompetitors(industry: string, companyName: string = ''): Promise<string[]> {
+  console.log('findCompetitors: industry:', industry, 'companyName:', companyName);
+
+  let searchContext = '';
+  try {
+    searchContext = await searchCompetitorsViaTavily(companyName, industry);
+  } catch {
+    // Stil falen — gebruik Claude's eigen kennis als fallback
+  }
+
+  const contextPart = searchContext
+    ? `\n\nHier zijn actuele zoekresultaten over concurrenten in deze markt:\n${searchContext}\n\nGebruik deze resultaten als basis voor je keuze.`
+    : '';
 
   const query = `Zoek vijf concurrenten in de ${industry} markt in Nederland. Geef alleen de website URLs terug, een per regel. Alleen commerciele bedrijven met een toegankelijke website (geen cookiewalls, geen login-vereiste). Geen magazines, directories of nieuwssites.
 
@@ -150,7 +183,7 @@ Kies concurrenten in deze volgorde van voorkeur:
 2. Bedrijven in een vergelijkbare niche die dezelfde doelgroep bedienen
 3. Alleen als er geen betere opties zijn: bredere spelers die overlappen
 
-Geef altijd drie concurrenten terug, ook als je moet terugvallen op optie 2 of 3.`;
+Geef altijd drie concurrenten terug, ook als je moet terugvallen op optie 2 of 3.${contextPart}`;
 
   const allUrls = new Set<string>();
 
