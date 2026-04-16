@@ -145,7 +145,12 @@ export async function findCompetitors(industry: string): Promise<string[]> {
 
   const query = `Zoek vijf concurrenten in de ${industry} markt in Nederland. Geef alleen de website URLs terug, een per regel. Alleen commerciele bedrijven met een toegankelijke website (geen cookiewalls, geen login-vereiste). Geen magazines, directories of nieuwssites.
 
-Kies alleen concurrenten die daadwerkelijk in dezelfde markt opereren: zelfde type dienst, zelfde doelgroep, zelfde sector. NOOIT: overheidsinstanties, onderwijsinstellingen, medische praktijken, e-commerce winkels, of andere sectoren.`;
+Kies concurrenten in deze volgorde van voorkeur:
+1. Bedrijven in exact dezelfde niche en sector
+2. Bedrijven in een vergelijkbare niche die dezelfde doelgroep bedienen
+3. Alleen als er geen betere opties zijn: bredere spelers die overlappen
+
+Geef altijd drie concurrenten terug, ook als je moet terugvallen op optie 2 of 3.`;
 
   const allUrls = new Set<string>();
 
